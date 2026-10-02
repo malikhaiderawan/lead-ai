@@ -1,0 +1,2994 @@
+{
+  "version": 1,
+  "created_at": "2026-09-25T07:43:05.081721+00:00",
+  "updated_at": "2026-09-26T03:26:37.133041+00:00",
+  "leads": {
+    "lead_017_arbrandzone": {
+      "lead_id": "lead_017_arbrandzone",
+      "first_seen_at": "2026-09-25T07:43:10.441114+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T074305",
+          "timestamp": "2026-09-25T07:43:09.992296+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "AWAITING_MANUAL_SEND",
+          "sent_at": "",
+          "error": "WhatsApp chat opened with the message pre-filled — press Send once, then confirm."
+        },
+        {
+          "lead_id": "lead_017_arbrandzone",
+          "send_status": "SENT",
+          "timestamp": "2026-09-25T10:25:54.363460+00:00",
+          "attempt": 1,
+          "note": "Confirmed by the user (--mark-sent)."
+        },
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:24:31.293240+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_017_arbrandzone already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:27:57.745243+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_017_arbrandzone already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T133305",
+          "timestamp": "2026-09-25T13:33:05.777408+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_017_arbrandzone already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:35:02.600347+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_017_arbrandzone already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.270675+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_017_arbrandzone already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.570978+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_017_arbrandzone already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:08:19.447926+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_017_arbrandzone already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Arbrandzone",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923136162007",
+      "last_attempt_at": "2026-09-26T02:08:19.447926+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Arbrandzone and noticed you're already active on Instagram.\n\nOne thing that could help is having a dedicated website where customers can browse your products and contact or order from you more easily.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and e-commerce solutions for businesses.\n\nWould you be open to a quick chat about a website for Arbrandzone?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T10:25:54.363460+00:00",
+      "error": "lead lead_017_arbrandzone already has status SENT (attempts=1)",
+      "note": "Confirmed by the user (--mark-sent)."
+    },
+    "lead_020_branded_clothes_wholesale_in_lahore___za": {
+      "lead_id": "lead_020_branded_clothes_wholesale_in_lahore___za",
+      "first_seen_at": "2026-09-25T12:25:15.634483+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:24:31.295656+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "Message could not be verified in the chat — treat as NOT sent and check manually."
+        },
+        {
+          "lead_id": "lead_020_branded_clothes_wholesale_in_lahore___za",
+          "send_status": "SENT",
+          "timestamp": "2026-09-25T13:05:56.872378+00:00",
+          "attempt": 1,
+          "note": "Correction: send DID succeed on 2026-09-25 17:25 (outgoing bubble with data-id 3EB08F9695F0DC7DE1E022 confirmed in chat). Verification had false-negatived because WhatsApp renders emoji as <img> in sent bubbles; matcher fixed in whatsapp_playwright._row_matches."
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:27:57.755492+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_020_branded_clothes_wholesale_in_lahore___za already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T133305",
+          "timestamp": "2026-09-25T13:33:05.790168+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_020_branded_clothes_wholesale_in_lahore___za already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:35:02.611072+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_020_branded_clothes_wholesale_in_lahore___za already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.296281+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_020_branded_clothes_wholesale_in_lahore___za already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.584839+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_020_branded_clothes_wholesale_in_lahore___za already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:08:19.468402+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_020_branded_clothes_wholesale_in_lahore___za already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Branded Clothes Wholesale in Lahore | Zaib Collection",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923147133995",
+      "last_attempt_at": "2026-09-26T02:08:19.468402+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Branded Clothes Wholesale in Lahore | Zaib Collection and noticed you're already active on Facebook.\n\nOne thing that could help is having a dedicated website where customers can browse your products and contact or order from you more easily.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and e-commerce solutions for businesses.\n\nWould you be open to a quick chat about a website for Branded Clothes Wholesale in Lahore | Zaib Collection?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "error": "lead lead_020_branded_clothes_wholesale_in_lahore___za already has status SENT (attempts=1)",
+      "sent_at": "2026-09-25T13:05:56.872378+00:00",
+      "note": "Correction: send DID succeed on 2026-09-25 17:25 (outgoing bubble with data-id 3EB08F9695F0DC7DE1E022 confirmed in chat). Verification had false-negatived because WhatsApp renders emoji as <img> in sent bubbles; matcher fixed in whatsapp_playwright._row_matches."
+    },
+    "lead_004_branded_wear": {
+      "lead_id": "lead_004_branded_wear",
+      "first_seen_at": "2026-09-25T12:25:15.636626+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.636435+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:27:57.766928+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:28:12.174856+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T133305",
+          "timestamp": "2026-09-25T13:33:05.800768+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_004_branded_wear already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:35:02.620753+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_004_branded_wear already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.314382+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_004_branded_wear already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.603828+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_004_branded_wear already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:08:42.694257+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_004_branded_wear already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Branded Wear",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923341529103",
+      "last_attempt_at": "2026-09-26T02:08:42.694257+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Web Development",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Branded Wear and had a look at your online presence.\n\nWe help businesses improve their websites and online customer experience through web development and e-commerce solutions.\n\nI'd be happy to share a few ideas tailored for Branded Wear.\n\nWould you be open to a quick chat?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:28:12.174856+00:00",
+      "first_sent_at": "2026-09-25T13:28:12.174856+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_004_branded_wear already has status SENT (attempts=1)"
+    },
+    "lead_006_hnz_the_branded_wear": {
+      "lead_id": "lead_006_hnz_the_branded_wear",
+      "first_seen_at": "2026-09-25T12:25:15.639100+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.638860+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.492144+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:35:02.634001+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:35:36.649099+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.343787+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_006_hnz_the_branded_wear already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.624141+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_006_hnz_the_branded_wear already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:09:45.121578+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_006_hnz_the_branded_wear already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "HNZ The Branded Wear",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923349855059",
+      "last_attempt_at": "2026-09-26T02:09:45.121578+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Web Development",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across HNZ The Branded Wear and had a look at your online presence.\n\nWe help businesses improve their websites and online customer experience through web development and e-commerce solutions.\n\nI'd be happy to share a few ideas tailored for HNZ The Branded Wear.\n\nWould you be open to a quick chat?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:35:36.649099+00:00",
+      "first_sent_at": "2026-09-25T13:35:36.649099+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_006_hnz_the_branded_wear already has status SENT (attempts=1)"
+    },
+    "lead_010_pakistani_clothing_brands": {
+      "lead_id": "lead_010_pakistani_clothing_brands",
+      "first_seen_at": "2026-09-25T12:25:15.641592+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.641392+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.498585+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:35:37.041550+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:35:50.271796+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.358058+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_010_pakistani_clothing_brands already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.641859+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_010_pakistani_clothing_brands already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:10:15.910047+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_010_pakistani_clothing_brands already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Pakistani Clothing brands",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923324391199",
+      "last_attempt_at": "2026-09-26T02:10:15.910047+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Web Development",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Pakistani Clothing Brands and had a look at your online presence.\n\nWe help businesses improve their websites and online customer experience through web development and e-commerce solutions.\n\nI'd be happy to share a few ideas tailored for Pakistani Clothing Brands.\n\nWould you be open to a quick chat?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:35:50.271796+00:00",
+      "first_sent_at": "2026-09-25T13:35:50.271796+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_010_pakistani_clothing_brands already has status SENT (attempts=1)"
+    },
+    "lead_015_brand_ocean___clothing_warehouse": {
+      "lead_id": "lead_015_brand_ocean___clothing_warehouse",
+      "first_seen_at": "2026-09-25T12:25:15.644871+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.644589+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.506027+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:35:50.695621+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.372147+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.660190+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:10:56.375268+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        }
+      ],
+      "business_name": "Brand Ocean | Clothing Warehouse",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T02:10:56.375268+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Web Development",
+      "last_message": "",
+      "status": "NOT_READY"
+    },
+    "lead_019_brandyz_original_brand_leftovers": {
+      "lead_id": "lead_019_brandyz_original_brand_leftovers",
+      "first_seen_at": "2026-09-25T12:25:15.647844+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.647642+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.513291+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:35:57.041628+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:36:09.140512+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.388559+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_019_brandyz_original_brand_leftovers already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.683652+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_019_brandyz_original_brand_leftovers already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:11:37.178818+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_019_brandyz_original_brand_leftovers already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Brandyz Original brand leftovers",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923156611365",
+      "last_attempt_at": "2026-09-26T02:11:37.178818+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Brandyz Original Brand Leftovers — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Brandyz Original Brand Leftovers?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:36:09.140512+00:00",
+      "first_sent_at": "2026-09-25T13:36:09.140512+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_019_brandyz_original_brand_leftovers already has status SENT (attempts=1)"
+    },
+    "lead_026_h2_brand": {
+      "lead_id": "lead_026_h2_brand",
+      "first_seen_at": "2026-09-25T12:25:15.650422+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.650224+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.523435+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:36:17.041744+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:36:30.026033+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.405765+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_026_h2_brand already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.720701+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_026_h2_brand already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:11:37.218243+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_026_h2_brand already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "H2 brand",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923129559189",
+      "last_attempt_at": "2026-09-26T02:11:37.218243+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across H2 brand — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for H2 brand?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:36:30.026033+00:00",
+      "first_sent_at": "2026-09-25T13:36:30.026033+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_026_h2_brand already has status SENT (attempts=1)"
+    },
+    "lead_028_ehsan_clothing_store_": {
+      "lead_id": "lead_028_ehsan_clothing_store_",
+      "first_seen_at": "2026-09-25T12:25:15.653849+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.653642+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.531697+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:36:37.041866+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:36:48.841301+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.423742+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_028_ehsan_clothing_store_ already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.774074+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_028_ehsan_clothing_store_ already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:11:57.127672+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_028_ehsan_clothing_store_ already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Ehsan clothing store.",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923334302211",
+      "last_attempt_at": "2026-09-26T02:11:57.127672+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Ehsan Clothing Store — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Ehsan Clothing Store?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:36:48.841301+00:00",
+      "first_sent_at": "2026-09-25T13:36:48.841301+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_028_ehsan_clothing_store_ already has status SENT (attempts=1)"
+    },
+    "lead_029_the_trend_jeans_athletic_wear": {
+      "lead_id": "lead_029_the_trend_jeans_athletic_wear",
+      "first_seen_at": "2026-09-25T12:25:15.656910+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.656689+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.539486+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:36:57.041935+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:37:10.142641+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.457303+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_029_the_trend_jeans_athletic_wear already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.808863+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_029_the_trend_jeans_athletic_wear already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:11:57.153306+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_029_the_trend_jeans_athletic_wear already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "The Trend Jeans Athletic wear",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923004239027",
+      "last_attempt_at": "2026-09-26T02:11:57.153306+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across The Trend Jeans Athletic Wear — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for The Trend Jeans Athletic Wear?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:37:10.142641+00:00",
+      "first_sent_at": "2026-09-25T13:37:10.142641+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_029_the_trend_jeans_athletic_wear already has status SENT (attempts=1)"
+    },
+    "lead_032_one_9_sports_apparels": {
+      "lead_id": "lead_032_one_9_sports_apparels",
+      "first_seen_at": "2026-09-25T12:25:15.661536+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.661297+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.547641+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:37:17.042036+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:37:31.393433+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.475550+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_032_one_9_sports_apparels already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.833140+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_032_one_9_sports_apparels already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:12:15.755564+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_032_one_9_sports_apparels already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "One 9 Sports Apparels",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923474109140",
+      "last_attempt_at": "2026-09-26T02:12:15.755564+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Web Development",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across One 9 Sports Apparels and had a look at your online presence.\n\nWe help businesses improve their websites and online customer experience through web development and e-commerce solutions.\n\nI'd be happy to share a few ideas tailored for One 9 Sports Apparels.\n\nWould you be open to a quick chat?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:37:31.393433+00:00",
+      "first_sent_at": "2026-09-25T13:37:31.393433+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_032_one_9_sports_apparels already has status SENT (attempts=1)"
+    },
+    "lead_037_marks___spencer_clothes__vogue_n_vista_": {
+      "lead_id": "lead_037_marks___spencer_clothes__vogue_n_vista_",
+      "first_seen_at": "2026-09-25T12:25:15.665850+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.665643+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.557048+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:37:37.042114+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:37:50.667474+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.492859+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_037_marks___spencer_clothes__vogue_n_vista_ already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.853132+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_037_marks___spencer_clothes__vogue_n_vista_ already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:12:57.109908+00:00",
+          "attempt": 1,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_037_marks___spencer_clothes__vogue_n_vista_ already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "MARKS & SPENCER CLOTHES (Vogue N Vista)",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923198932063",
+      "last_attempt_at": "2026-09-26T02:12:57.109908+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Web Development",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across MARKS & SPENCER CLOTHES (Vogue N Vista) and had a look at your online presence.\n\nWe help businesses improve their websites and online customer experience through web development and e-commerce solutions.\n\nI'd be happy to share a few ideas tailored for MARKS & SPENCER CLOTHES (Vogue N Vista).\n\nWould you be open to a quick chat?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:37:50.667474+00:00",
+      "first_sent_at": "2026-09-25T13:37:50.667474+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_037_marks___spencer_clothes__vogue_n_vista_ already has status SENT (attempts=1)"
+    },
+    "lead_039_trade_in_brands": {
+      "lead_id": "lead_039_trade_in_brands",
+      "first_seen_at": "2026-09-25T12:25:15.670450+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.670243+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.567464+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:37:57.042227+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.509984+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "PREVIOUS_FAILURE",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_039_trade_in_brands has a FAILED attempt (No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent.); retry requires --retry-failed"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.874292+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "PREVIOUS_FAILURE",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_039_trade_in_brands has a FAILED attempt (No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent.); retry requires --retry-failed"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:13:16.375931+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "PREVIOUS_FAILURE",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_039_trade_in_brands has a FAILED attempt (No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent.); retry requires --retry-failed"
+        }
+      ],
+      "business_name": "Trade in Brands",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923034414410",
+      "last_attempt_at": "2026-09-26T02:13:16.375931+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Trade in Brands and noticed you're already active on Facebook.\n\nOne thing that could help is having a dedicated website where customers can browse your products and contact or order from you more easily.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and e-commerce solutions for businesses.\n\nWould you be open to a quick chat about a website for Trade in Brands?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "FAILED",
+      "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+    },
+    "lead_040_brands_attire": {
+      "lead_id": "lead_040_brands_attire",
+      "first_seen_at": "2026-09-25T12:25:15.674587+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.674418+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.577374+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:40:00.480089+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:40:14.544114+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.526474+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_040_brands_attire already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.895556+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_040_brands_attire already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:13:16.397631+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_040_brands_attire already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Brands Attire",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923224254476",
+      "last_attempt_at": "2026-09-26T02:13:16.397631+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Brands Attire and noticed you're already active on Instagram.\n\nOne thing that could help is having a dedicated website where customers can browse your products and contact or order from you more easily.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and e-commerce solutions for businesses.\n\nWould you be open to a quick chat about a website for Brands Attire?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:40:14.544114+00:00",
+      "first_sent_at": "2026-09-25T13:40:14.544114+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_040_brands_attire already has status SENT (attempts=1)"
+    },
+    "lead_044_fbl_fashion_boulevard_lahore": {
+      "lead_id": "lead_044_fbl_fashion_boulevard_lahore",
+      "first_seen_at": "2026-09-25T12:25:15.679608+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260925T122431",
+          "timestamp": "2026-09-25T12:25:15.679419+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T132757",
+          "timestamp": "2026-09-25T13:28:12.587594+00:00",
+          "attempt": 0,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SKIPPED_LIMIT",
+          "sent_at": "",
+          "error": "run send limit reached (1)"
+        },
+        {
+          "run_id": "20260925T133502",
+          "timestamp": "2026-09-25T13:40:20.480262+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-25T13:40:34.423803+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260925T180006",
+          "timestamp": "2026-09-25T18:00:06.542803+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_044_fbl_fashion_boulevard_lahore already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260925T180022",
+          "timestamp": "2026-09-25T18:00:22.918275+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_044_fbl_fashion_boulevard_lahore already has status SENT (attempts=1)"
+        },
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:13:16.423536+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_044_fbl_fashion_boulevard_lahore already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "FBL-Fashion Boulevard Lahore",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923063333179",
+      "last_attempt_at": "2026-09-26T02:13:16.423536+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across FBL-Fashion Boulevard Lahore and noticed you're already active on Instagram.\n\nOne thing that could help is having a dedicated website where customers can browse your products and contact or order from you more easily.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and e-commerce solutions for businesses.\n\nWould you be open to a quick chat about a website for FBL-Fashion Boulevard Lahore?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:40:34.423803+00:00",
+      "first_sent_at": "2026-09-25T13:40:34.423803+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_044_fbl_fashion_boulevard_lahore already has status SENT (attempts=1)"
+    },
+    "lead_003_clothing_brand": {
+      "lead_id": "lead_003_clothing_brand",
+      "first_seen_at": "2026-09-26T02:08:42.661811+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:08:19.496857+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "unexpected_error: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://web.whatsapp.com/send?phone=923111425385&text=Assalam%20o%20Alaikum%20%F0%9F%91%8B%0A%0AI%20came%20across%20Clothing%20Brand%20%E2%80%94%20a%20business%20in%20Lahore%20%E2%80%94%20and%20noticed%20you%20don%27t%20have%20a%20dedicated%20website%20yet.%0A%0AHaving%20a%20professional%20website%20makes%20it%20easier%20for%20customers%20to%20find%20you%2C%20see%20what%20you%20offer%2C%20and%20get%20in%20touch%20%E2%80%94%20especially%20people%20searching%20online.%0A%0AI%27m%20Haider%20from%20MalikAxiom%20Technology.%20We%20build%20mobile-friendly%20websites%20and%20digital%20solutions%20for%20local%20businesses.%0A%0AWould%20you%20be%20open%20to%20a%20quick%20chat%20about%20a%20website%20for%20Clothing%20Brand%3F%0A%0A%E2%80%94%20Haider%20Nawaz%0AMalikAxiom%20Technology%0A%F0%9F%8C%90%20malikaxiomtech.com%0A%E2%9C%89%EF%B8%8F%20hello%40malikaxiomtech.com\nCall log:\n  - navigating to \"https://web.whatsapp.com/send?phone=923111425385&text=Assalam%20o%20Alaikum%20%F0%9F%91%8B%0A%0AI%20came%20across%20Clothing%20Brand%20%E2%80%94%20a%20business%20in%20Lahore%20%E2%80%94%20and%20noticed%20you%20don%27t%20have%20a%20dedicated%20website%20yet.%0A%0AHaving%20a%20professional%20website%20makes%20it%20easier%20for%20customers%20to%20find%20you%2C%20see%20what%20you%20offer%2C%20and%20get%20in%20touch%20%E2%80%94%20especially%20people%20searching%20online.%0A%0AI%27m%20Haider%20from%20MalikAxiom%20Technology.%20We%20build%20mobile-friendly%20websites%20and%20digital%20solutions%20for%20local%20businesses.%0A%0AWould%20you%20be%20open%20to%20a%20quick%20chat%20about%20a%20website%20for%20Clothing%20Brand%3F%0A%0A%E2%80%94%20Haider%20Nawaz%0AMalikAxiom%20Technology%0A%F0%9F%8C%90%20malikaxiomtech.com%0A%E2%9C%89%EF%B8%8F%20hello%40malikaxiomtech.com\", waiting until \"domcontentloaded\"\n"
+        }
+      ],
+      "business_name": "Clothing brand",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923111425385",
+      "last_attempt_at": "2026-09-26T02:08:19.496857+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Clothing Brand — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Clothing Brand?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "FAILED",
+      "error": "unexpected_error: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://web.whatsapp.com/send?phone=923111425385&text=Assalam%20o%20Alaikum%20%F0%9F%91%8B%0A%0AI%20came%20across%20Clothing%20Brand%20%E2%80%94%20a%20business%20in%20Lahore%20%E2%80%94%20and%20noticed%20you%20don%27t%20have%20a%20dedicated%20website%20yet.%0A%0AHaving%20a%20professional%20website%20makes%20it%20easier%20for%20customers%20to%20find%20you%2C%20see%20what%20you%20offer%2C%20and%20get%20in%20touch%20%E2%80%94%20especially%20people%20searching%20online.%0A%0AI%27m%20Haider%20from%20MalikAxiom%20Technology.%20We%20build%20mobile-friendly%20websites%20and%20digital%20solutions%20for%20local%20businesses.%0A%0AWould%20you%20be%20open%20to%20a%20quick%20chat%20about%20a%20website%20for%20Clothing%20Brand%3F%0A%0A%E2%80%94%20Haider%20Nawaz%0AMalikAxiom%20Technology%0A%F0%9F%8C%90%20malikaxiomtech.com%0A%E2%9C%89%EF%B8%8F%20hello%40malikaxiomtech.com\nCall log:\n  - navigating to \"https://web.whatsapp.com/send?phone=923111425385&text=Assalam%20o%20Alaikum%20%F0%9F%91%8B%0A%0AI%20came%20across%20Clothing%20Brand%20%E2%80%94%20a%20business%20in%20Lahore%20%E2%80%94%20and%20noticed%20you%20don%27t%20have%20a%20dedicated%20website%20yet.%0A%0AHaving%20a%20professional%20website%20makes%20it%20easier%20for%20customers%20to%20find%20you%2C%20see%20what%20you%20offer%2C%20and%20get%20in%20touch%20%E2%80%94%20especially%20people%20searching%20online.%0A%0AI%27m%20Haider%20from%20MalikAxiom%20Technology.%20We%20build%20mobile-friendly%20websites%20and%20digital%20solutions%20for%20local%20businesses.%0A%0AWould%20you%20be%20open%20to%20a%20quick%20chat%20about%20a%20website%20for%20Clothing%20Brand%3F%0A%0A%E2%80%94%20Haider%20Nawaz%0AMalikAxiom%20Technology%0A%F0%9F%8C%90%20malikaxiomtech.com%0A%E2%9C%89%EF%B8%8F%20hello%40malikaxiomtech.com\", waiting until \"domcontentloaded\"\n"
+    },
+    "lead_005_siddique_apparel": {
+      "lead_id": "lead_005_siddique_apparel",
+      "first_seen_at": "2026-09-26T02:09:45.097717+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:08:42.729507+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "unexpected_error: Page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"https://web.whatsapp.com/send?phone=923046004949&text=Assalam%20o%20Alaikum%20%F0%9F%91%8B%0A%0AI%20came%20across%20Siddique%20Apparel%20%E2%80%94%20a%20business%20in%20Lahore%20%E2%80%94%20and%20noticed%20you%20don%27t%20have%20a%20dedicated%20website%20yet.%0A%0AHaving%20a%20professional%20website%20makes%20it%20easier%20for%20customers%20to%20find%20you%2C%20see%20what%20you%20offer%2C%20and%20get%20in%20touch%20%E2%80%94%20especially%20people%20searching%20online.%0A%0AI%27m%20Haider%20from%20MalikAxiom%20Technology.%20We%20build%20mobile-friendly%20websites%20and%20digital%20solutions%20for%20local%20businesses.%0A%0AWould%20you%20be%20open%20to%20a%20quick%20chat%20about%20a%20website%20for%20Siddique%20Apparel%3F%0A%0A%E2%80%94%20Haider%20Nawaz%0AMalikAxiom%20Technology%0A%F0%9F%8C%90%20malikaxiomtech.com%0A%E2%9C%89%EF%B8%8F%20hello%40malikaxiomtech.com\", waiting until \"domcontentloaded\"\n"
+        }
+      ],
+      "business_name": "Siddique apparel",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923046004949",
+      "last_attempt_at": "2026-09-26T02:08:42.729507+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Siddique Apparel — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Siddique Apparel?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "FAILED",
+      "error": "unexpected_error: Page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"https://web.whatsapp.com/send?phone=923046004949&text=Assalam%20o%20Alaikum%20%F0%9F%91%8B%0A%0AI%20came%20across%20Siddique%20Apparel%20%E2%80%94%20a%20business%20in%20Lahore%20%E2%80%94%20and%20noticed%20you%20don%27t%20have%20a%20dedicated%20website%20yet.%0A%0AHaving%20a%20professional%20website%20makes%20it%20easier%20for%20customers%20to%20find%20you%2C%20see%20what%20you%20offer%2C%20and%20get%20in%20touch%20%E2%80%94%20especially%20people%20searching%20online.%0A%0AI%27m%20Haider%20from%20MalikAxiom%20Technology.%20We%20build%20mobile-friendly%20websites%20and%20digital%20solutions%20for%20local%20businesses.%0A%0AWould%20you%20be%20open%20to%20a%20quick%20chat%20about%20a%20website%20for%20Siddique%20Apparel%3F%0A%0A%E2%80%94%20Haider%20Nawaz%0AMalikAxiom%20Technology%0A%F0%9F%8C%90%20malikaxiomtech.com%0A%E2%9C%89%EF%B8%8F%20hello%40malikaxiomtech.com\", waiting until \"domcontentloaded\"\n"
+    },
+    "lead_007_top_brands": {
+      "lead_id": "lead_007_top_brands",
+      "first_seen_at": "2026-09-26T02:09:57.195785+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:09:45.138927+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:09:56.755685+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "Top brands",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923124075936",
+      "last_attempt_at": "2026-09-26T02:09:45.138927+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Top Brands — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Top Brands?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:09:56.755685+00:00",
+      "first_sent_at": "2026-09-26T02:09:56.755685+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_008_brands_sale_point": {
+      "lead_id": "lead_008_brands_sale_point",
+      "first_seen_at": "2026-09-26T02:10:15.892385+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:10:05.139069+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:10:15.498905+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "Brands Sale Point",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923234285094",
+      "last_attempt_at": "2026-09-26T02:10:05.139069+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Brands Sale Point — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Brands Sale Point?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:10:15.498905+00:00",
+      "first_sent_at": "2026-09-26T02:10:15.498905+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_011_nazish_clothing_brand": {
+      "lead_id": "lead_011_nazish_clothing_brand",
+      "first_seen_at": "2026-09-26T02:10:36.578661+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:10:25.139648+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:10:36.073491+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "Nazish Clothing Brand",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923244719945",
+      "last_attempt_at": "2026-09-26T02:10:25.139648+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Nazish Clothing Brand — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Nazish Clothing Brand?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:10:36.073491+00:00",
+      "first_sent_at": "2026-09-26T02:10:36.073491+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_013_grand___brands_clothing_store": {
+      "lead_id": "lead_013_grand___brands_clothing_store",
+      "first_seen_at": "2026-09-26T02:10:36.599938+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:10:36.599618+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        }
+      ],
+      "business_name": "Grand & Brands Clothing Store",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T02:10:36.599618+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "",
+      "status": "NOT_READY"
+    },
+    "lead_014_brands_for_less_collection": {
+      "lead_id": "lead_014_brands_for_less_collection",
+      "first_seen_at": "2026-09-26T02:10:56.359723+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:10:45.139778+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:10:55.901895+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "Brands for less Collection",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923008497440",
+      "last_attempt_at": "2026-09-26T02:10:45.139778+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Brands for Less Collection — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Brands for Less Collection?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:10:55.901895+00:00",
+      "first_sent_at": "2026-09-26T02:10:55.901895+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_016_zrb_brands_hub": {
+      "lead_id": "lead_016_zrb_brands_hub",
+      "first_seen_at": "2026-09-26T02:11:16.350915+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:11:05.139908+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:11:15.954325+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "ZRB Brands Hub",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923706435253",
+      "last_attempt_at": "2026-09-26T02:11:05.139908+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across ZRB Brands Hub — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for ZRB Brands Hub?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:11:15.954325+00:00",
+      "first_sent_at": "2026-09-26T02:11:15.954325+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_018_dhaani_clothing_brand": {
+      "lead_id": "lead_018_dhaani_clothing_brand",
+      "first_seen_at": "2026-09-26T02:11:37.155263+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:11:25.140047+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:11:36.796333+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "Dhaani Clothing Brand",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923222111129",
+      "last_attempt_at": "2026-09-26T02:11:25.140047+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Dhaani Clothing Brand — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Dhaani Clothing Brand?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:11:36.796333+00:00",
+      "first_sent_at": "2026-09-26T02:11:36.796333+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_021_branded_wear": {
+      "lead_id": "lead_021_branded_wear",
+      "first_seen_at": "2026-09-26T02:11:37.196890+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:11:37.196625+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        }
+      ],
+      "business_name": "Branded Wear",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T02:11:37.196625+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "",
+      "status": "NOT_READY"
+    },
+    "lead_027_the_brand_hub_clothing": {
+      "lead_id": "lead_027_the_brand_hub_clothing",
+      "first_seen_at": "2026-09-26T02:11:57.103998+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:11:45.140179+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:11:56.787695+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "The brand hub clothing",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923314789624",
+      "last_attempt_at": "2026-09-26T02:11:45.140179+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across The Brand Hub Clothing — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for The Brand Hub Clothing?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:11:56.787695+00:00",
+      "first_sent_at": "2026-09-26T02:11:56.787695+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_031_blues_apparel": {
+      "lead_id": "lead_031_blues_apparel",
+      "first_seen_at": "2026-09-26T02:12:15.731710+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:12:05.140324+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:12:15.286420+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "Blues Apparel",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923234034661",
+      "last_attempt_at": "2026-09-26T02:12:05.140324+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Blues Apparel — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Blues Apparel?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:12:15.286420+00:00",
+      "first_sent_at": "2026-09-26T02:12:15.286420+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_033_brands_factory": {
+      "lead_id": "lead_033_brands_factory",
+      "first_seen_at": "2026-09-26T02:12:37.105423+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:12:25.140462+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:12:36.697890+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "Brands Factory",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923324157366",
+      "last_attempt_at": "2026-09-26T02:12:25.140462+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Brands Factory — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Brands Factory?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:12:36.697890+00:00",
+      "first_sent_at": "2026-09-26T02:12:36.697890+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_034_the_brand_outfit": {
+      "lead_id": "lead_034_the_brand_outfit",
+      "first_seen_at": "2026-09-26T02:12:57.088067+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:12:45.140534+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:12:56.666306+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "The Brand Outfit",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923059410145",
+      "last_attempt_at": "2026-09-26T02:12:45.140534+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across The Brand Outfit — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for The Brand Outfit?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:12:56.666306+00:00",
+      "first_sent_at": "2026-09-26T02:12:56.666306+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_038_brands_wear": {
+      "lead_id": "lead_038_brands_wear",
+      "first_seen_at": "2026-09-26T02:13:16.353288+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T020806",
+          "timestamp": "2026-09-26T02:13:05.140605+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T02:13:15.931357+00:00",
+          "error": ""
+        }
+      ],
+      "business_name": "Brands wear",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923064493517",
+      "last_attempt_at": "2026-09-26T02:13:05.140605+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Brands Wear — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Brands Wear?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:13:15.931357+00:00",
+      "first_sent_at": "2026-09-26T02:13:15.931357+00:00",
+      "verification": "browser_verification"
+    },
+    "lead_006_lahore_care_hospital": {
+      "lead_id": "lead_006_lahore_care_hospital",
+      "first_seen_at": "2026-09-26T03:05:00.418161+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:05:00.417070+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "unapproved_service_in_opportunity:e-commerce"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:17:34.047093+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "unapproved_service_in_opportunity:e-commerce"
+        }
+      ],
+      "business_name": "Lahore Care Hospital",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923055552323",
+      "last_attempt_at": "2026-09-26T03:17:34.047093+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Web Development",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Lahore Care Hospital and had a look at your online presence.\n\nWe help businesses improve their websites and online customer experience through web development and e-commerce solutions.\n\nI'd be happy to share a few ideas tailored for Lahore Care Hospital.\n\nWould you be open to a quick chat?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "NOT_READY"
+    },
+    "lead_013_professor_dr_muhammad_haroon__rheumatolo": {
+      "lead_id": "lead_013_professor_dr_muhammad_haroon__rheumatolo",
+      "first_seen_at": "2026-09-26T03:05:14.638207+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:05:00.445148+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:05:14.152209+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:17:34.075167+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_013_professor_dr_muhammad_haroon__rheumatolo already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Professor Dr Muhammad Haroon, Rheumatology Clinic, Lahore",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923334209919",
+      "last_attempt_at": "2026-09-26T03:17:34.075167+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Professor Dr Muhammad Haroon, Rheumatology Clinic, Lahore — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Professor Dr Muhammad Haroon, Rheumatology Clinic, Lahore?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:05:14.152209+00:00",
+      "first_sent_at": "2026-09-26T03:05:14.152209+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_013_professor_dr_muhammad_haroon__rheumatolo already has status SENT (attempts=1)"
+    },
+    "lead_017_saeed_poly_clinic_lahore": {
+      "lead_id": "lead_017_saeed_poly_clinic_lahore",
+      "first_seen_at": "2026-09-26T03:05:14.667218+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:05:14.666833+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:17:34.108669+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        }
+      ],
+      "business_name": "Saeed Poly Clinic Lahore",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T03:17:34.108669+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Saeed Poly Clinic Lahore — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Saeed Poly Clinic Lahore?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "NOT_READY"
+    },
+    "lead_018_lahore_poly_clinic": {
+      "lead_id": "lead_018_lahore_poly_clinic",
+      "first_seen_at": "2026-09-26T03:05:14.694757+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:05:14.694311+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:17:34.145217+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        }
+      ],
+      "business_name": "Lahore Poly Clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T03:17:34.145217+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Lahore Poly Clinic — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Lahore Poly Clinic?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "NOT_READY"
+    },
+    "lead_020_lahore_dental_clinic": {
+      "lead_id": "lead_020_lahore_dental_clinic",
+      "first_seen_at": "2026-09-26T03:05:33.589049+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:05:20.445290+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:05:33.228022+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:17:34.178852+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_020_lahore_dental_clinic already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Lahore Dental Clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923349495671",
+      "last_attempt_at": "2026-09-26T03:17:34.178852+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Lahore Dental Clinic — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Lahore Dental Clinic?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:05:33.228022+00:00",
+      "first_sent_at": "2026-09-26T03:05:33.228022+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_020_lahore_dental_clinic already has status SENT (attempts=1)"
+    },
+    "lead_023_alvi_clinic": {
+      "lead_id": "lead_023_alvi_clinic",
+      "first_seen_at": "2026-09-26T03:07:42.857491+00:00",
+      "attempts": 3,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:05:40.445362+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:17:34.210305+00:00",
+          "attempt": 2,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+        },
+        {
+          "run_id": "20260926T032230",
+          "timestamp": "2026-09-26T03:22:30.906777+00:00",
+          "attempt": 3,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+        }
+      ],
+      "business_name": "Alvi Clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923324552674",
+      "last_attempt_at": "2026-09-26T03:22:30.906777+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Alvi Clinic — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Alvi Clinic?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "FAILED",
+      "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+    },
+    "lead_024_rizwan_herbal_clinic_and_research_centre": {
+      "lead_id": "lead_024_rizwan_herbal_clinic_and_research_centre",
+      "first_seen_at": "2026-09-26T03:07:57.708673+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:07:42.883535+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:07:57.335798+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.469346+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_024_rizwan_herbal_clinic_and_research_centre already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Rizwan Herbal Clinic and Research Centre Lahore Pakistan",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923244706450",
+      "last_attempt_at": "2026-09-26T03:19:37.469346+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Rizwan Herbal Clinic and Research Centre Lahore Pakistan and noticed you're already active on Facebook.\n\nOne thing that could help is having a dedicated website where customers can browse your products and contact or order from you more easily.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and e-commerce solutions for businesses.\n\nWould you be open to a quick chat about a website for Rizwan Herbal Clinic and Research Centre Lahore Pakistan?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:07:57.335798+00:00",
+      "first_sent_at": "2026-09-26T03:07:57.335798+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_024_rizwan_herbal_clinic_and_research_centre already has status SENT (attempts=1)"
+    },
+    "lead_025_gaba_dental_clinic": {
+      "lead_id": "lead_025_gaba_dental_clinic",
+      "first_seen_at": "2026-09-26T03:08:13.667737+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:08:02.883689+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:08:13.293078+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.504085+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_025_gaba_dental_clinic already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Gaba Dental clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923004184435",
+      "last_attempt_at": "2026-09-26T03:19:37.504085+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Gaba Dental Clinic — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Gaba Dental Clinic?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:08:13.293078+00:00",
+      "first_sent_at": "2026-09-26T03:08:13.293078+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_025_gaba_dental_clinic already has status SENT (attempts=1)"
+    },
+    "lead_026_alrehman_clinic___medical_centre": {
+      "lead_id": "lead_026_alrehman_clinic___medical_centre",
+      "first_seen_at": "2026-09-26T03:08:34.938076+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:08:22.883817+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:08:34.546187+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.531178+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_026_alrehman_clinic___medical_centre already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "AlRehman Clinic & Medical Centre",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923411115678",
+      "last_attempt_at": "2026-09-26T03:19:37.531178+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across AlRehman Clinic & Medical Centre — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for AlRehman Clinic & Medical Centre?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:08:34.546187+00:00",
+      "first_sent_at": "2026-09-26T03:08:34.546187+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_026_alrehman_clinic___medical_centre already has status SENT (attempts=1)"
+    },
+    "lead_028_bari_hospital": {
+      "lead_id": "lead_028_bari_hospital",
+      "first_seen_at": "2026-09-26T03:08:54.977343+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:08:42.883952+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:08:54.628057+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.563289+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_028_bari_hospital already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Bari Hospital",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923215200922",
+      "last_attempt_at": "2026-09-26T03:19:37.563289+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Bari Hospital — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Bari Hospital?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:08:54.628057+00:00",
+      "first_sent_at": "2026-09-26T03:08:54.628057+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_028_bari_hospital already has status SENT (attempts=1)"
+    },
+    "lead_029_dr__obt___best_plastic__reconstructive_a": {
+      "lead_id": "lead_029_dr__obt___best_plastic__reconstructive_a",
+      "first_seen_at": "2026-09-26T03:08:55.003081+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:08:55.002810+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_not_supported_in_m6_v1:instagram_dm",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_not_supported_in_m6_v1:instagram_dm"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.587365+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_not_supported_in_m6_v1:instagram_dm",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_not_supported_in_m6_v1:instagram_dm"
+        }
+      ],
+      "business_name": "Dr. OBT | Best Plastic, Reconstructive and Aesthetic Surgeon Lahore & Dubai |Face Lift |Rhinoplasty| Regenerative Aesthetics",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T03:19:37.587365+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Web Development",
+      "last_message": "",
+      "status": "NOT_READY"
+    },
+    "lead_030_halcyon_healthcare": {
+      "lead_id": "lead_030_halcyon_healthcare",
+      "first_seen_at": "2026-09-26T03:08:55.030158+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:08:55.029694+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "unapproved_service_in_opportunity:e-commerce"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.617661+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "unapproved_service_in_opportunity:e-commerce",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "unapproved_service_in_opportunity:e-commerce"
+        }
+      ],
+      "business_name": "Halcyon Healthcare",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923093334634",
+      "last_attempt_at": "2026-09-26T03:19:37.617661+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Web Development",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Halcyon Healthcare and had a look at your online presence.\n\nWe help businesses improve their websites and online customer experience through web development and e-commerce solutions.\n\nI'd be happy to share a few ideas tailored for Halcyon Healthcare.\n\nWould you be open to a quick chat?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "NOT_READY"
+    },
+    "lead_032_free_clinic": {
+      "lead_id": "lead_032_free_clinic",
+      "first_seen_at": "2026-09-26T03:08:55.058349+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:08:55.058075+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.643984+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        }
+      ],
+      "business_name": "Free Clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T03:19:37.643984+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "",
+      "status": "NOT_READY"
+    },
+    "lead_034_dr__muhammad_yasin_alvi__awan_town_clini": {
+      "lead_id": "lead_034_dr__muhammad_yasin_alvi__awan_town_clini",
+      "first_seen_at": "2026-09-26T03:09:14.498272+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:09:02.884092+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:09:14.167948+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.669926+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_034_dr__muhammad_yasin_alvi__awan_town_clini already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Dr. Muhammad Yasin Alvi (Awan Town Clinic)",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923334255707",
+      "last_attempt_at": "2026-09-26T03:19:37.669926+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Dr. Muhammad Yasin Alvi (Awan Town Clinic) — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Dr. Muhammad Yasin Alvi (Awan Town Clinic)?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:09:14.167948+00:00",
+      "first_sent_at": "2026-09-26T03:09:14.167948+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_034_dr__muhammad_yasin_alvi__awan_town_clini already has status SENT (attempts=1)"
+    },
+    "lead_035_emporium_hair_transplant_clinic": {
+      "lead_id": "lead_035_emporium_hair_transplant_clinic",
+      "first_seen_at": "2026-09-26T03:09:36.023155+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:09:22.884227+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:09:35.673219+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.696379+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_035_emporium_hair_transplant_clinic already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Emporium Hair Transplant Clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923123625111",
+      "last_attempt_at": "2026-09-26T03:19:37.696379+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Emporium Hair Transplant Clinic — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Emporium Hair Transplant Clinic?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:09:35.673219+00:00",
+      "first_sent_at": "2026-09-26T03:09:35.673219+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_035_emporium_hair_transplant_clinic already has status SENT (attempts=1)"
+    },
+    "lead_036_total_life_care_clinics": {
+      "lead_id": "lead_036_total_life_care_clinics",
+      "first_seen_at": "2026-09-26T03:09:36.052301+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:09:36.051622+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.722372+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        }
+      ],
+      "business_name": "Total Life Care Clinics",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T03:19:37.722372+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "",
+      "status": "NOT_READY"
+    },
+    "lead_037_saad_physiotherapy_clinic_lahore": {
+      "lead_id": "lead_037_saad_physiotherapy_clinic_lahore",
+      "first_seen_at": "2026-09-26T03:09:54.356842+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:09:42.884370+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:09:54.013887+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.748714+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_037_saad_physiotherapy_clinic_lahore already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Saad Physiotherapy Clinic lahore",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923424782575",
+      "last_attempt_at": "2026-09-26T03:19:37.748714+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Saad Physiotherapy Clinic Lahore — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Saad Physiotherapy Clinic Lahore?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:09:54.013887+00:00",
+      "first_sent_at": "2026-09-26T03:09:54.013887+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_037_saad_physiotherapy_clinic_lahore already has status SENT (attempts=1)"
+    },
+    "lead_038_qureshi_poly_clinic___laboratory": {
+      "lead_id": "lead_038_qureshi_poly_clinic___laboratory",
+      "first_seen_at": "2026-09-26T03:09:54.382784+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:09:54.382162+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.775365+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        }
+      ],
+      "business_name": "Qureshi Poly Clinic & Laboratory",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T03:19:37.775365+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Qureshi Poly Clinic & Laboratory — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Qureshi Poly Clinic & Laboratory?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "NOT_READY"
+    },
+    "lead_039_jahagir_skin_clinic": {
+      "lead_id": "lead_039_jahagir_skin_clinic",
+      "first_seen_at": "2026-09-26T03:09:54.417010+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:09:54.416521+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.805606+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        }
+      ],
+      "business_name": "Jahagir Skin Clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T03:19:37.805606+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Jahagir Skin Clinic — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Jahagir Skin Clinic?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "NOT_READY"
+    },
+    "lead_042_al_shifa_clinic": {
+      "lead_id": "lead_042_al_shifa_clinic",
+      "first_seen_at": "2026-09-26T03:12:05.107041+00:00",
+      "attempts": 3,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:10:02.884510+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:19:37.831601+00:00",
+          "attempt": 2,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+        },
+        {
+          "run_id": "20260926T032230",
+          "timestamp": "2026-09-26T03:24:34.648403+00:00",
+          "attempt": 3,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "FAILED",
+          "sent_at": "",
+          "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+        }
+      ],
+      "business_name": "Al-Shifa Clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923334282441",
+      "last_attempt_at": "2026-09-26T03:24:34.648403+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Al-Shifa Clinic — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Al-Shifa Clinic?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "FAILED",
+      "error": "No chat/compose box appeared within 120s (WhatsApp Web did not load) — nothing was sent."
+    },
+    "lead_043_memorial_health_clinic": {
+      "lead_id": "lead_043_memorial_health_clinic",
+      "first_seen_at": "2026-09-26T03:12:05.143476+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:12:05.143208+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:21:42.108056+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "channel_unknown_in_m5",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "channel_unknown_in_m5"
+        }
+      ],
+      "business_name": "Memorial Health Clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T03:21:42.108056+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "",
+      "status": "NOT_READY"
+    },
+    "lead_044_lahore_homeopathic_clinic": {
+      "lead_id": "lead_044_lahore_homeopathic_clinic",
+      "first_seen_at": "2026-09-26T03:12:16.955913+00:00",
+      "attempts": 1,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:12:05.178364+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "",
+          "send_status": "SENT",
+          "sent_at": "2026-09-26T03:12:16.568757+00:00",
+          "error": ""
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:21:42.148991+00:00",
+          "attempt": 1,
+          "validation_status": "PASS",
+          "validation_reasons": "",
+          "duplicate_status": "ALREADY_SENT",
+          "send_status": "SKIPPED_ALREADY_SENT",
+          "sent_at": "",
+          "error": "lead lead_044_lahore_homeopathic_clinic already has status SENT (attempts=1)"
+        }
+      ],
+      "business_name": "Lahore Homeopathic Clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923008458434",
+      "last_attempt_at": "2026-09-26T03:21:42.148991+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Lahore Homeopathic Clinic — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Lahore Homeopathic Clinic?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:12:16.568757+00:00",
+      "first_sent_at": "2026-09-26T03:12:16.568757+00:00",
+      "verification": "browser_verification",
+      "error": "lead lead_044_lahore_homeopathic_clinic already has status SENT (attempts=1)"
+    },
+    "lead_048_gulberg_homoeopathic_specialist_clinic__": {
+      "lead_id": "lead_048_gulberg_homoeopathic_specialist_clinic__",
+      "first_seen_at": "2026-09-26T03:12:16.990370+00:00",
+      "attempts": 0,
+      "history": [
+        {
+          "run_id": "20260926T030451",
+          "timestamp": "2026-09-26T03:12:16.989678+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        },
+        {
+          "run_id": "20260926T031733",
+          "timestamp": "2026-09-26T03:21:42.189901+00:00",
+          "attempt": 0,
+          "validation_status": "NOT_READY",
+          "validation_reasons": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)",
+          "duplicate_status": "",
+          "send_status": "NOT_READY",
+          "sent_at": "",
+          "error": "recipient_not_ready: no_valid_whatsapp_number (phone:pakistani_landline_not_whatsapp, phone:pakistani_landline_not_whatsapp)"
+        }
+      ],
+      "business_name": "Gulberg Homoeopathic Specialist Clinic (H/ Dr. Ahsan Waris)",
+      "channel": "whatsapp_playwright",
+      "recipient": "",
+      "last_attempt_at": "2026-09-26T03:21:42.189901+00:00",
+      "m5_source_file": "malikaxiom_sales_leads.csv",
+      "service": "Business Digitalization",
+      "last_message": "Assalam o Alaikum 👋\n\nI came across Gulberg Homoeopathic Specialist Clinic (H/ Dr. Ahsan Waris) — a business in Lahore — and noticed you don't have a dedicated website yet.\n\nHaving a professional website makes it easier for customers to find you, see what you offer, and get in touch — especially people searching online.\n\nI'm Haider from MalikAxiom Technology. We build mobile-friendly websites and digital solutions for local businesses.\n\nWould you be open to a quick chat about a website for Gulberg Homoeopathic Specialist Clinic (H/ Dr. Ahsan Waris)?\n\n— Haider Nawaz\nMalikAxiom Technology\n🌐 malikaxiomtech.com\n✉️ hello@malikaxiomtech.com",
+      "status": "NOT_READY"
+    }
+  },
+  "recipients": {
+    "whatsapp:+923136162007": {
+      "lead_id": "lead_017_arbrandzone",
+      "channel": "whatsapp",
+      "recipient": "+923136162007",
+      "first_seen_at": "2026-09-25T07:43:10.441159+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T10:25:54.363460+00:00"
+    },
+    "whatsapp:+923147133995": {
+      "lead_id": "lead_020_branded_clothes_wholesale_in_lahore___za",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923147133995",
+      "first_seen_at": "2026-09-25T12:25:15.634516+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:05:56.872378+00:00"
+    },
+    "whatsapp:+923341529103": {
+      "lead_id": "lead_004_branded_wear",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923341529103",
+      "first_seen_at": "2026-09-25T12:25:15.636647+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:28:12.174856+00:00"
+    },
+    "whatsapp:+923349855059": {
+      "lead_id": "lead_006_hnz_the_branded_wear",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923349855059",
+      "first_seen_at": "2026-09-25T12:25:15.639121+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:35:36.649099+00:00"
+    },
+    "whatsapp:+923324391199": {
+      "lead_id": "lead_010_pakistani_clothing_brands",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923324391199",
+      "first_seen_at": "2026-09-25T12:25:15.641613+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:35:50.271796+00:00"
+    },
+    "whatsapp:+923156611365": {
+      "lead_id": "lead_019_brandyz_original_brand_leftovers",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923156611365",
+      "first_seen_at": "2026-09-25T12:25:15.647863+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:36:09.140512+00:00"
+    },
+    "whatsapp:+923129559189": {
+      "lead_id": "lead_026_h2_brand",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923129559189",
+      "first_seen_at": "2026-09-25T12:25:15.650442+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:36:30.026033+00:00"
+    },
+    "whatsapp:+923334302211": {
+      "lead_id": "lead_028_ehsan_clothing_store_",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923334302211",
+      "first_seen_at": "2026-09-25T12:25:15.653874+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:36:48.841301+00:00"
+    },
+    "whatsapp:+923004239027": {
+      "lead_id": "lead_029_the_trend_jeans_athletic_wear",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923004239027",
+      "first_seen_at": "2026-09-25T12:25:15.656933+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:37:10.142641+00:00"
+    },
+    "whatsapp:+923474109140": {
+      "lead_id": "lead_032_one_9_sports_apparels",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923474109140",
+      "first_seen_at": "2026-09-25T12:25:15.661559+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:37:31.393433+00:00"
+    },
+    "whatsapp:+923198932063": {
+      "lead_id": "lead_037_marks___spencer_clothes__vogue_n_vista_",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923198932063",
+      "first_seen_at": "2026-09-25T12:25:15.665869+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:37:50.667474+00:00"
+    },
+    "whatsapp:+923034414410": {
+      "lead_id": "lead_039_trade_in_brands",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923034414410",
+      "first_seen_at": "2026-09-25T12:25:15.670470+00:00",
+      "status": "FAILED"
+    },
+    "whatsapp:+923224254476": {
+      "lead_id": "lead_040_brands_attire",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923224254476",
+      "first_seen_at": "2026-09-25T12:25:15.674603+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:40:14.544114+00:00"
+    },
+    "whatsapp:+923063333179": {
+      "lead_id": "lead_044_fbl_fashion_boulevard_lahore",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923063333179",
+      "first_seen_at": "2026-09-25T12:25:15.679628+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-25T13:40:34.423803+00:00"
+    },
+    "whatsapp:+923111425385": {
+      "lead_id": "lead_003_clothing_brand",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923111425385",
+      "first_seen_at": "2026-09-26T02:08:42.662018+00:00",
+      "status": "FAILED"
+    },
+    "whatsapp:+923046004949": {
+      "lead_id": "lead_005_siddique_apparel",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923046004949",
+      "first_seen_at": "2026-09-26T02:09:45.097760+00:00",
+      "status": "FAILED"
+    },
+    "whatsapp:+923124075936": {
+      "lead_id": "lead_007_top_brands",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923124075936",
+      "first_seen_at": "2026-09-26T02:09:57.195818+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:09:56.755685+00:00"
+    },
+    "whatsapp:+923234285094": {
+      "lead_id": "lead_008_brands_sale_point",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923234285094",
+      "first_seen_at": "2026-09-26T02:10:15.892419+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:10:15.498905+00:00"
+    },
+    "whatsapp:+923244719945": {
+      "lead_id": "lead_011_nazish_clothing_brand",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923244719945",
+      "first_seen_at": "2026-09-26T02:10:36.578696+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:10:36.073491+00:00"
+    },
+    "whatsapp:+923008497440": {
+      "lead_id": "lead_014_brands_for_less_collection",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923008497440",
+      "first_seen_at": "2026-09-26T02:10:56.359756+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:10:55.901895+00:00"
+    },
+    "whatsapp:+923706435253": {
+      "lead_id": "lead_016_zrb_brands_hub",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923706435253",
+      "first_seen_at": "2026-09-26T02:11:16.350944+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:11:15.954325+00:00"
+    },
+    "whatsapp:+923222111129": {
+      "lead_id": "lead_018_dhaani_clothing_brand",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923222111129",
+      "first_seen_at": "2026-09-26T02:11:37.155293+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:11:36.796333+00:00"
+    },
+    "whatsapp:+923314789624": {
+      "lead_id": "lead_027_the_brand_hub_clothing",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923314789624",
+      "first_seen_at": "2026-09-26T02:11:57.104030+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:11:56.787695+00:00"
+    },
+    "whatsapp:+923234034661": {
+      "lead_id": "lead_031_blues_apparel",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923234034661",
+      "first_seen_at": "2026-09-26T02:12:15.731741+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:12:15.286420+00:00"
+    },
+    "whatsapp:+923324157366": {
+      "lead_id": "lead_033_brands_factory",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923324157366",
+      "first_seen_at": "2026-09-26T02:12:37.105488+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:12:36.697890+00:00"
+    },
+    "whatsapp:+923059410145": {
+      "lead_id": "lead_034_the_brand_outfit",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923059410145",
+      "first_seen_at": "2026-09-26T02:12:57.088102+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:12:56.666306+00:00"
+    },
+    "whatsapp:+923064493517": {
+      "lead_id": "lead_038_brands_wear",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923064493517",
+      "first_seen_at": "2026-09-26T02:13:16.353316+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T02:13:15.931357+00:00"
+    },
+    "whatsapp:+923055552323": {
+      "lead_id": "lead_006_lahore_care_hospital",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923055552323",
+      "first_seen_at": "2026-09-26T03:05:00.418199+00:00",
+      "status": "NOT_READY"
+    },
+    "whatsapp:+923334209919": {
+      "lead_id": "lead_013_professor_dr_muhammad_haroon__rheumatolo",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923334209919",
+      "first_seen_at": "2026-09-26T03:05:14.638240+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:05:14.152209+00:00"
+    },
+    "whatsapp:+923349495671": {
+      "lead_id": "lead_020_lahore_dental_clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923349495671",
+      "first_seen_at": "2026-09-26T03:05:33.589087+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:05:33.228022+00:00"
+    },
+    "whatsapp:+923324552674": {
+      "lead_id": "lead_023_alvi_clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923324552674",
+      "first_seen_at": "2026-09-26T03:07:42.857521+00:00",
+      "status": "FAILED"
+    },
+    "whatsapp:+923244706450": {
+      "lead_id": "lead_024_rizwan_herbal_clinic_and_research_centre",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923244706450",
+      "first_seen_at": "2026-09-26T03:07:57.708701+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:07:57.335798+00:00"
+    },
+    "whatsapp:+923004184435": {
+      "lead_id": "lead_025_gaba_dental_clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923004184435",
+      "first_seen_at": "2026-09-26T03:08:13.667760+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:08:13.293078+00:00"
+    },
+    "whatsapp:+923411115678": {
+      "lead_id": "lead_026_alrehman_clinic___medical_centre",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923411115678",
+      "first_seen_at": "2026-09-26T03:08:34.938108+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:08:34.546187+00:00"
+    },
+    "whatsapp:+923215200922": {
+      "lead_id": "lead_028_bari_hospital",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923215200922",
+      "first_seen_at": "2026-09-26T03:08:54.977377+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:08:54.628057+00:00"
+    },
+    "whatsapp:+923093334634": {
+      "lead_id": "lead_030_halcyon_healthcare",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923093334634",
+      "first_seen_at": "2026-09-26T03:08:55.030178+00:00",
+      "status": "NOT_READY"
+    },
+    "whatsapp:+923334255707": {
+      "lead_id": "lead_034_dr__muhammad_yasin_alvi__awan_town_clini",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923334255707",
+      "first_seen_at": "2026-09-26T03:09:14.498318+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:09:14.167948+00:00"
+    },
+    "whatsapp:+923123625111": {
+      "lead_id": "lead_035_emporium_hair_transplant_clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923123625111",
+      "first_seen_at": "2026-09-26T03:09:36.023187+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:09:35.673219+00:00"
+    },
+    "whatsapp:+923424782575": {
+      "lead_id": "lead_037_saad_physiotherapy_clinic_lahore",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923424782575",
+      "first_seen_at": "2026-09-26T03:09:54.356871+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:09:54.013887+00:00"
+    },
+    "whatsapp:+923334282441": {
+      "lead_id": "lead_042_al_shifa_clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923334282441",
+      "first_seen_at": "2026-09-26T03:12:05.107082+00:00",
+      "status": "FAILED"
+    },
+    "whatsapp:+923008458434": {
+      "lead_id": "lead_044_lahore_homeopathic_clinic",
+      "channel": "whatsapp_playwright",
+      "recipient": "+923008458434",
+      "first_seen_at": "2026-09-26T03:12:16.955944+00:00",
+      "status": "SENT",
+      "sent_at": "2026-09-26T03:12:16.568757+00:00"
+    }
+  }
+}

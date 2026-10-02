@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MalikAxiom Lead AI — M7 Sales Command Center</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app-container">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <span class="brand-badge">M7</span>
+        <div>
+          <div class="brand-title">MalikAxiom AI</div>
+          <div class="brand-subtitle">Sales Command Center</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <div class="nav-section-title">Sales Overview</div>
+        <a class="nav-item active" data-view="dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Overview</span>
+        </a>
+        <a class="nav-item" data-view="activity">
+          <span class="nav-icon">⚡</span>
+          <span>Today's Activity</span>
+          <span class="nav-badge" id="badge-today-count">0</span>
+        </a>
+        <a class="nav-item" data-view="pipeline">
+          <span class="nav-icon">🎯</span>
+          <span>Visual Pipeline</span>
+        </a>
+
+        <div class="nav-section-title">Leads & Channels</div>
+        <a class="nav-item" data-view="leads">
+          <span class="nav-icon">📋</span>
+          <span>Master Leads</span>
+          <span class="nav-badge" id="badge-total-leads">0</span>
+        </a>
+        <a class="nav-item" data-view="whatsapp">
+          <span class="nav-icon">💬</span>
+          <span>WhatsApp Center</span>
+          <span class="nav-badge" id="badge-wa-sent">0</span>
+        </a>
+        <a class="nav-item" data-view="cold-calling">
+          <span class="nav-icon">📞</span>
+          <span>Cold Calling</span>
+          <span class="nav-badge" id="badge-cold-calls">0</span>
+        </a>
+        <a class="nav-item" data-view="instagram">
+          <span class="nav-icon">📸</span>
+          <span>Instagram DMs</span>
+          <span class="nav-badge" id="badge-ig-leads">0</span>
+        </a>
+
+        <div class="nav-section-title">Milestones (M1-M6)</div>
+        <a class="nav-item" data-view="m2">
+          <span class="nav-icon">🔬</span>
+          <span>Research (M2)</span>
+        </a>
+        <a class="nav-item" data-view="m3">
+          <span class="nav-icon">⚖️</span>
+          <span>Qualification (M3)</span>
+        </a>
+        <a class="nav-item" data-view="m4">
+          <span class="nav-icon">✉️</span>
+          <span>Outreach (M4)</span>
+        </a>
+        <a class="nav-item" data-view="m5">
+          <span class="nav-icon">🗄️</span>
+          <span>Master / Batch (M5)</span>
+        </a>
+
+        <div class="nav-section-title">Intelligence</div>
+        <a class="nav-item" data-view="attention">
+          <span class="nav-icon">🚨</span>
+          <span>Needs Attention</span>
+          <span class="nav-badge alert" id="badge-attention">0</span>
+        </a>
+        <a class="nav-item" data-view="analytics">
+          <span class="nav-icon">📈</span>
+          <span>Analytics & Trends</span>
+        </a>
+        <a class="nav-item" data-view="sources">
+          <span class="nav-icon">📁</span>
+          <span>Data Sources</span>
+          <span class="nav-badge" id="badge-sources-count">0</span>
+        </a>
+
+        <div class="nav-section-title">Client Demo Portals</div>
+        <a class="nav-item" href="/demo/index.html" target="_blank" style="background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.25); color: #D4AF37;">
+          <span class="nav-icon">👗</span>
+          <span style="font-weight: 600;">Boutique Store 1.0</span>
+          <span class="nav-badge" style="background: #D4AF37; color: #000; font-weight: 700;">DEMO 1</span>
+        </a>
+        <a class="nav-item" href="/demo2/index.html" target="_blank" style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3); color: #34D399; margin-top: 4px;">
+          <span class="nav-icon">✨</span>
+          <span style="font-weight: 600;">Master Boutique 2.0</span>
+          <span class="nav-badge" style="background: #10B981; color: #000; font-weight: 700;">DEMO 2</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span class="live-pulse"></span>
+          <span>Zero-DB Engine</span>
+        </div>
+        <span style="font-family: var(--font-mono);" id="sidebar-clock">--:--</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-wrapper">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div class="top-search-box">
+          <span>🔍</span>
+          <input type="text" id="global-search" placeholder="Search business, phone, email, city, pitch..." autocomplete="off">
+        </div>
+
+        <div class="top-actions">
+          <div class="date-select-wrapper">
+            <select id="global-date-filter">
+              <option value="ALL_TIME" selected>📅 All Time</option>
+              <option value="TODAY">⚡ Today Only</option>
+              <option value="PAST_7_DAYS">🗓️ Past 7 Days</option>
+              <option value="PAST_30_DAYS">🗓️ Past 30 Days</option>
+              <option value="CUSTOM">⚙️ Custom Date Range...</option>
+            </select>
+          </div>
+
+          <div id="custom-date-container" style="display:none; gap:6px; align-items:center;">
+            <input type="date" id="custom-date-start" class="btn btn-sm" style="background:var(--bg-input);">
+            <span style="color:var(--text-dim); font-size:11px;">to</span>
+            <input type="date" id="custom-date-end" class="btn btn-sm" style="background:var(--bg-input);">
+            <button class="btn btn-sm btn-primary" id="btn-apply-custom-date">Apply</button>
+          </div>
+
+          <button class="btn" id="btn-refresh" title="Scan filesystem for updates">
+            <span id="refresh-icon">↻</span>
+            <span>Refresh</span>
+          </button>
+
+          <button class="btn" id="btn-theme-toggle" onclick="toggleDashboardTheme()" title="Toggle Light / Dark Mode" style="font-weight: 600; cursor: pointer;">
+            <span id="theme-toggle-icon">☀️</span>
+            <span id="theme-toggle-label">Light Mode</span>
+          </button>
+
+          <span class="live-pulse" title="Auto-polling active"></span>
+        </div>
+      </header>
+
+      <!-- Dynamic Views Container -->
+      <div class="content-body">
+        
+        <!-- 1. EXECUTIVE DASHBOARD VIEW -->
+        <section id="view-dashboard" class="view-pane">
+          <!-- Live Client Demos Launchpad Banner -->
+          <div style="background: linear-gradient(135deg, #FFFFFF, #F8FAFC); border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                <span style="font-size: 20px;">⚡</span>
+                <h3 style="font-size: 17px; font-weight: 700; color: #0F172A; margin: 0; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.2px;">MALIKAXIOM LIVE CLIENT DEMO PORTALS</h3>
+                <span style="background: rgba(14, 165, 233, 0.1); color: #0284C7; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(14, 165, 233, 0.3);">LIGHT MODE LUXURY CONCEPTS</span>
+              </div>
+              <p style="font-size: 13px; color: #475569; margin: 0;">Interactive luxury fashion storefronts featuring Ultra-Premium transitions, dynamic catalog, cart & executive AI assistant.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <a href="/demo/index.html" target="_blank" class="btn" style="background: linear-gradient(135deg, #D4AF37, #B89326); color: #FFFFFF; font-weight: 700; border: none; padding: 10px 18px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(212,175,55,0.25);">
+                <span>👗</span>
+                <span>Open Demo 1 (Boutique 1.0)</span>
+                <span style="font-size: 12px;">↗</span>
+              </a>
+              <a href="/demo2/index.html" target="_blank" class="btn" style="background: linear-gradient(135deg, #0284C7, #0369A1); color: #FFFFFF; font-weight: 700; border: none; padding: 10px 18px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(2,132,199,0.25);">
+                <span>✨</span>
+                <span>Open Demo 2 (Master Boutique 2.0)</span>
+                <span style="font-size: 12px;">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card blue" onclick="switchView('leads', {tab: 'ALL'})">
+              <div class="kpi-card-header">
+                <span>Total Leads</span>
+                <span>📋</span>
+              </div>
+              <div class="kpi-value" id="kpi-total-leads">0</div>
+              <div class="kpi-subtext" id="kpi-leads-subtext">Lifetime unique leads</div>
+            </div>
+
+            <div class="kpi-card green" onclick="switchView('leads', {tab: 'ACTIVE'})">
+              <div class="kpi-card-header">
+                <span>Active Leads</span>
+                <span>🚀</span>
+              </div>
+              <div class="kpi-value" id="kpi-active-leads">0</div>
+              <div class="kpi-subtext">Live sales pipeline</div>
+            </div>
+
+            <div class="kpi-card green" onclick="switchView('activity')">
+              <div class="kpi-card-header">
+                <span>Today's Leads</span>
+                <span>⚡</span>
+              </div>
+              <div class="kpi-value" id="kpi-today-leads">0</div>
+              <div class="kpi-subtext">Discovered / active today</div>
+            </div>
+
+            <div class="kpi-card purple" onclick="switchView('leads', {tab: 'CONTACT_FIRST'})">
+              <div class="kpi-card-header">
+                <span>Contact First</span>
+                <span>🔥</span>
+              </div>
+              <div class="kpi-value" id="kpi-contact-first">0</div>
+              <div class="kpi-subtext">Immediate action queue</div>
+            </div>
+
+            <div class="kpi-card green" onclick="switchView('leads', {tab: 'HIGH_POTENTIAL'})">
+              <div class="kpi-card-header">
+                <span>High Potential</span>
+                <span>💎</span>
+              </div>
+              <div class="kpi-value" id="kpi-high-potential">0</div>
+              <div class="kpi-subtext">Top sales opportunities</div>
+            </div>
+
+            <div class="kpi-card green" onclick="switchView('whatsapp', {status: 'SENT'})">
+              <div class="kpi-card-header">
+                <span>WhatsApp Sent</span>
+                <span>💬</span>
+              </div>
+              <div class="kpi-value" id="kpi-wa-sent">0</div>
+              <div class="kpi-subtext">Verified ground truth sent</div>
+            </div>
+
+            <div class="kpi-card red" onclick="switchView('whatsapp', {status: 'FAILED'})">
+              <div class="kpi-card-header">
+                <span>WhatsApp Failed</span>
+                <span>⚠️</span>
+              </div>
+              <div class="kpi-value" id="kpi-wa-failed">0</div>
+              <div class="kpi-subtext">Failed delivery or error</div>
+            </div>
+
+            <div class="kpi-card amber" onclick="switchView('whatsapp', {status: 'PENDING'})">
+              <div class="kpi-card-header">
+                <span>WhatsApp Pending</span>
+                <span>⏳</span>
+              </div>
+              <div class="kpi-value" id="kpi-wa-pending">0</div>
+              <div class="kpi-subtext">Ready for outreach run</div>
+            </div>
+
+            <div class="kpi-card insta" onclick="switchView('instagram')">
+              <div class="kpi-card-header">
+                <span>Instagram DMs</span>
+                <span>📸</span>
+              </div>
+              <div class="kpi-value" id="kpi-ig-leads">0</div>
+              <div class="kpi-subtext">Manual IG DM queue</div>
+            </div>
+
+            <div class="kpi-card blue" onclick="switchView('cold-calling')">
+              <div class="kpi-card-header">
+                <span>Cold Calls</span>
+                <span>📞</span>
+              </div>
+              <div class="kpi-value" id="kpi-cold-calls">0</div>
+              <div class="kpi-subtext">Mega cold calling workbook</div>
+            </div>
+
+            <div class="kpi-card archive" onclick="switchView('leads', {tab: 'ARCHIVE'})">
+              <div class="kpi-card-header">
+                <span>Archived Leads</span>
+                <span>📁</span>
+              </div>
+              <div class="kpi-value" id="kpi-archived-leads">0</div>
+              <div class="kpi-subtext">Excluded from active funnel</div>
+            </div>
+
+            <div class="kpi-card skip" onclick="switchView('leads', {tab: 'SKIP'})">
+              <div class="kpi-card-header">
+                <span>Skipped Leads</span>
+                <span>⏭️</span>
+              </div>
+              <div class="kpi-value" id="kpi-skipped-leads">0</div>
+              <div class="kpi-subtext">Safety / non-target gated</div>
+            </div>
+
+            <div class="kpi-card green">
+              <div class="kpi-card-header">
+                <span>Pipeline Value</span>
+                <span>💰</span>
+              </div>
+              <div class="kpi-value" id="kpi-pipeline-value">PKR 0</div>
+              <div class="kpi-subtext" id="kpi-won-count">0 clients won</div>
+            </div>
+          </div>
+
+          <!-- Quick Attention Banner & Funnel -->
+          <div class="panel-grid-2">
+            <!-- Pipeline Funnel -->
+            <div class="card-panel">
+              <div class="panel-title">
+                <span>🎯 Milestone Conversion Funnel</span>
+                <span style="font-size:11px; color:var(--text-muted);">M1 ➔ M6</span>
+              </div>
+              <div id="funnel-container" style="display:flex; flex-direction:column; gap:10px;">
+                <!-- Filled dynamically by JS -->
+              </div>
+            </div>
+
+            <!-- Needs Attention Widget -->
+            <div class="card-panel">
+              <div class="panel-title">
+                <span>🚨 Action Required Right Now</span>
+                <button class="btn btn-sm" onclick="switchView('attention')">View All</button>
+              </div>
+              <div id="dashboard-attention-list" class="timeline-feed" style="max-height:260px; overflow-y:auto;">
+                <!-- Filled dynamically by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity & Distribution Panels -->
+          <div class="panel-grid-2">
+            <!-- Recent Activity -->
+            <div class="card-panel">
+              <div class="panel-title">
+                <span>⚡ Live Today Activity Feed</span>
+                <button class="btn btn-sm" onclick="switchView('activity')">Full Feed</button>
+              </div>
+              <div id="dashboard-activity-list" class="timeline-feed" style="max-height:280px; overflow-y:auto;">
+                <!-- Filled dynamically by JS -->
+              </div>
+            </div>
+
+            <!-- Geography & Channel Breakdown -->
+            <div class="card-panel">
+              <div class="panel-title">
+                <span>📍 Market Distribution & Channels</span>
+                <button class="btn btn-sm" onclick="switchView('analytics')">Detailed Analytics</button>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div>
+                  <div style="font-size:11px; color:var(--text-dim); text-transform:uppercase; margin-bottom:8px; font-weight:700;">Top Cities</div>
+                  <div id="dashboard-city-list" style="display:flex; flex-direction:column; gap:6px;">
+                    <!-- Filled by JS -->
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:11px; color:var(--text-dim); text-transform:uppercase; margin-bottom:8px; font-weight:700;">Outreach Channels</div>
+                  <div id="dashboard-channel-list" style="display:flex; flex-direction:column; gap:6px;">
+                    <!-- Filled by JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. TODAY'S ACTIVITY VIEW -->
+        <section id="view-activity" class="view-pane" style="display:none;">
+          <div class="card-panel" style="margin-bottom:16px;">
+            <div class="panel-title">
+              <div>
+                <span style="font-size:16px;">⚡ Today's Chronological Activity Log</span>
+                <span style="font-size:12px; color:var(--text-muted); margin-left:8px;" id="activity-date-display">Today</span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <span class="badge badge-sent" id="activity-sent-badge">0 Sent</span>
+                <span class="badge badge-high" id="activity-discovered-badge">0 Discovered</span>
+              </div>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">
+              Live stream of all pipeline events generated today across M1 (Ingestion), M2 (Research), M3 (Qualification), M4 (Outreach Copy), M5 (Master Distribution), and M6 (WhatsApp Delivery).
+            </p>
+            <div id="full-activity-feed" class="timeline-feed">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. VISUAL SALES PIPELINE (KANBAN) -->
+        <section id="view-pipeline" class="view-pane" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <div>
+              <h2 style="font-size:16px; font-weight:700; color:#fff;">🎯 Visual Sales Kanban Pipeline</h2>
+              <p style="font-size:12px; color:var(--text-muted);">Track leads across each lifecycle stage from Discovery to Closed-Won</p>
+            </div>
+            <div class="filter-group">
+              <input type="text" id="kanban-search" placeholder="Filter kanban..." style="width:180px;">
+            </div>
+          </div>
+
+          <div class="kanban-board" id="kanban-board-container">
+            <!-- Columns: DISCOVERED, RESEARCHED, QUALIFIED, READY_TO_CONTACT, CONTACTED, REPLIED, INTERESTED, WON, LOST -->
+          </div>
+        </section>
+
+        <!-- 4. MASTER LEADS TABLE VIEW -->
+        <section id="view-leads" class="view-pane" style="display:none;">
+          <div class="table-container">
+            <!-- Filter Tabs / Preset Bar -->
+            <div class="leads-tabs-bar" id="leads-tabs-bar">
+              <button class="tab-btn active" data-tab="ALL">All (<span id="tab-count-all">0</span>)</button>
+              <button class="tab-btn" data-tab="ACTIVE">Active (<span id="tab-count-active">0</span>)</button>
+              <button class="tab-btn" data-tab="CONTACT_FIRST">Contact First (<span id="tab-count-contact-first">0</span>)</button>
+              <button class="tab-btn" data-tab="CONTACT_LATER">Contact Later (<span id="tab-count-contact-later">0</span>)</button>
+              <button class="tab-btn" data-tab="HIGH_POTENTIAL">High Potential (<span id="tab-count-high-potential">0</span>)</button>
+              <button class="tab-btn" data-tab="SENT">Sent (<span id="tab-count-sent">0</span>)</button>
+              <button class="tab-btn" data-tab="FAILED">Failed (<span id="tab-count-failed">0</span>)</button>
+              <button class="tab-btn" data-tab="NOT_READY">Not Ready (<span id="tab-count-not-ready">0</span>)</button>
+              <button class="tab-btn" data-tab="ARCHIVE">📁 Archive (<span id="tab-count-archive">0</span>)</button>
+              <button class="tab-btn" data-tab="SKIP">⏭️ Skip (<span id="tab-count-skip">0</span>)</button>
+            </div>
+
+            <div class="table-toolbar">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size:14px; font-weight:700; color:#fff;">📋 Master Sales Leads</span>
+                <span class="badge badge-low" id="leads-count-tag">0 Leads</span>
+              </div>
+
+              <div class="filter-group">
+                <select id="filter-lead-priority">
+                  <option value="">All Priorities</option>
+                  <option value="CONTACT FIRST">🔥 Contact First</option>
+                  <option value="CONTACT LATER">⏳ Contact Later</option>
+                  <option value="ARCHIVE">🗄️ Archive</option>
+                  <option value="SKIP">⏭️ Skip</option>
+                </select>
+
+                <select id="filter-lead-potential">
+                  <option value="">All Potential</option>
+                  <option value="HIGH">💎 High</option>
+                  <option value="MODERATE">⚡ Moderate</option>
+                  <option value="LOW">⚪ Low</option>
+                  <option value="SKIP">⏭️ Skip</option>
+                </select>
+
+                <select id="filter-lead-channel">
+                  <option value="">All Channels</option>
+                  <option value="WhatsApp">💬 WhatsApp</option>
+                  <option value="Instagram DM">📸 Instagram DM</option>
+                  <option value="Cold Calling">📞 Cold Calling</option>
+                  <option value="Email">✉️ Email</option>
+                </select>
+
+                <select id="filter-lead-m6-status">
+                  <option value="">All Statuses</option>
+                  <option value="SENT">✅ Sent</option>
+                  <option value="FAILED">❌ Failed</option>
+                  <option value="PENDING">⏳ Pending</option>
+                  <option value="NOT_READY">⚠️ Not Ready</option>
+                  <option value="NO_WHATSAPP_NUMBER">🚫 No WA</option>
+                  <option value="AWAITING_MANUAL_SEND">✋ Awaiting Manual</option>
+                  <option value="ARCHIVE">📁 Archive</option>
+                  <option value="SKIP">⏭️ Skip</option>
+                </select>
+
+                <select id="filter-lead-milestone">
+                  <option value="">All Milestones</option>
+                  <option value="M5_MASTER">M5 Master List</option>
+                  <option value="M5_CONTACT_FIRST">M5 Contact First</option>
+                  <option value="M5_CONTACT_LATER">M5 Contact Later</option>
+                  <option value="M5_INSTAGRAM">M5 Instagram DMs</option>
+                  <option value="M6_WHATSAPP">M6 WhatsApp Run</option>
+                </select>
+
+                <select id="filter-lead-city">
+                  <option value="">All Cities</option>
+                  <option value="Islamabad">Islamabad</option>
+                  <option value="Rawalpindi">Rawalpindi</option>
+                  <option value="Lahore">Lahore</option>
+                  <option value="Karachi">Karachi</option>
+                </select>
+
+                <button class="btn btn-sm" id="btn-reset-lead-filters" title="Reset all Master Lead filters">
+                  <span>🔄 Reset</span>
+                </button>
+
+                <button class="btn btn-sm" id="btn-export-csv" title="Export currently filtered view to CSV">
+                  <span>⬇️ Export CSV</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table class="custom-table" id="master-leads-table">
+                <thead>
+                  <tr>
+                    <th>Lead / Business</th>
+                    <th>City</th>
+                    <th>Contact Info</th>
+                    <th>Score & Potential</th>
+                    <th>Priority</th>
+                    <th>Channel</th>
+                    <th>Status / Stage</th>
+                    <th>Reason / Opportunity</th>
+                    <th>Discovered</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="master-leads-tbody">
+                  <!-- Rendered dynamically by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pagination-bar" id="leads-pagination-bar">
+              <span id="leads-page-info">Showing 1-50 of 0</span>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-sm" id="btn-prev-page">◀ Prev</button>
+                <button class="btn btn-sm" id="btn-next-page">Next ▶</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. WHATSAPP CENTER VIEW -->
+        <section id="view-whatsapp" class="view-pane" style="display:none;">
+          <!-- WA Metric Bar -->
+          <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin-bottom:16px;">
+            <div class="kpi-card blue" style="cursor:pointer;" onclick="filterWhatsAppByCard('')" title="Click to view all WhatsApp leads">
+              <div class="kpi-card-header"><span>WA Eligible</span></div>
+              <div class="kpi-value" id="wa-card-total">0</div>
+            </div>
+            <div class="kpi-card green" style="cursor:pointer;" onclick="filterWhatsAppByCard('SENT')" title="Click to view SENT WhatsApp leads">
+              <div class="kpi-card-header"><span>Sent (Ground Truth)</span></div>
+              <div class="kpi-value" id="wa-card-sent">0</div>
+            </div>
+            <div class="kpi-card red" style="cursor:pointer;" onclick="filterWhatsAppByCard('FAILED')" title="Click to view FAILED WhatsApp leads">
+              <div class="kpi-card-header"><span>Failed</span></div>
+              <div class="kpi-value" id="wa-card-failed">0</div>
+            </div>
+            <div class="kpi-card amber" style="cursor:pointer;" onclick="filterWhatsAppByCard('PENDING')" title="Click to view PENDING WhatsApp leads">
+              <div class="kpi-card-header"><span>Pending</span></div>
+              <div class="kpi-value" id="wa-card-pending">0</div>
+            </div>
+            <div class="kpi-card blue" style="cursor:pointer;" onclick="filterWhatsAppByCard('NO_WHATSAPP_NUMBER')" title="Click to view No-WA leads">
+              <div class="kpi-card-header"><span>No WhatsApp</span></div>
+              <div class="kpi-value" id="wa-card-no-wa">0</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size:14px; font-weight:700; color:#fff;">💬 WhatsApp Delivery Command Center</span>
+                <span style="font-size:11px; color:var(--text-muted);">Strict ground-truth data from m6_send_state.json</span>
+              </div>
+              <div class="filter-group">
+                <input type="text" id="filter-wa-search" placeholder="Search WA leads..." style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; color:#fff; font-size:12px;">
+                <select id="filter-wa-status">
+                  <option value="">All WA Statuses</option>
+                  <option value="SENT">✅ SENT</option>
+                  <option value="FAILED">❌ FAILED</option>
+                  <option value="PENDING">⏳ PENDING</option>
+                  <option value="NO_WHATSAPP_NUMBER">🚫 NO WHATSAPP</option>
+                  <option value="AWAITING_MANUAL_SEND">✋ AWAITING MANUAL</option>
+                  <option value="NOT_READY">⚠️ NOT READY</option>
+                </select>
+                <select id="filter-wa-city">
+                  <option value="">All Cities</option>
+                  <option value="Islamabad">Islamabad</option>
+                  <option value="Rawalpindi">Rawalpindi</option>
+                  <option value="Lahore">Lahore</option>
+                  <option value="Karachi">Karachi</option>
+                </select>
+                <button class="btn btn-sm" id="btn-reset-wa-filters" title="Reset WhatsApp filters">
+                  <span>🔄 Reset</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table class="custom-table" id="wa-leads-table">
+                <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>Recipient Phone</th>
+                    <th>Status</th>
+                    <th>Attempts</th>
+                    <th>Last Attempt / Sent At</th>
+                    <th>Error / Notes</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="wa-leads-tbody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. COLD CALLING VIEW -->
+        <section id="view-cold-calling" class="view-pane" style="display:none;">
+          <div class="card-panel" style="margin-bottom:16px;">
+            <div class="panel-title">
+              <span>📞 Mega Cold Calling Station</span>
+              <span class="badge badge-high" id="cold-calling-count">0 Callable Leads</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
+              Strict phone-verified queue for active <strong style="color:var(--text-main);">Contact First</strong> and <strong style="color:var(--text-main);">Contact Later</strong> leads. All ARCHIVE, SKIP, SENT, and terminal WhatsApp statuses are strictly excluded. Click any row to view full call script angle and pain points.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <!-- 3-Button Filter Bar with live counts -->
+            <div class="leads-tabs-bar" id="cold-calling-tabs-bar" style="margin-bottom:14px;">
+              <button class="tab-btn active" data-tab="ALL" id="btn-cc-tab-all">All (<span id="cc-tab-count-all">0</span>)</button>
+              <button class="tab-btn" data-tab="CONTACT_FIRST" id="btn-cc-tab-first">Contact First (<span id="cc-tab-count-first">0</span>)</button>
+              <button class="tab-btn" data-tab="CONTACT_LATER" id="btn-cc-tab-later">Contact Later (<span id="cc-tab-count-later">0</span>)</button>
+            </div>
+
+            <div class="table-toolbar">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size:14px; font-weight:700; color:#fff;">📞 Phone-Verified Cold Calling Queue</span>
+              </div>
+              <div class="filter-group">
+                <input type="text" id="filter-cold-calling-search" placeholder="Search cold calling..." style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; color:#fff; font-size:12px; width:220px;">
+                <select id="filter-cold-calling-potential">
+                  <option value="">All Potential</option>
+                  <option value="HIGH">💎 High</option>
+                  <option value="MODERATE">⚡ Moderate</option>
+                  <option value="LOW">⚪ Low</option>
+                </select>
+                <select id="filter-cold-calling-city">
+                  <option value="">All Cities</option>
+                  <option value="Islamabad">Islamabad</option>
+                  <option value="Rawalpindi">Rawalpindi</option>
+                  <option value="Lahore">Lahore</option>
+                  <option value="Karachi">Karachi</option>
+                </select>
+                <button class="btn btn-sm" id="btn-reset-cold-calling-filters" title="Reset Cold Calling filters">
+                  <span>🔄 Reset</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table class="custom-table" id="cold-calling-table">
+                <thead>
+                  <tr>
+                    <th>Lead ID</th>
+                    <th>Business Name</th>
+                    <th>City</th>
+                    <th>Phone</th>
+                    <th>WhatsApp</th>
+                    <th>Contact Priority</th>
+                    <th>Score / Status</th>
+                    <th>Business Opportunity</th>
+                    <th>Cold Call Pitch Hook</th>
+                    <th>Source File</th>
+                    <th>Date Added</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="cold-calling-tbody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. INSTAGRAM DMS VIEW -->
+        <section id="view-instagram" class="view-pane" style="display:none;">
+          <div class="card-panel" style="margin-bottom:16px;">
+            <div class="panel-title">
+              <span>📸 Manual Instagram DM Queue (<code style="color:var(--accent-insta);">manual_instagram_leads.csv</code>)</span>
+              <span class="badge badge-insta" id="ig-queue-count">0 Leads</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
+              High-value fashion and retail leads with active Instagram presence where phone numbers were not directly listed. Customized problem pitches generated for 1-click copy and manual DM outreach.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div class="table-toolbar">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size:14px; font-weight:700; color:#fff;">📸 Instagram DM Outreach Action Queue</span>
+              </div>
+              <div class="filter-group">
+                <input type="text" id="filter-ig-search" placeholder="Search IG leads..." style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; color:#fff; font-size:12px;">
+                <select id="filter-ig-potential">
+                  <option value="">All Potential</option>
+                  <option value="HIGH">💎 High</option>
+                  <option value="MODERATE">⚡ Moderate</option>
+                  <option value="LOW">⚪ Low</option>
+                </select>
+                <select id="filter-ig-city">
+                  <option value="">All Cities</option>
+                  <option value="Islamabad">Islamabad</option>
+                  <option value="Rawalpindi">Rawalpindi</option>
+                  <option value="Lahore">Lahore</option>
+                  <option value="Karachi">Karachi</option>
+                </select>
+                <button class="btn btn-sm" id="btn-reset-ig-filters" title="Reset Instagram filters">
+                  <span>🔄 Reset</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table class="custom-table" id="ig-leads-table">
+                <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>Instagram Handle</th>
+                    <th>City</th>
+                    <th>Primary Gap</th>
+                    <th>Generated Instagram DM Pitch</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ig-leads-tbody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. M2 RESEARCH VIEW -->
+        <section id="view-m2" class="view-pane" style="display:none;">
+          <div class="card-panel" style="margin-bottom:16px;">
+            <div class="panel-title">
+              <span>🔬 Milestone 2 — Digital Presence & Tech Audit</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted);">
+              Scanned digital footprints across Web, Instagram, Facebook, and TikTok. Identifies whether businesses possess dedicated e-commerce stores, custom domains, or operate strictly via manual social messaging.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div style="overflow-x:auto;">
+              <table class="custom-table" id="m2-table">
+                <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>Website</th>
+                    <th>Instagram</th>
+                    <th>Facebook</th>
+                    <th>TikTok</th>
+                    <th>Gaps Detected</th>
+                    <th>Researched Date</th>
+                  </tr>
+                </thead>
+                <tbody id="m2-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. M3 QUALIFICATION VIEW -->
+        <section id="view-m3" class="view-pane" style="display:none;">
+          <div class="card-panel" style="margin-bottom:16px;">
+            <div class="panel-title">
+              <span>⚖️ Milestone 3 — AI Lead Qualification Engine</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted);">
+              Automated scoring based on digital readiness, e-commerce potential, social engagement, and service alignment.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div style="overflow-x:auto;">
+              <table class="custom-table" id="m3-table">
+                <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>Score</th>
+                    <th>Sales Potential</th>
+                    <th>Recommended Action</th>
+                    <th>Primary Service Match</th>
+                    <th>Reasoning</th>
+                  </tr>
+                </thead>
+                <tbody id="m3-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. M4 OUTREACH VIEW -->
+        <section id="view-m4" class="view-pane" style="display:none;">
+          <div class="card-panel" style="margin-bottom:16px;">
+            <div class="panel-title">
+              <span>✉️ Milestone 4 — Outreach Message Studio</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted);">
+              Problem-tailored sales copy with strict Pakistani business etiquette (Roman Urdu / English blend, <90 words, pricing transparency from PKR 10k).
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div style="overflow-x:auto;">
+              <table class="custom-table" id="m4-table">
+                <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>Channel</th>
+                    <th>Target Service</th>
+                    <th>Words</th>
+                    <th>Generated Pitch Hook</th>
+                    <th>Outreach Copy</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="m4-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 11. M5 MASTER & ARCHIVES VIEW -->
+        <section id="view-m5" class="view-pane" style="display:none;">
+          <div class="card-panel" style="margin-bottom:16px;">
+            <div class="panel-title">
+              <span>🗄️ Milestone 5 — Master Segregation & Batch Archival</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted);">
+              Lead distribution across Master sheets, Contact First queues, Contact Later holding, Archive lists, and Historical Batch snapshots.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div style="overflow-x:auto;">
+              <table class="custom-table" id="m5-table">
+                <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>List Priority</th>
+                    <th>Master Status</th>
+                    <th>Batch ID / Snapshot</th>
+                    <th>Discovered At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="m5-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 12. NEEDS ATTENTION VIEW -->
+        <section id="view-attention" class="view-pane" style="display:none;">
+          <div class="card-panel" style="margin-bottom:16px;">
+            <div class="panel-title">
+              <span style="font-size:16px;">🚨 Attention Queue & Action Required</span>
+              <span class="badge badge-skip" id="attention-view-badge">0 Items</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted);">
+              Prioritized list of pipeline bottlenecks: failed WhatsApp messages, high-value leads requiring manual Instagram DMs, and unanswered outreach awaiting follow-ups.
+            </p>
+          </div>
+
+          <div id="attention-full-feed" class="timeline-feed">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- 13. ANALYTICS & TRENDS VIEW -->
+        <section id="view-analytics" class="view-pane" style="display:none;">
+          <div class="panel-grid-2">
+            <!-- Channel Distribution -->
+            <div class="card-panel">
+              <div class="panel-title"><span>📡 Outreach Channel Distribution</span></div>
+              <div id="analytics-channels" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+
+            <!-- Potential Breakdown -->
+            <div class="card-panel">
+              <div class="panel-title"><span>💎 Lead Potential Breakdown</span></div>
+              <div id="analytics-potential" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+          </div>
+
+          <div class="panel-grid-2">
+            <!-- City Geographical Spread -->
+            <div class="card-panel">
+              <div class="panel-title"><span>📍 Geographical Footprint (Top Cities)</span></div>
+              <div id="analytics-cities" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+
+            <!-- WhatsApp Delivery Success Rate -->
+            <div class="card-panel">
+              <div class="panel-title"><span>💬 WhatsApp Delivery Health</span></div>
+              <div id="analytics-wa-health" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 14. DATA SOURCES & EXPLORER VIEW -->
+        <section id="view-sources" class="view-pane" style="display:none;">
+          <div class="card-panel" style="margin-bottom:16px;">
+            <div class="panel-title">
+              <span style="font-size:16px;">📁 Data Sources & Pipeline Files Explorer</span>
+              <span class="badge badge-low" id="sources-count-badge">0 Files Discovered</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted);">
+              Live index of all 68+ files discovered across <code style="color:var(--primary-blue);">input/</code>, <code style="color:var(--primary-blue);">output/</code>, and <code style="color:var(--primary-blue);">output/batches/</code>. Click "Preview" on any file to inspect rows or raw JSON without leaving the dashboard.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <div style="overflow-x:auto;">
+              <table class="custom-table" id="sources-table">
+                <thead>
+                  <tr>
+                    <th>Filename</th>
+                    <th>Milestone</th>
+                    <th>File Type</th>
+                    <th>Size</th>
+                    <th>Records</th>
+                    <th>Last Modified</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="sources-tbody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- LEAD DETAIL MODAL / DRAWER -->
+  <div class="modal-overlay" id="lead-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modal-lead-title">Lead Details</div>
+          <div style="font-size:11px; color:var(--text-muted); margin-top:2px;" id="modal-lead-subtitle">Lead ID: --</div>
+        </div>
+        <button class="btn btn-sm" onclick="closeLeadModal()">✕ Close</button>
+      </div>
+
+      <div id="modal-lead-alert-banner" style="display:none; margin: 12px 16px 0 16px;"></div>
+
+      <div class="modal-tabs">
+        <div class="modal-tab active" data-tab="tab-overview" onclick="switchModalTab('tab-overview')">📌 Overview</div>
+        <div class="modal-tab" data-tab="tab-research" onclick="switchModalTab('tab-research')">🔬 Research (M2)</div>
+        <div class="modal-tab" data-tab="tab-qualification" onclick="switchModalTab('tab-qualification')">⚖️ Qualification (M3)</div>
+        <div class="modal-tab" data-tab="tab-outreach" onclick="switchModalTab('tab-outreach')">✉️ Outreach (M4)</div>
+        <div class="modal-tab" data-tab="tab-master" onclick="switchModalTab('tab-master')">🗄️ Master (M5)</div>
+        <div class="modal-tab" data-tab="tab-delivery" onclick="switchModalTab('tab-delivery')">💬 WhatsApp State (M6)</div>
+        <div class="modal-tab" data-tab="tab-history" onclick="switchModalTab('tab-history')">🕒 History & Provenance</div>
+      </div>
+
+      <div class="modal-body" id="modal-lead-body">
+        <!-- Tab 1: Overview -->
+        <div id="tab-overview" class="modal-tab-content">
+          <div class="detail-section">
+            <div class="detail-section-title">Core Business Information</div>
+            <div class="detail-grid-2">
+              <div class="detail-field">
+                <div class="detail-label">Business Name</div>
+                <div class="detail-value" id="md-biz-name">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">City / Location</div>
+                <div class="detail-value" id="md-location">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Phone Number</div>
+                <div class="detail-value" id="md-phone">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Email Address</div>
+                <div class="detail-value" id="md-email">--</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Sales Status & Qualification Score</div>
+            <div class="detail-grid-2">
+              <div class="detail-field">
+                <div class="detail-label">Qualification Score</div>
+                <div class="detail-value" id="md-ov-score" style="font-size:15px; font-weight:700; color:var(--primary-blue);">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Sales Potential</div>
+                <div class="detail-value" id="md-potential">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Outreach Priority</div>
+                <div class="detail-value" id="md-priority">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">WhatsApp Status</div>
+                <div class="detail-value" id="md-wa-status">--</div>
+              </div>
+              <div class="detail-field" id="md-archive-skip-container" style="display:none; grid-column:span 2;">
+                <div class="detail-label">Archive / Skip Reason</div>
+                <div class="detail-value" id="md-archive-skip-reason" style="color:var(--accent-amber); font-weight:600;">--</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">⚡ Cold Call Hook & Opportunity Angle</div>
+            <div class="detail-field" style="margin-bottom:10px;">
+              <div class="detail-label">Cold Call Pitch Hook / Outreach Angle</div>
+              <div class="detail-value" id="md-ov-pitch-hook" style="color:var(--accent-amber); font-weight:500;">--</div>
+            </div>
+            <div class="detail-field" style="margin-bottom:10px;">
+              <div class="detail-label">Business Opportunity</div>
+              <div class="detail-value" id="md-ov-opportunity">--</div>
+            </div>
+            <div class="detail-field">
+              <div class="detail-label">Identified Digital Gaps</div>
+              <div class="detail-value" id="md-ov-gaps" style="color:var(--text-muted);">--</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;" id="modal-quick-actions">
+            <!-- Quick Action Buttons rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Tab 2: Research (M2) -->
+        <div id="tab-research" class="modal-tab-content" style="display:none;">
+          <div class="detail-section">
+            <div class="detail-section-title">Digital Presence Audit</div>
+            <div class="detail-grid-2">
+              <div class="detail-field">
+                <div class="detail-label">Website URL</div>
+                <div class="detail-value" id="md-website">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Instagram Handle</div>
+                <div class="detail-value" id="md-instagram">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Facebook Profile</div>
+                <div class="detail-value" id="md-facebook">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">TikTok Profile</div>
+                <div class="detail-value" id="md-tiktok">--</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Detected Digital Gaps & Pain Points</div>
+            <div class="detail-field" style="margin-bottom:8px;">
+              <div class="detail-label">Identified Gaps</div>
+              <div class="detail-value" id="md-gaps" style="color:var(--accent-amber);">--</div>
+            </div>
+            <div class="detail-field">
+              <div class="detail-label">Commercial Opportunity</div>
+              <div class="detail-value" id="md-opportunity">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Qualification (M3) -->
+        <div id="tab-qualification" class="modal-tab-content" style="display:none;">
+          <div class="detail-section">
+            <div class="detail-section-title">Milestone 3 Qualification Results</div>
+            <div class="detail-grid-2">
+              <div class="detail-field">
+                <div class="detail-label">Qualification Score</div>
+                <div class="detail-value" id="md-score" style="font-size:16px; font-weight:700;">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Qualification Status</div>
+                <div class="detail-value" id="md-qual-status">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Primary Service Match</div>
+                <div class="detail-value" id="md-service">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Recommended Action</div>
+                <div class="detail-value" id="md-rec-action">--</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Qualification Reasoning</div>
+            <div class="detail-field">
+              <div class="detail-value" id="md-qual-reason">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Outreach (M4) -->
+        <div id="tab-outreach" class="modal-tab-content" style="display:none;">
+          <div class="detail-section">
+            <div class="detail-section-title" style="display:flex; justify-content:space-between;">
+              <span>Generated Sales Outreach Pitch</span>
+              <button class="btn btn-sm btn-primary" id="btn-copy-pitch" onclick="copyCurrentPitch()">📋 Copy Pitch</button>
+            </div>
+            <div class="pitch-box" id="md-pitch-box">--</div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Outreach Metadata</div>
+            <div class="detail-grid-2">
+              <div class="detail-field">
+                <div class="detail-label">Message Hook / Angle</div>
+                <div class="detail-value" id="md-pitch-angle">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Word Count</div>
+                <div class="detail-value" id="md-pitch-words">--</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 5: Master (M5) -->
+        <div id="tab-master" class="modal-tab-content" style="display:none;">
+          <div class="detail-section">
+            <div class="detail-section-title">Master List & Action Routing</div>
+            <div class="detail-grid-2">
+              <div class="detail-field">
+                <div class="detail-label">Master Action</div>
+                <div class="detail-value" id="md-master-action">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">List Membership</div>
+                <div class="detail-value" id="md-list-membership">--</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Master Notes & Review Status</div>
+            <div class="detail-field">
+              <div class="detail-value" id="md-master-notes">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 6: Delivery (M6) -->
+        <div id="tab-delivery" class="modal-tab-content" style="display:none;">
+          <div class="detail-section">
+            <div class="detail-section-title">WhatsApp Ground Truth Delivery State</div>
+            <div class="detail-grid-2">
+              <div class="detail-field">
+                <div class="detail-label">M6 Status</div>
+                <div class="detail-value" id="md-m6-status">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Recipient Number</div>
+                <div class="detail-value" id="md-m6-recipient">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Delivery Timestamp</div>
+                <div class="detail-value" id="md-m6-sent-at">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Delivery Attempts</div>
+                <div class="detail-value" id="md-m6-attempts">--</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Error / Status Notes</div>
+            <div class="detail-field">
+              <div class="detail-value" id="md-m6-error">None</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;" id="modal-wa-btn-container">
+            <!-- WA Direct Link Button -->
+          </div>
+        </div>
+
+        <!-- Tab 7: History & Provenance -->
+        <div id="tab-history" class="modal-tab-content" style="display:none;">
+          <div class="detail-section">
+            <div class="detail-section-title">Discovered Files & Batch Provenance</div>
+            <div id="md-provenance-list" class="timeline-feed">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE PREVIEW MODAL -->
+  <div class="modal-overlay" id="file-preview-modal">
+    <div class="modal-card" style="width: 950px; max-height: 90vh;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="preview-file-title">File Preview</div>
+          <div style="font-size:11px; color:var(--text-muted);" id="preview-file-path">--</div>
+        </div>
+        <button class="btn btn-sm" onclick="closePreviewModal()">✕ Close</button>
+      </div>
+
+      <div class="modal-body" id="preview-file-body">
+        <div id="preview-loading" style="text-align:center; padding:40px; color:var(--text-muted);">
+          Loading file preview...
+        </div>
+        <div id="preview-csv-container" style="display:none; overflow-x:auto;">
+          <table class="custom-table" id="preview-csv-table">
+            <thead id="preview-csv-thead"></thead>
+            <tbody id="preview-csv-tbody"></tbody>
+          </table>
+        </div>
+        <div id="preview-code-container" style="display:none;">
+          <pre class="code-box" id="preview-code-content"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST ALERTS CONTAINER -->
+  <div id="toast-container" style="position:fixed; bottom:24px; right:24px; z-index:2000; display:flex; flex-direction:column; gap:8px;"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
