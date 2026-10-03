@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "name": "malikaxiom-riwaj-luxury-boutique-demo2",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
