@@ -1572,7 +1572,7 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       <div class="reveal-init reveal-down text-center max-w-2xl mx-auto mb-10">
         <span class="text-xs uppercase font-bold tracking-[0.25em]" style="color: var(--brand-primary);">Uncompromising Quality</span>
-        <h2 class="font-serif text-2xl xs:text-3xl sm:text-4xl font-bold text-white mt-1">Why Patrons Choose RIWAJ</h2>
+        <h2 id="why-choose-heading" class="font-serif text-2xl xs:text-3xl sm:text-4xl font-bold text-white mt-1">Why Patrons Choose RIWAJ</h2>
         <p class="text-xs sm:text-sm text-gray-400 mt-2">Every thread, cut, and bead is inspected by master artisans before dispatch.</p>
       </div>
 
@@ -1717,9 +1717,9 @@
   <section class="bg-black/90 border-t border-white/10 py-12 sm:py-16">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       <div class="reveal-init reveal-down text-center max-w-2xl mx-auto mb-8">
-        <span class="text-xs uppercase font-bold tracking-[0.25em]" style="color: var(--brand-primary);">@riwaj_pret on Instagram</span>
+        <span id="insta-handle" class="text-xs uppercase font-bold tracking-[0.25em]" style="color: var(--brand-primary);">@riwaj_pret on Instagram</span>
         <h2 class="font-serif text-2xl xs:text-3xl sm:text-4xl font-bold text-white mt-1">Styled By You</h2>
-        <p class="text-xs sm:text-sm text-gray-400 mt-1">Tag #RiwajCouture to be featured in our weekly digital lookbook.</p>
+        <p id="insta-tag" class="text-xs sm:text-sm text-gray-400 mt-1">Tag #RiwajCouture to be featured in our weekly digital lookbook.</p>
       </div>
 
       <div id="insta-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-4">
@@ -1883,7 +1883,7 @@
         <div class="lg:col-span-2 space-y-4">
           <div class="flex flex-col items-start">
             <span class="font-serif text-2xl font-bold tracking-[0.2em] text-white" id="footer-brand-title">RIWAJ</span>
-            <span class="text-[9px] uppercase tracking-[0.35em] text-gray-500 -mt-1 font-bold">Pret & Couture</span>
+            <span id="footer-brand-slogan" class="text-[9px] uppercase tracking-[0.35em] text-gray-500 -mt-1 font-bold">Pret & Couture</span>
           </div>
           <p class="text-gray-400 text-xs leading-relaxed max-w-sm">
             Handcrafted luxury Pakistani pret, festive formals, and raw silk masterpieces. Powered by automated 1-Click WhatsApp orders and nationwide Cash on Delivery.
@@ -1943,7 +1943,7 @@
 
       <!-- Bottom Credits & Watermark -->
       <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-gray-500">
-        <p>© 2026 RIWAJ Pret & Couture. All Rights Reserved. Master Demo Concept.</p>
+        <p id="footer-copyright">© 2026 RIWAJ Pret & Couture. All Rights Reserved. Master Demo Concept.</p>
         <div class="flex items-center gap-2">
           <span>Technology & AI Automation by</span>
           <a href="https://wa.me/923130466400" target="_blank" class="text-amber-400 font-bold hover:underline flex items-center gap-1">
@@ -2564,16 +2564,22 @@
   <!-- ================= MASTER JAVASCRIPT LOGIC & CENTRALIZED DATA ================= -->
   <script>
     // --- 1. Centralized Brand Configuration Structure ---
+    // =========================================================================
+    // 🌟 MASTER BRAND CONFIGURATION (CHANGE ONLY THESE 2 FIELDS FOR NEW LEADS)
+    // =========================================================================
     const brandConfig = {
-      name: "RIWAJ",
+      name: "RIWAJ Pret & Couture",
+      title: "RIWAJ Pret & Couture — Premium Pakistani Luxury Boutique",
+
+      // Optional Secondary Settings (Auto-derived from name if unchanged)
       slogan: "Pret & Couture",
       tagline: "Elegance Woven in Pure Raw Silk & Chiffon",
-      primaryColor: "#D4AF37",
-      primaryHover: "#B89326",
-      lightColor: "#FBF6E9",
-      accentColor: "#C59B6D",
-      backgroundColor: "#09090b",
-      cardBackground: "rgba(20, 20, 24, 0.75)",
+      primaryColor: "#0284C7",
+      primaryHover: "#0369A1",
+      lightColor: "#F8FAFC",
+      accentColor: "#0284C7",
+      backgroundColor: "#FFFFFF",
+      cardBackground: "#FFFFFF",
       whatsapp: "923130466400",
       phone: "+92 313 0466400",
       email: "concierge@riwajpret.com",
@@ -2646,6 +2652,120 @@
         button2Link: "https://wa.me/923130466400?text=Assalam-o-Alaikum!%20I%20want%20to%20inquire%20about%20the%20Latest%20Collection."
       }
     };
+
+        // --- Centralized Dynamic Brand Configuration Engine ---
+    function initBrandConfig() {
+      const brand = brandConfig.name || "RIWAJ Pret & Couture";
+      const title = brandConfig.title || `${brand} | Online Store`;
+      const initial = brand.trim().charAt(0).toUpperCase();
+
+      // 1. Browser Title & Metadata
+      document.title = title;
+      const titleEl = document.getElementById('page-title');
+      if (titleEl) titleEl.textContent = title;
+
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', title);
+      const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+      if (twitterTitle) twitterTitle.setAttribute('content', title);
+
+      // 2. Navigation Header & Monogram
+      const logoText = document.getElementById('brand-logo-text');
+      if (logoText) logoText.textContent = brand;
+
+      const logoInitial = document.getElementById('brand-logo-initial');
+      if (logoInitial) logoInitial.textContent = initial;
+
+      const sloganEl = document.getElementById('brand-slogan-text');
+      if (sloganEl) {
+        if (brandConfig.slogan) {
+          sloganEl.textContent = brandConfig.slogan;
+          sloganEl.style.display = '';
+        } else {
+          sloganEl.textContent = '';
+          sloganEl.style.display = 'none';
+        }
+      }
+
+      // 3. Why Choose Us Heading
+      const whyChooseHeading = document.getElementById('why-choose-heading');
+      if (whyChooseHeading) whyChooseHeading.textContent = `Why Patrons Choose ${brand}`;
+
+      // 4. Social & Instagram Handles
+      const cleanTag = brand.replace(/[^a-zA-Z0-9]/g, '');
+      const cleanHandle = brand.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      const instaHandle = document.getElementById('insta-handle');
+      if (instaHandle) instaHandle.textContent = `@${cleanHandle} on Instagram`;
+      const instaTag = document.getElementById('insta-tag');
+      if (instaTag) instaTag.textContent = `Tag #${cleanTag} to be featured in our weekly digital lookbook.`;
+
+      // 5. About / Atelier Story
+      const aboutStory1 = document.getElementById('about-story-1');
+      if (aboutStory1) {
+        aboutStory1.textContent = (brandConfig.about && brandConfig.about.story1)
+          ? brandConfig.about.story1.replace(/RIWAJ/g, brand)
+          : `Founded with a passion to celebrate Pakistan's rich textile legacy, ${brand} blends age-old artisanal zardozi, gota patti, and fine chikankari embroidery with effortless modern pret silhouettes.`;
+      }
+
+      // 6. Comprehensive Footer
+      const footerBrandTitle = document.getElementById('footer-brand-title');
+      if (footerBrandTitle) footerBrandTitle.textContent = brand;
+
+      const footerSlogan = document.getElementById('footer-brand-slogan');
+      if (footerSlogan) {
+        if (brandConfig.slogan) {
+          footerSlogan.textContent = brandConfig.slogan;
+          footerSlogan.style.display = '';
+        } else {
+          footerSlogan.textContent = '';
+          footerSlogan.style.display = 'none';
+        }
+      }
+
+      const footerCopyright = document.getElementById('footer-copyright');
+      if (footerCopyright) {
+        footerCopyright.textContent = `© ${new Date().getFullYear()} ${brand}. All Rights Reserved. Master Demo Concept.`;
+      }
+
+      // 7. AI Shopping Assistant
+      const aiBrand = document.getElementById('ai-header-brand');
+      if (aiBrand) aiBrand.textContent = `${brand} AI Stylist`;
+
+      const aiInit = document.getElementById('ai-header-initial');
+      if (aiInit) aiInit.textContent = initial;
+
+      const aiWa = document.getElementById('ai-direct-wa');
+      if (aiWa && brandConfig.whatsapp) {
+        aiWa.href = `https://wa.me/${brandConfig.whatsapp}`;
+      }
+
+      // 8. WhatsApp Direct Order Buttons
+      const headerWa = document.getElementById('header-wa-btn');
+      if (headerWa && brandConfig.whatsapp) {
+        headerWa.href = `https://wa.me/${brandConfig.whatsapp}?text=${encodeURIComponent(`Assalam-o-Alaikum! Inquiry regarding ${brand} Collection.`)}`;
+      }
+
+      const mobWa = document.getElementById('mobile-bottom-wa');
+      if (mobWa && brandConfig.whatsapp) {
+        mobWa.href = `https://wa.me/${brandConfig.whatsapp}`;
+      }
+
+      const vipWa = document.getElementById('vip-club-wa');
+      if (vipWa && brandConfig.whatsapp) {
+        vipWa.href = `https://wa.me/${brandConfig.whatsapp}?text=${encodeURIComponent(`Assalam-o-Alaikum! I want to inquire about ${brand} VIP Styling.`)}`;
+      }
+
+      // 9. Customizer Form Inputs Sync
+      const customBrandInput = document.getElementById('custom-brand-name');
+      if (customBrandInput) customBrandInput.value = brand;
+      const customWaInput = document.getElementById('custom-wa-num');
+      if (customWaInput && brandConfig.whatsapp) customWaInput.value = brandConfig.whatsapp;
+      const customCityInput = document.getElementById('custom-city-name');
+      if (customCityInput && brandConfig.address) customCityInput.value = brandConfig.address;
+    }
+
+    // Initialize immediately
+    initBrandConfig();
 
     // --- 2. Color Theme Presets ---
     const THEMES = {
@@ -3836,39 +3956,19 @@
     }
 
     function applyDemoCustomizations() {
-      const brand = document.getElementById('custom-brand-name').value.trim() || 'RIWAJ';
+      const brand = document.getElementById('custom-brand-name').value.trim() || 'RIWAJ Pret & Couture';
       const phone = document.getElementById('custom-wa-num').value.trim().replace(/\+/g, '') || '923130466400';
       const city = document.getElementById('custom-city-name').value.trim() || 'Gulberg III, Lahore';
 
       brandConfig.name = brand;
+      brandConfig.title = `${brand} | Online Store`;
       brandConfig.whatsapp = phone;
       brandConfig.phone = '+' + phone;
       brandConfig.address = city;
 
-      document.getElementById('brand-logo-text').textContent = brand.toUpperCase();
-      const logoInitial = document.getElementById('brand-logo-initial');
-      if (logoInitial) logoInitial.textContent = brand.charAt(0).toUpperCase();
-      document.getElementById('footer-brand-title').textContent = brand.toUpperCase();
-      document.getElementById('footer-phone').textContent = '+' + phone;
-      document.getElementById('footer-address').textContent = city;
-      document.getElementById('page-title').textContent = `${brand} — Master Luxury Boutique Store | Powered by MalikAxiom`;
-
-      const aiBrand = document.getElementById('ai-header-brand');
-      if (aiBrand) aiBrand.textContent = `${brand} AI Stylist`;
-      const aiInit = document.getElementById('ai-header-initial');
-      if (aiInit) aiInit.textContent = brand.charAt(0).toUpperCase();
-      const aiWa = document.getElementById('ai-direct-wa');
-      if (aiWa) aiWa.href = `https://wa.me/${phone}`;
-      
-      const headerWa = document.getElementById('header-wa-btn');
-      if (headerWa) headerWa.href = `https://wa.me/${phone}?text=Assalam-o-Alaikum!%20Inquiry%20regarding%20${brand}%20Collection.`;
-      const mobWa = document.getElementById('mobile-bottom-wa');
-      if (mobWa) mobWa.href = `https://wa.me/${phone}`;
-      const vipWa = document.getElementById('vip-club-wa');
-      if (vipWa) vipWa.href = `https://wa.me/${phone}?text=Assalam-o-Alaikum!%20I%20want%20to%20inquire%20about%20${brand}%20VIP%20Styling.`;
-
+      initBrandConfig();
       closeDemoCustomizer();
-      alert(`✅ Demo Store updated for Brand: "${brand}" with WhatsApp: "+${phone}"!`);
+      alert(`✅ Demo Store updated for Brand: "${brand}"!`);
     }
 
     function copyBrandConfigJSON() {
@@ -3971,7 +4071,7 @@
       if (aiChatHistory.length === 0) {
         aiChatHistory.push({
           sender: 'bot',
-          text: `Hi! 👋 Welcome to <strong>${brandConfig.name} ${brandConfig.slogan}</strong>.<br/><br/>I am your boutique AI Shopping Stylist! How can I help you today? Ask about our dresses, sizing, nationwide Cash on Delivery, or active promo codes.`,
+          text: `Hi! 👋 Welcome to <strong>${brandConfig.name}${brandConfig.slogan ? ' ' + brandConfig.slogan : ''}</strong>.<br/><br/>I am your boutique AI Shopping Stylist! How can I help you today? Ask about our dresses, sizing, nationwide Cash on Delivery, or active promo codes.`,
           time: getCurrentTimeString(),
           quickChips: DEFAULT_SUGGESTED_QUESTIONS
         });
@@ -4446,6 +4546,7 @@
 
     // --- 20. Initialize App on DOM Ready ---
     document.addEventListener('DOMContentLoaded', () => {
+      initBrandConfig();
       initStoreTheme();
       initCarousel();
       renderCategories();
