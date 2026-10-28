@@ -273,6 +273,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         city = query.get("city", [""])[0].strip()
         milestone = query.get("milestone", [""])[0].strip()
         tab = query.get("tab", query.get("filter", [""]))[0].strip().upper()
+        niche = query.get("niche", [""])[0].strip().upper()
 
         # M7 Sales CRM specific filters
         call_status = query.get("call_status", [""])[0].strip().upper()
@@ -288,14 +289,26 @@ class DashboardHandler(BaseHTTPRequestHandler):
         sort_by = query.get("sort_by", ["discovered_at"])[0]
         sort_dir = query.get("sort_dir", ["desc"])[0].lower()
 
+        def is_watch_lead(l: LeadRecord) -> bool:
+            text = f"{l.business_name} {l.business_category} {l.business_type} {l.source_file}".lower()
+            return any(k in text for k in ("watch", "watches", "rolex", "patek", "horolog", "time"))
+
         filtered: list[LeadRecord] = []
         for lead in leads_map.values():
             if not DashboardAnalytics._lead_matches_date_range(lead, date_filter, custom_start, custom_end):
                 continue
 
+            # Niche filter (Watches only vs Other)
+            if niche == "WATCHES" and not is_watch_lead(lead):
+                continue
+            elif niche == "OTHER" and is_watch_lead(lead):
+                continue
+
             # Tab / Preset filter
             if tab and tab not in ("ALL", ""):
-                if tab in ("NEW", "UNPROCESSED") and lead.sales_stage != "NEW":
+                if tab == "WATCHES" and not is_watch_lead(lead):
+                    continue
+                elif tab in ("NEW", "UNPROCESSED") and lead.sales_stage != "NEW":
                     continue
                 elif tab == "ACTIVE" and (not lead.is_active or lead.sales_stage == "NEW"):
                     continue
@@ -487,6 +500,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
         tab_counts = {
             "ALL": len(date_matched),
+            "WATCHES": sum(1 for l in date_matched if is_watch_lead(l)),
             "NEW": sum(1 for l in date_matched if l.sales_stage == "NEW"),
             "ACTIVE": sum(1 for l in date_matched if l.is_active and l.sales_stage != "NEW"),
             "CONTACT_FIRST": sum(1 for l in date_matched if l.outreach_priority == "CONTACT FIRST" and l.is_active),

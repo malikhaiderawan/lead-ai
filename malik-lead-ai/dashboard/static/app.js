@@ -13,12 +13,13 @@ const State = {
   leadsPage: 1,
   leadsLimit: 50,
   leadsTotalPages: 1,
-  leadsTab: 'ALL',
+  leadsTab: 'WATCHES',
   activeLeadId: null,
   cachedLead: null,
   refreshing: false,
   pollInterval: null,
   leadsFilter: {
+    niche: 'WATCHES',
     priority: '',
     potential: '',
     channel: '',
@@ -413,7 +414,7 @@ function initTableFilters() {
   });
 
   // Master leads filter listeners
-  ['priority', 'potential', 'channel', 'status', 'milestone', 'city', 'call-status', 'category', 'activity', 'sort'].forEach(filterKey => {
+  ['niche', 'priority', 'potential', 'channel', 'status', 'milestone', 'city', 'call-status', 'category', 'activity', 'sort'].forEach(filterKey => {
     let id = `filter-lead-${filterKey}`;
     if (filterKey === 'status') id = 'filter-lead-m6-status';
     const stateKey = filterKey === 'sort' ? 'sort_by' : filterKey.replace('-', '_');
@@ -1007,6 +1008,7 @@ async function fetchMasterLeads() {
       page: State.leadsPage,
       limit: State.leadsLimit,
       tab: State.leadsTab,
+      niche: State.leadsFilter.niche,
       priority: State.leadsFilter.priority,
       potential: State.leadsFilter.potential,
       channel: State.leadsFilter.channel,
@@ -1048,6 +1050,7 @@ function renderMasterLeads(data) {
       const el = document.getElementById(id);
       if (el) el.textContent = (count || 0).toLocaleString();
     };
+    setTabCount('tab-count-watches', tabCounts.WATCHES);
     setTabCount('tab-count-all', tabCounts.ALL);
     setTabCount('tab-count-new', tabCounts.NEW);
     setTabCount('tab-count-active', tabCounts.ACTIVE);
