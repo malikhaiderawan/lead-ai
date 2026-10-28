@@ -20,6 +20,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from qualification.qualifier import _is_known_enterprise_brand
+
 logger = logging.getLogger(__name__)
 
 MEGA_COLUMNS: list[str] = [
@@ -78,14 +80,54 @@ def _get_lead_dedup_key(rec: dict[str, Any]) -> str:
 
 
 def _generate_pitch_hook(rec: dict[str, Any]) -> str:
-    name = _safe_str(rec.get("business_name"), "Doctor")
-    cat = _safe_str(rec.get("category"), "practice").split(",")[0].strip()
-    service = _safe_str(rec.get("primary_service"), "Business Digitalization")
-    has_site = bool(rec.get("website") and str(rec.get("website")).lower() not in ("none", "null", "n/a", ""))
+    name = _safe_str(rec.get("business_name"), "Business")
+    raw_cat = _safe_str(rec.get("business_type") or rec.get("category") or rec.get("business_category"), "").split(",")[0].strip()
+    name_lower = name.lower()
 
+    if not raw_cat or raw_cat.lower() in ("unknown", "n/a", "none", "", "business", "brand"):
+        if any(k in name_lower for k in ("clothing", "cloth", "boutique", "fashion", "garment", "wear", "suit", "couture", "pret", "tailor", "collection", "fabrics", "shoes", "leather", "jewelry", "jeweller", "store", "shop")):
+            cat = "clothing"
+        elif any(k in name_lower for k in ("clinic", "dental", "dentist", "doctor", "hospital", "physio", "derma", "health", "medical")):
+            cat = "clinic"
+        elif any(k in name_lower for k in ("restaurant", "cafe", "food", "bakery", "bistro", "pizza", "burger", "grill")):
+            cat = "restaurant"
+        elif any(k in name_lower for k in ("salon", "spa", "beauty", "parlour", "barber")):
+            cat = "salon"
+        else:
+            cat = "retail"
+    else:
+        cat = raw_cat
+
+    cat_lower = cat.lower()
+    site_val = str(rec.get("website") or "").strip().lower()
+    has_site = bool(site_val and site_val not in ("none", "null", "n/a", "") and not any(s in site_val for s in ("facebook.com", "instagram.com", "fb.me", "tiktok.com")))
+
+    # Retail / Clothing / Fashion / Shoes / Jewelry / Products
+    if any(k in cat_lower for k in ("clothing", "cloth", "boutique", "fashion", "garment", "wear", "shoes", "leather", "jewelry", "jeweller", "store", "shop", "retail", "brand")):
+        if not has_site:
+            return f"We help clothing and retail brands convert their social media followers into automated online orders with a custom storefront & WhatsApp checkout."
+        return f"We help retail and clothing stores add automated product catalogs and 1-click WhatsApp ordering to increase direct sales."
+
+    # Healthcare / Clinics / Doctors / Dental
+    if any(k in cat_lower for k in ("clinic", "doctor", "dental", "dentist", "hospital", "physio", "derma", "health", "medical")):
+        if not has_site:
+            return f"We help medical practices and clinics establish a trusted Google & mobile presence with instant WhatsApp appointment booking."
+        return f"We help medical clinics optimize their online patient booking flow and local Google ranking."
+
+    # Food / Cafe / Restaurant / Bakery
+    if any(k in cat_lower for k in ("restaurant", "cafe", "food", "bakery", "bistro", "pizza", "burger", "grill")):
+        return f"We help food and dining businesses set up direct digital menus and WhatsApp ordering to eliminate high delivery aggregator commissions."
+
+    # Salon / Spa / Beauty
+    if any(k in cat_lower for k in ("salon", "spa", "beauty", "parlour", "barber")):
+        return f"We help salons and beauty studios automate customer appointment bookings and showcase client transformations on mobile."
+
+    # General / Default
+    clean_cat = cat if not cat.lower().endswith("business") else cat[:-8].strip()
+    clean_cat = clean_cat or "local"
     if not has_site:
-        return f"We help {cat}s set up a professional Google & mobile website with direct WhatsApp booking. Website packages start from PKR 10,000."
-    return f"We help {cat} practices optimize their online presence and patient booking system."
+        return f"We help {clean_cat} businesses launch a high-converting digital storefront and professional Google presence starting from PKR 10,000."
+    return f"We help {clean_cat} businesses upgrade their digital presence with AI brand assistance and 24/7 customer capture."
 
 
 def _load_existing_mega(csv_path: Path) -> tuple[list[dict[str, str]], dict[str, dict[str, str]]]:
@@ -128,10 +170,12 @@ def update_mega_archives(
     # 1. Write Batch Snapshots
     batch_cf_csv = batches_dir / f"contact_first_{clean_batch_name}_{file_ts}.csv"
     batch_cl_csv = batches_dir / f"contact_later_{clean_batch_name}_{file_ts}.csv"
+    batch_all_csv = batches_dir / f"master_batch_{clean_batch_name}_{file_ts}.csv"
 
     _write_simple_csv(batch_cf_csv, cf_current, batch_source, now_ts)
     _write_simple_csv(batch_cl_csv, cl_current, batch_source, now_ts)
-    logger.info("Saved batch snapshots in %s", batches_dir)
+    _write_simple_csv(batch_all_csv, current_records, batch_source, now_ts)
+    logger.info("Saved batch snapshots (contact_first, contact_later, master) in %s", batches_dir)
 
     # 2. Update Mega Contact First
     mega_cf_path = out / "mega_contact_first.csv"
@@ -149,6 +193,9 @@ def update_mega_archives(
             new_row = _build_mega_row(rec, "CONTACT FIRST", batch_source, now_ts)
             updated_cf_rows.append(new_row)
             cf_lookup[k] = new_row
+
+    # Ensure no enterprise/national brands persist in mega contact first
+    updated_cf_rows = [r for r in updated_cf_rows if not _is_known_enterprise_brand(r.get("business_name"))]
 
     _write_mega_csv(mega_cf_path, updated_cf_rows)
 

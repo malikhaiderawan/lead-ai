@@ -38,6 +38,11 @@
         </a>
 
         <div class="nav-section-title">Leads & Channels</div>
+        <a class="nav-item" data-view="leads" onclick="switchView('leads')" style="background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.25);">
+          <span class="nav-icon">⚡</span>
+          <span style="font-weight:600; color:#38bdf8;">Sales Activity CRM</span>
+          <span class="nav-badge" id="badge-crm-pending" style="background:#fbbf24; color:#000; font-weight:700;">0 PENDING</span>
+        </a>
         <a class="nav-item" data-view="leads">
           <span class="nav-icon">📋</span>
           <span>Master Leads</span>
@@ -126,19 +131,31 @@
 
         <div class="top-actions">
           <div class="date-select-wrapper">
-            <select id="global-date-filter">
-              <option value="ALL_TIME" selected>📅 All Time</option>
-              <option value="TODAY">⚡ Today Only</option>
+            <select id="global-date-filter" title="Filter entire dashboard by date">
+              <option value="ALL_TIME" selected>📅 All Dates (All Time)</option>
+              <option value="TODAY">⚡ Aaj (Today Only)</option>
+              <option value="YESTERDAY">⏮️ Kal (Yesterday)</option>
+              <option value="PARSO">⏳ Parso (2 Days Ago)</option>
+              <option value="SPECIFIC_DATE">🎯 Specific Date (Kisi 1 Din Ki Leads / Jaise 10...)</option>
               <option value="PAST_7_DAYS">🗓️ Past 7 Days</option>
               <option value="PAST_30_DAYS">🗓️ Past 30 Days</option>
+              <option value="THIS_MONTH">🗓️ This Month</option>
               <option value="CUSTOM">⚙️ Custom Date Range...</option>
             </select>
           </div>
 
+          <!-- Specific Single Date Container (Pick any date like 10th Oct, 20th Oct) -->
+          <div id="specific-date-container" style="display:none; gap:6px; align-items:center;">
+            <span style="color:var(--text-dim); font-size:11px; font-weight:600;">Date:</span>
+            <input type="date" id="specific-date-input" class="btn btn-sm" style="background:var(--bg-input); color:var(--text-main); font-weight:600;" title="Select exact date (e.g. 10th or any date)">
+            <button class="btn btn-sm btn-primary" id="btn-apply-specific-date">View Leads</button>
+          </div>
+
+          <!-- Custom Date Range Container -->
           <div id="custom-date-container" style="display:none; gap:6px; align-items:center;">
-            <input type="date" id="custom-date-start" class="btn btn-sm" style="background:var(--bg-input);">
+            <input type="date" id="custom-date-start" class="btn btn-sm" style="background:var(--bg-input); color:var(--text-main);">
             <span style="color:var(--text-dim); font-size:11px;">to</span>
-            <input type="date" id="custom-date-end" class="btn btn-sm" style="background:var(--bg-input);">
+            <input type="date" id="custom-date-end" class="btn btn-sm" style="background:var(--bg-input); color:var(--text-main);">
             <button class="btn btn-sm btn-primary" id="btn-apply-custom-date">Apply</button>
           </div>
 
@@ -161,27 +178,111 @@
         
         <!-- 1. EXECUTIVE DASHBOARD VIEW -->
         <section id="view-dashboard" class="view-pane">
-          <!-- Live Client Demos Launchpad Banner -->
-          <div style="background: linear-gradient(135deg, #FFFFFF, #F8FAFC); border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-            <div>
-              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-                <span style="font-size: 20px;">⚡</span>
-                <h3 style="font-size: 17px; font-weight: 700; color: #0F172A; margin: 0; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.2px;">MALIKAXIOM LIVE CLIENT DEMO PORTALS</h3>
-                <span style="background: rgba(14, 165, 233, 0.1); color: #0284C7; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(14, 165, 233, 0.3);">LIGHT MODE LUXURY CONCEPTS</span>
+          <!-- M7 SALES ACTIVITY / CALL CRM TOP SUMMARY -->
+          <div class="card-panel crm-summary-panel" style="margin-bottom: 20px; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 18px;">
+            <div class="panel-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:18px;">📞</span>
+                <div>
+                  <span style="font-weight:700; color:var(--text-main); font-size:15px; letter-spacing:0.3px;">M7 Sales Activity & Call CRM Tracker</span>
+                  <div style="font-size:11px; color:var(--text-dim);">Live daily outreach tracking • Zero-DB persistent activity</div>
+                </div>
               </div>
-              <p style="font-size: 13px; color: #475569; margin: 0;">Interactive luxury fashion storefronts featuring Ultra-Premium transitions, dynamic catalog, cart & executive AI assistant.</p>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <span class="badge" style="background:#2563eb; color:#fff; font-size:10.5px; font-weight:700;">DAILY ACTIVITY CRM</span>
+                <button class="btn btn-sm" onclick="fetchCrmMetrics()" title="Refresh sales counters">↻ Refresh CRM</button>
+              </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-              <a href="/demo/index.html" target="_blank" class="btn" style="background: linear-gradient(135deg, #D4AF37, #B89326); color: #FFFFFF; font-weight: 700; border: none; padding: 10px 18px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(212,175,55,0.25);">
-                <span>👗</span>
-                <span>Open Demo 1 (Boutique 1.0)</span>
-                <span style="font-size: 12px;">↗</span>
-              </a>
-              <a href="/demo2/index.html" target="_blank" class="btn" style="background: linear-gradient(135deg, #0284C7, #0369A1); color: #FFFFFF; font-weight: 700; border: none; padding: 10px 18px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(2,132,199,0.25);">
-                <span>✨</span>
-                <span>Open Demo 2 (Master Boutique 2.0)</span>
-                <span style="font-size: 12px;">↗</span>
-              </a>
+
+            <!-- Two Sections: TODAY & TOTAL -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap:16px;">
+              <!-- TODAY -->
+              <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
+                  <span style="font-size:12px; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px;">⚡ TODAY'S ACTIVITY</span>
+                  <span class="badge" id="crm-today-date-badge" style="background:rgba(56,189,248,0.15); color:#38bdf8; font-size:10px;">Today</span>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
+                  <div class="crm-stat-box" onclick="filterLeadsByActivity('CALLED_TODAY')" style="cursor:pointer;" title="Click to filter leads called today">
+                    <div class="crm-stat-label">Calls Made Today</div>
+                    <div class="crm-stat-num" id="crm-today-calls" style="color:var(--text-main);">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCallAndCategory('CONNECTED', '')" style="cursor:pointer;" title="Click to filter connected leads">
+                    <div class="crm-stat-label">Connected Today</div>
+                    <div class="crm-stat-num" id="crm-today-connected" style="color:#34d399;">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCallAndCategory('NOT_CONNECTED', '')" style="cursor:pointer;" title="Click to filter not connected leads">
+                    <div class="crm-stat-label">Not Connected Today</div>
+                    <div class="crm-stat-num" id="crm-today-not-connected" style="color:#f87171;">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCallAndCategory('', 'INTERESTED')" style="cursor:pointer;" title="Click to filter interested leads">
+                    <div class="crm-stat-label">💎 Interested Today</div>
+                    <div class="crm-stat-num" id="crm-today-interested" style="color:#38bdf8;">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCallAndCategory('', 'SEND')" style="cursor:pointer;" title="Click to filter send/demo leads">
+                    <div class="crm-stat-label">🚀 Send/Demo Today</div>
+                    <div class="crm-stat-num" id="crm-today-send" style="color:#c084fc;">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCallAndCategory('', 'NO_ANSWER')" style="cursor:pointer;" title="Click to filter no answer leads">
+                    <div class="crm-stat-label">📵 No Answer Today</div>
+                    <div class="crm-stat-num" id="crm-today-no-answer" style="color:#fb923c;">0</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TOTAL -->
+              <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid var(--border-color); padding-bottom:6px;">
+                  <span style="font-size:12px; font-weight:700; color:#a78bfa; text-transform:uppercase; letter-spacing:0.5px;">📊 TOTAL METRICS</span>
+                  <span class="badge" style="background:rgba(167,139,250,0.15); color:#a78bfa; font-size:10px;">Pipeline Lifetime</span>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;">
+                  <div class="crm-stat-box" onclick="switchView('leads', {tab: 'ALL'})" style="cursor:pointer;">
+                    <div class="crm-stat-label">Total Leads</div>
+                    <div class="crm-stat-num" id="crm-total-leads" style="color:var(--text-main);">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCallStatus('PENDING')" style="cursor:pointer; border-color:rgba(251,191,36,0.35); background:rgba(251,191,36,0.06);" title="Pending Calls: Eligible CONTACT FIRST leads with no call attempts yet">
+                    <div class="crm-stat-label" style="color:#fbbf24; font-weight:700;">⏳ Pending Calls</div>
+                    <div class="crm-stat-num" id="crm-total-pending" style="color:#fbbf24;">0</div>
+                  </div>
+                  <div class="crm-stat-box" style="cursor:pointer;" onclick="filterLeadsByActivity('CALLED_TODAY')">
+                    <div class="crm-stat-label">Total Calls Made</div>
+                    <div class="crm-stat-num" id="crm-total-calls" style="color:var(--text-main);">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCallStatus('CONNECTED')" style="cursor:pointer;">
+                    <div class="crm-stat-label">Total Connected</div>
+                    <div class="crm-stat-num" id="crm-total-connected" style="color:#34d399;">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCallStatus('NOT_CONNECTED')" style="cursor:pointer;">
+                    <div class="crm-stat-label">Total Not Conn</div>
+                    <div class="crm-stat-num" id="crm-total-not-connected" style="color:#f87171;">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCategory('INTERESTED')" style="cursor:pointer;">
+                    <div class="crm-stat-label">Total Interested</div>
+                    <div class="crm-stat-num" id="crm-total-interested" style="color:#38bdf8;">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCategory('SEND')" style="cursor:pointer;">
+                    <div class="crm-stat-label">Total Send/Demo</div>
+                    <div class="crm-stat-num" id="crm-total-send" style="color:#c084fc;">0</div>
+                  </div>
+                  <div class="crm-stat-box" onclick="filterLeadsByCategory('NO_ANSWER')" style="cursor:pointer;">
+                    <div class="crm-stat-label">Total No Answer</div>
+                    <div class="crm-stat-num" id="crm-total-no-answer" style="color:#fb923c;">0</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Today's Chronological Sales Activity Feed -->
+            <div style="margin-top:14px; border-top:1px solid var(--border-color); padding-top:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:12px; font-weight:700; color:var(--text-main);">🕒 Today's Chronological Sales Activity Log</span>
+                <span style="font-size:11px; color:var(--text-dim);" id="crm-today-feed-count">0 recorded events today</span>
+              </div>
+              <div id="crm-today-activity-feed" class="timeline-feed" style="max-height:140px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;">
+                <div style="font-size:11.5px; color:var(--text-dim); padding:6px 0;">No call activities logged today yet. Click "Call Done" on any lead to record.</div>
+              </div>
             </div>
           </div>
 
@@ -393,7 +494,7 @@
         <section id="view-pipeline" class="view-pane" style="display:none;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
             <div>
-              <h2 style="font-size:16px; font-weight:700; color:#fff;">🎯 Visual Sales Kanban Pipeline</h2>
+              <h2 style="font-size:16px; font-weight:700; color:var(--text-main);">🎯 Visual Sales Kanban Pipeline</h2>
               <p style="font-size:12px; color:var(--text-muted);">Track leads across each lifecycle stage from Discovery to Closed-Won</p>
             </div>
             <div class="filter-group">
@@ -412,6 +513,7 @@
             <!-- Filter Tabs / Preset Bar -->
             <div class="leads-tabs-bar" id="leads-tabs-bar">
               <button class="tab-btn active" data-tab="ALL">All (<span id="tab-count-all">0</span>)</button>
+              <button class="tab-btn" data-tab="NEW" style="color:#f59e0b; font-weight:700;">✨ New (<span id="tab-count-new">0</span>)</button>
               <button class="tab-btn" data-tab="ACTIVE">Active (<span id="tab-count-active">0</span>)</button>
               <button class="tab-btn" data-tab="CONTACT_FIRST">Contact First (<span id="tab-count-contact-first">0</span>)</button>
               <button class="tab-btn" data-tab="CONTACT_LATER">Contact Later (<span id="tab-count-contact-later">0</span>)</button>
@@ -425,11 +527,58 @@
 
             <div class="table-toolbar">
               <div style="display:flex; align-items:center; gap:12px;">
-                <span style="font-size:14px; font-weight:700; color:#fff;">📋 Master Sales Leads</span>
+                <span style="font-size:14px; font-weight:700; color:var(--text-main);">📋 Master Sales Leads</span>
                 <span class="badge badge-low" id="leads-count-tag">0 Leads</span>
               </div>
 
               <div class="filter-group">
+                <!-- Overall Date Filter for Leads Table -->
+                <select id="filter-lead-date" title="Filter Leads by Date (Overall / Aaj / Kal / Parso / 10th / Any Date)" style="border-color:rgba(56,189,248,0.55); background:rgba(56,189,248,0.12); color:#38bdf8; font-weight:700;">
+                  <option value="ALL_TIME">📅 Date: All Time</option>
+                  <option value="TODAY">⚡ Aaj (Today)</option>
+                  <option value="YESTERDAY">⏮️ Kal (Yesterday)</option>
+                  <option value="PARSO">⏳ Parso (2 Days Ago)</option>
+                  <option value="SPECIFIC_DATE">🎯 Specific Date (10, 20...)</option>
+                  <option value="PAST_7_DAYS">🗓️ Past 7 Days</option>
+                  <option value="PAST_30_DAYS">🗓️ Past 30 Days</option>
+                  <option value="THIS_MONTH">🗓️ This Month</option>
+                  <option value="CUSTOM">⚙️ Custom Range...</option>
+                </select>
+
+                <!-- M7 Sales CRM Filters -->
+                <select id="filter-lead-call-status" title="Filter by Call Status" style="border-color:rgba(56,189,248,0.4); background:rgba(56,189,248,0.06); color:#38bdf8; font-weight:600;">
+                  <option value="">📞 Call: All</option>
+                  <option value="PENDING">⏳ Pending (Not Called)</option>
+                  <option value="CONNECTED">🟢 Connected</option>
+                  <option value="NOT_CONNECTED">🔴 Not Connected</option>
+                </select>
+
+                <select id="filter-lead-category" title="Filter by CRM Category" style="border-color:rgba(168,85,247,0.4); background:rgba(168,85,247,0.06); color:#c084fc; font-weight:600;">
+                  <option value="">🏷️ Cat: All</option>
+                  <option value="INTERESTED">💎 A — Interested</option>
+                  <option value="SEND">🚀 B — Send</option>
+                  <option value="NO_ANSWER">📵 C — No Answer</option>
+                </select>
+
+                <select id="filter-lead-activity" title="Filter by Sales Activity" style="border-color:rgba(16,185,129,0.4); background:rgba(16,185,129,0.06); color:#34d399; font-weight:600;">
+                  <option value="">⚡ Act: All</option>
+                  <option value="CALLED_TODAY">📞 Called Today</option>
+                  <option value="NOT_CALLED_TODAY">⏳ Not Called Today</option>
+                  <option value="DEMO_SENT">🚀 Demo Sent</option>
+                  <option value="INTERESTED">💎 Interested</option>
+                  <option value="NO_ANSWER">📵 No Answer</option>
+                </select>
+
+                <select id="filter-lead-sort" title="Sort leads" style="border-color:var(--border-color); font-weight:500;">
+                  <option value="">↕️ Sort: Default</option>
+                  <option value="newest_activity">⚡ Newest Activity</option>
+                  <option value="oldest_activity">📜 Oldest Activity</option>
+                  <option value="last_called">📞 Last Called</option>
+                  <option value="never_called">⏳ Never Called</option>
+                  <option value="interested_first">💎 Interested First</option>
+                  <option value="pending_calls_first">⏳ Pending First</option>
+                </select>
+
                 <select id="filter-lead-priority">
                   <option value="">All Priorities</option>
                   <option value="CONTACT FIRST">🔥 Contact First</option>
@@ -498,14 +647,12 @@
                 <thead>
                   <tr>
                     <th>Lead / Business</th>
-                    <th>City</th>
-                    <th>Contact Info</th>
-                    <th>Score & Potential</th>
-                    <th>Priority</th>
-                    <th>Channel</th>
-                    <th>Status / Stage</th>
-                    <th>Reason / Opportunity</th>
-                    <th>Discovered</th>
+                    <th>Contact Phone</th>
+                    <th>M6 Status</th>
+                    <th>Call Status (M7)</th>
+                    <th>Category (M7)</th>
+                    <th>Last Called & Note</th>
+                    <th>Score / Channel</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -554,11 +701,11 @@
           <div class="table-container">
             <div class="table-toolbar">
               <div style="display:flex; align-items:center; gap:12px;">
-                <span style="font-size:14px; font-weight:700; color:#fff;">💬 WhatsApp Delivery Command Center</span>
+                <span style="font-size:14px; font-weight:700; color:var(--text-main);">💬 WhatsApp Delivery Command Center</span>
                 <span style="font-size:11px; color:var(--text-muted);">Strict ground-truth data from m6_send_state.json</span>
               </div>
               <div class="filter-group">
-                <input type="text" id="filter-wa-search" placeholder="Search WA leads..." style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; color:#fff; font-size:12px;">
+                <input type="text" id="filter-wa-search" placeholder="Search WA leads..." style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; color:var(--text-main); font-size:12px;">
                 <select id="filter-wa-status">
                   <option value="">All WA Statuses</option>
                   <option value="SENT">✅ SENT</option>
@@ -610,24 +757,49 @@
               <span class="badge badge-high" id="cold-calling-count">0 Callable Leads</span>
             </div>
             <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
-              Strict phone-verified queue for active <strong style="color:var(--text-main);">Contact First</strong> and <strong style="color:var(--text-main);">Contact Later</strong> leads. All ARCHIVE, SKIP, SENT, and terminal WhatsApp statuses are strictly excluded. Click any row to view full call script angle and pain points.
+              Strict phone-verified calling queue for active <strong style="color:var(--text-main);">Contact First</strong> and <strong style="color:var(--text-main);">Contact Later</strong> leads. Click any row or use the <strong>📞 Call</strong> and <strong>📞 Call Done</strong> actions to log outcomes directly into your daily CRM.
             </p>
           </div>
 
           <div class="table-container">
-            <!-- 3-Button Filter Bar with live counts -->
-            <div class="leads-tabs-bar" id="cold-calling-tabs-bar" style="margin-bottom:14px;">
-              <button class="tab-btn active" data-tab="ALL" id="btn-cc-tab-all">All (<span id="cc-tab-count-all">0</span>)</button>
-              <button class="tab-btn" data-tab="CONTACT_FIRST" id="btn-cc-tab-first">Contact First (<span id="cc-tab-count-first">0</span>)</button>
-              <button class="tab-btn" data-tab="CONTACT_LATER" id="btn-cc-tab-later">Contact Later (<span id="cc-tab-count-later">0</span>)</button>
+            <!-- Filter Bar with live counts for Call Status & Priority -->
+            <div class="leads-tabs-bar" id="cold-calling-tabs-bar" style="margin-bottom:14px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;">
+              <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+                <span style="font-size:11px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">Call Outcome:</span>
+                <button class="tab-btn active" data-call-status="ALL" id="btn-cc-status-all">📞 All Calls (<span id="cc-call-count-all">0</span>)</button>
+                <button class="tab-btn" data-call-status="PENDING" id="btn-cc-status-pending" style="color:var(--accent-amber); font-weight:600;" title="Jin ko abhi tk calls nai ki (Pending)">⏳ Pending / Not Called (<span id="cc-call-count-pending">0</span>)</button>
+                <button class="tab-btn" data-call-status="CONNECTED" id="btn-cc-status-connected" style="color:#34d399; font-weight:600;" title="Calls Connected">🟢 Connected (<span id="cc-call-count-connected">0</span>)</button>
+                <button class="tab-btn" data-call-status="NOT_CONNECTED" id="btn-cc-status-not-connected" style="color:#f87171; font-weight:600;" title="Calls Not Connected">🔴 Not Connected (<span id="cc-call-count-not-connected">0</span>)</button>
+              </div>
+
+              <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+                <span style="font-size:11px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">Priority:</span>
+                <button class="tab-btn active" data-tab="ALL" id="btn-cc-tab-all" style="padding:4px 9px; font-size:11px;">All (<span id="cc-tab-count-all">0</span>)</button>
+                <button class="tab-btn" data-tab="CONTACT_FIRST" id="btn-cc-tab-first" style="padding:4px 9px; font-size:11px;">Contact First (<span id="cc-tab-count-first">0</span>)</button>
+                <button class="tab-btn" data-tab="CONTACT_LATER" id="btn-cc-tab-later" style="padding:4px 9px; font-size:11px;">Contact Later (<span id="cc-tab-count-later">0</span>)</button>
+              </div>
             </div>
 
             <div class="table-toolbar">
               <div style="display:flex; align-items:center; gap:12px;">
-                <span style="font-size:14px; font-weight:700; color:#fff;">📞 Phone-Verified Cold Calling Queue</span>
+                <span style="font-size:14px; font-weight:700; color:var(--text-main);">📞 Phone-Verified Cold Calling Queue</span>
               </div>
               <div class="filter-group">
-                <input type="text" id="filter-cold-calling-search" placeholder="Search cold calling..." style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; color:#fff; font-size:12px; width:220px;">
+                <input type="text" id="filter-cold-calling-search" placeholder="Search cold calling..." style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; color:var(--text-main); font-size:12px; width:180px;">
+                <select id="filter-cc-date" title="Filter Cold Calling by Date" style="border-color:rgba(56,189,248,0.5); background:rgba(56,189,248,0.1); color:#38bdf8; font-weight:700;">
+                  <option value="ALL_TIME">📅 All Dates</option>
+                  <option value="TODAY">⚡ Aaj (Today)</option>
+                  <option value="YESTERDAY">⏮️ Kal (Yesterday)</option>
+                  <option value="PARSO">⏳ Parso (2 Days Ago)</option>
+                  <option value="SPECIFIC_DATE">🎯 Specific Date...</option>
+                  <option value="PAST_7_DAYS">🗓️ Past 7 Days</option>
+                </select>
+                <select id="filter-cold-calling-status" title="Filter by Call Status" style="border-color:rgba(56,189,248,0.4); background:rgba(56,189,248,0.06); color:#38bdf8; font-weight:600;">
+                  <option value="">📞 Call: All Calls</option>
+                  <option value="PENDING">⏳ Pending (Not Called)</option>
+                  <option value="CONNECTED">🟢 Connected</option>
+                  <option value="NOT_CONNECTED">🔴 Not Connected</option>
+                </select>
                 <select id="filter-cold-calling-potential">
                   <option value="">All Potential</option>
                   <option value="HIGH">💎 High</option>
@@ -655,6 +827,7 @@
                     <th>Business Name</th>
                     <th>City</th>
                     <th>Phone</th>
+                    <th>Call Status</th>
                     <th>WhatsApp</th>
                     <th>Contact Priority</th>
                     <th>Score / Status</th>
@@ -688,10 +861,10 @@
           <div class="table-container">
             <div class="table-toolbar">
               <div style="display:flex; align-items:center; gap:12px;">
-                <span style="font-size:14px; font-weight:700; color:#fff;">📸 Instagram DM Outreach Action Queue</span>
+                <span style="font-size:14px; font-weight:700; color:var(--text-main);">📸 Instagram DM Outreach Action Queue</span>
               </div>
               <div class="filter-group">
-                <input type="text" id="filter-ig-search" placeholder="Search IG leads..." style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; color:#fff; font-size:12px;">
+                <input type="text" id="filter-ig-search" placeholder="Search IG leads..." style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; color:var(--text-main); font-size:12px;">
                 <select id="filter-ig-potential">
                   <option value="">All Potential</option>
                   <option value="HIGH">💎 High</option>
@@ -954,6 +1127,8 @@
 
       <div class="modal-tabs">
         <div class="modal-tab active" data-tab="tab-overview" onclick="switchModalTab('tab-overview')">📌 Overview</div>
+        <div class="modal-tab" data-tab="tab-activity" onclick="switchModalTab('tab-activity')">📞 Call Activity & CRM</div>
+        <div class="modal-tab" data-tab="tab-demo" onclick="switchModalTab('tab-demo')">👗 Boutique Demo (M7)</div>
         <div class="modal-tab" data-tab="tab-research" onclick="switchModalTab('tab-research')">🔬 Research (M2)</div>
         <div class="modal-tab" data-tab="tab-qualification" onclick="switchModalTab('tab-qualification')">⚖️ Qualification (M3)</div>
         <div class="modal-tab" data-tab="tab-outreach" onclick="switchModalTab('tab-outreach')">✉️ Outreach (M4)</div>
@@ -965,6 +1140,77 @@
       <div class="modal-body" id="modal-lead-body">
         <!-- Tab 1: Overview -->
         <div id="tab-overview" class="modal-tab-content">
+          <!-- M1 to M5 Pipeline Stepper & Skip Reason Audit Card -->
+          <div class="m1-m5-stepper-card">
+            <div class="m1-m5-stepper-header">
+              <span class="m1-m5-stepper-title">🚀 M1 ➔ M5 Pipeline Lifecycle & Decision Audit</span>
+              <span style="font-size:11px; color:var(--text-dim);">Click any step to inspect details</span>
+            </div>
+            
+            <div class="stepper-steps-container">
+              <!-- M1: Discovery -->
+              <div class="stepper-step-item" onclick="switchModalTab('tab-overview')" title="M1 Raw Discovery (Click to view)">
+                <div class="stepper-step-tag">
+                  <span class="stepper-milestone-id">M1</span>
+                  <span id="step-m1-badge" class="badge badge-sent" style="font-size:9.5px; padding:1px 4px;">DONE</span>
+                </div>
+                <div class="stepper-step-name">Discovery</div>
+                <div class="stepper-step-status" id="step-m1-desc" style="color:var(--text-muted);">Discovered</div>
+              </div>
+
+              <div class="stepper-arrow">➔</div>
+
+              <!-- M2: Research -->
+              <div class="stepper-step-item" onclick="switchModalTab('tab-research')" title="M2 Deep Research (Click to view)">
+                <div class="stepper-step-tag">
+                  <span class="stepper-milestone-id">M2</span>
+                  <span id="step-m2-badge" class="badge" style="font-size:9.5px; padding:1px 4px;">--</span>
+                </div>
+                <div class="stepper-step-name">Research</div>
+                <div class="stepper-step-status" id="step-m2-desc" style="color:var(--text-muted);">Audit</div>
+              </div>
+
+              <div class="stepper-arrow">➔</div>
+
+              <!-- M3: Qualification -->
+              <div class="stepper-step-item" onclick="switchModalTab('tab-qualification')" title="M3 Lead Qualification (Click to view)">
+                <div class="stepper-step-tag">
+                  <span class="stepper-milestone-id">M3</span>
+                  <span id="step-m3-badge" class="badge" style="font-size:9.5px; padding:1px 4px;">--</span>
+                </div>
+                <div class="stepper-step-name">Qualification</div>
+                <div class="stepper-step-status" id="step-m3-desc" style="color:var(--text-muted);">Score</div>
+              </div>
+
+              <div class="stepper-arrow">➔</div>
+
+              <!-- M4: Outreach -->
+              <div class="stepper-step-item" onclick="switchModalTab('tab-outreach')" title="M4 Outreach Generation (Click to view)">
+                <div class="stepper-step-tag">
+                  <span class="stepper-milestone-id">M4</span>
+                  <span id="step-m4-badge" class="badge" style="font-size:9.5px; padding:1px 4px;">--</span>
+                </div>
+                <div class="stepper-step-name">Outreach</div>
+                <div class="stepper-step-status" id="step-m4-desc" style="color:var(--text-muted);">Pitch</div>
+              </div>
+
+              <div class="stepper-arrow">➔</div>
+
+              <!-- M5: Master Decision -->
+              <div class="stepper-step-item" onclick="switchModalTab('tab-master')" title="M5 Master Routing Decision (Click to view)">
+                <div class="stepper-step-tag">
+                  <span class="stepper-milestone-id">M5</span>
+                  <span id="step-m5-badge" class="badge" style="font-size:9.5px; padding:1px 4px;">--</span>
+                </div>
+                <div class="stepper-step-name">Final Routing</div>
+                <div class="stepper-step-status" id="step-m5-desc" style="color:var(--text-muted);">Decision</div>
+              </div>
+            </div>
+
+            <!-- Prominent Decision & Skip/Archive Reason Audit Box -->
+            <div id="modal-journey-decision-box" class="journey-decision-box" style="display:none;"></div>
+          </div>
+
           <div class="detail-section">
             <div class="detail-section-title">Core Business Information</div>
             <div class="detail-grid-2">
@@ -1026,6 +1272,111 @@
             <div class="detail-field">
               <div class="detail-label">Identified Digital Gaps</div>
               <div class="detail-value" id="md-ov-gaps" style="color:var(--text-muted);">--</div>
+            </div>
+          </div>
+
+          <!-- M7 Sales Activity & Call CRM Section in Overview -->
+          <div class="detail-section" style="border: 1px solid rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.04); border-radius: 8px; padding: 14px; margin-bottom: 14px;">
+            <div class="detail-section-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:#38bdf8;">
+              <span style="font-size:13.5px; font-weight:700;">📞 M7 Sales Activity & Call Outcome</span>
+              <button class="btn btn-sm btn-primary" onclick="openQuickCallFromModal()" style="background:#2563eb; border-color:#2563eb; font-weight:600; cursor:pointer;">
+                ⚡ Log Call (3s Workflow)
+              </button>
+            </div>
+
+            <div class="detail-grid-2" style="margin-bottom:10px;">
+              <div class="detail-field">
+                <div class="detail-label">Call Status</div>
+                <div class="detail-value" id="md-crm-call-status">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Outreach Category</div>
+                <div class="detail-value" id="md-crm-category">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Last Called At</div>
+                <div class="detail-value" id="md-crm-last-called">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Call History Count</div>
+                <div class="detail-value" id="md-crm-count">0 recorded events</div>
+              </div>
+            </div>
+
+            <div class="detail-label" style="margin-bottom:4px;">Latest Note</div>
+            <div class="pitch-box" id="md-crm-latest-note" style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:8px 10px; font-size:12px; margin-bottom:10px; min-height:24px;">
+              No notes recorded yet.
+            </div>
+
+            <!-- Instant 1-Click Action Buttons -->
+            <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+              <span style="font-size:11px; color:var(--text-dim); margin-right:4px;">1-Click Actions:</span>
+              <button class="btn btn-sm" onclick="quickLogLeadActivity('CONNECTED', null)" style="border-color:#34d399; color:#34d399; font-weight:600;">🟢 Connected</button>
+              <button class="btn btn-sm" onclick="quickLogLeadActivity('NOT_CONNECTED', null)" style="border-color:#f87171; color:#f87171; font-weight:600;">🔴 Not Connected</button>
+              <button class="btn btn-sm" onclick="quickLogLeadActivity(null, 'INTERESTED')" style="border-color:#38bdf8; color:#38bdf8; font-weight:600;">💎 A: Interested</button>
+              <button class="btn btn-sm" onclick="quickLogLeadActivity(null, 'SEND')" style="border-color:#c084fc; color:#c084fc; font-weight:600;">🚀 B: Send</button>
+              <button class="btn btn-sm" onclick="quickLogLeadActivity(null, 'NO_ANSWER')" style="border-color:#fb923c; color:#fb923c; font-weight:600;">📵 C: No Answer</button>
+              <button class="btn btn-sm" onclick="openQuickCallFromModal()" style="border-color:var(--border-color); color:var(--text-main);">📝 Add Note</button>
+            </div>
+          </div>
+
+          <!-- M7: Personalized Boutique Demo Generator Section -->
+          <div class="detail-section" id="modal-m7-demo-section" style="border: 1px solid rgba(212,175,55,0.35); background: rgba(212,175,55,0.035); border-radius: 8px; padding: 14px; margin-bottom: 14px;">
+            <div class="detail-section-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:#D4AF37;">
+              <span>👗 M7 — Personalized Boutique Demo Generator</span>
+              <span class="badge" style="background:rgba(212,175,55,0.15); color:#D4AF37; border:1px solid rgba(212,175,55,0.3); font-size:10px; font-weight:700;">DEMO 5 MASTER</span>
+            </div>
+
+            <!-- Unready state -->
+            <div id="m7-demo-unready">
+              <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px; line-height:1.4;">
+                Generate a live, personalized storefront URL for <strong id="m7-demo-biz-name-preview" style="color:var(--text-bright);">this lead</strong> pointing to the master deployed demo (<code>https://website-demo-five-navy.vercel.app/</code>).
+              </p>
+              <button class="btn btn-primary" id="btn-modal-generate-demo" onclick="handleGenerateDemoClick()" style="background:#D4AF37; border-color:#D4AF37; color:#000; font-weight:700; cursor:pointer;">
+                🚀 Generate Demo
+              </button>
+            </div>
+
+            <!-- Ready state -->
+            <div id="m7-demo-ready" style="display:none;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10B981; box-shadow:0 0 8px rgba(16,185,129,0.8);"></span>
+                  <span style="font-size:11.5px; font-weight:700; color:#10B981; letter-spacing:0.5px;">DEMO READY</span>
+                </div>
+                <span style="font-size:11px; color:var(--text-dim); font-family:var(--font-mono);">Deterministic URL</span>
+              </div>
+
+              <!-- Generated URL Box -->
+              <div class="pitch-box" id="m7-demo-url-display" style="word-break:break-all; font-family:var(--font-mono); font-size:11.5px; color:#38bdf8; background:var(--bg-card); padding:10px 12px; border:1px solid var(--border-color); border-radius:6px; margin-bottom:10px; user-select:all;">
+                --
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-sm btn-primary" id="btn-m7-open-demo" onclick="handleOpenDemoClick()" style="background:#2563eb; border-color:#2563eb; cursor:pointer;">
+                  🌐 Open Demo
+                </button>
+                <button class="btn btn-sm" id="btn-m7-copy-link" onclick="handleCopyDemoLinkClick()" style="cursor:pointer;">
+                  📋 Copy Link
+                </button>
+                <button class="btn btn-sm" id="btn-m7-prepare-wa" onclick="handleToggleWhatsAppDemoClick()" style="background:var(--accent-wa); border-color:var(--accent-wa); color:#fff; cursor:pointer;">
+                  💬 Prepare WhatsApp
+                </button>
+              </div>
+
+              <!-- Prepared WhatsApp Draft Box -->
+              <div id="m7-wa-preview-box" style="display:none; margin-top:12px; padding:12px; background:rgba(37,211,102,0.06); border:1px solid rgba(37,211,102,0.25); border-radius:6px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <span style="font-size:11.5px; font-weight:600; color:#34d399;">💬 Prepared WhatsApp Pitch (Manual Dispatch Only)</span>
+                  <span style="font-size:10px; color:var(--text-dim);">Zero-DB • Non-destructive</span>
+                </div>
+                <pre id="m7-wa-message-text" style="white-space:pre-wrap; font-family:var(--font-sans); font-size:12px; color:var(--text-bright); margin:0 0 10px 0; line-height:1.5; background:var(--bg-input); padding:10px; border-radius:4px; border:1px solid var(--border-color);"></pre>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <button class="btn btn-sm" id="btn-m7-copy-wa" onclick="handleCopyDemoWhatsAppClick()" style="cursor:pointer;">📋 Copy Message</button>
+                  <a id="m7-wa-direct-link" href="#" target="_blank" class="btn btn-sm" style="background:var(--accent-wa); color:#fff; border-color:var(--accent-wa); text-decoration:none;">💬 Launch WhatsApp Draft</a>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1158,8 +1509,21 @@
             <div class="detail-section-title">WhatsApp Ground Truth Delivery State</div>
             <div class="detail-grid-2">
               <div class="detail-field">
-                <div class="detail-label">M6 Status</div>
-                <div class="detail-value" id="md-m6-status">--</div>
+                <div class="detail-label">M6 Status (Current / Manual Edit)</div>
+                <div style="display:flex; gap:8px; align-items:center; margin-top:6px; flex-wrap:wrap;">
+                  <select id="modal-edit-m6-status" class="filter-select" style="font-size:12px; font-weight:700; padding:6px 10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-main);">
+                    <option value="SENT">✅ SENT</option>
+                    <option value="PENDING">⏳ PENDING</option>
+                    <option value="AWAITING_MANUAL_SEND">✋ AWAITING_MANUAL_SEND</option>
+                    <option value="FAILED">❌ FAILED</option>
+                    <option value="NOT_READY">⚠️ NOT_READY</option>
+                    <option value="NO_WHATSAPP_NUMBER">🚫 NO_WHATSAPP_NUMBER</option>
+                    <option value="ARCHIVE">📁 ARCHIVE</option>
+                    <option value="SKIP">⏭️ SKIP</option>
+                  </select>
+                  <button class="btn btn-sm btn-primary" id="btn-save-modal-m6" onclick="saveModalM6Status()" style="font-size:11.5px; font-weight:700; padding:6px 12px; cursor:pointer;">💾 Save Status</button>
+                  <span id="md-m6-status" style="display:none;">--</span>
+                </div>
               </div>
               <div class="detail-field">
                 <div class="detail-label">Recipient Number</div>
@@ -1196,6 +1560,243 @@
               <!-- Rendered by JS -->
             </div>
           </div>
+        </div>
+
+        <!-- Tab 8: Boutique Demo (M7) -->
+        <div id="tab-demo" class="modal-tab-content" style="display:none;">
+          <div class="detail-section" style="border: 1px solid rgba(212,175,55,0.35); background: rgba(212,175,55,0.035); border-radius: 8px; padding: 16px;">
+            <div class="detail-section-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; color:#D4AF37;">
+              <span style="font-size:14px; font-weight:700;">👗 M7 — Personalized Boutique Demo Generator</span>
+              <span class="badge" style="background:#D4AF37; color:#000; font-weight:700; font-size:10px;">DEMO 5 MASTER</span>
+            </div>
+            
+            <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">
+              Generates a personalized storefront URL pointing directly to the deployed master demo (<code style="color:#38bdf8;">https://website-demo-five-navy.vercel.app/</code>) personalized with this lead's business name.
+            </p>
+
+            <div class="detail-grid-2" style="margin-bottom:14px;">
+              <div class="detail-field">
+                <div class="detail-label">Lead Business Name</div>
+                <div class="detail-value" id="m7-tab-biz-name" style="font-weight:600; color:var(--text-bright); font-size:13px;">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Master Demo Architecture</div>
+                <div class="detail-value" style="color:#D4AF37; font-size:13px;">Demo 5 (Navy Royal Boutique)</div>
+              </div>
+            </div>
+
+            <!-- Demo URL Box -->
+            <div class="detail-label" style="margin-bottom:6px;">Personalized Live Storefront URL</div>
+            <div class="pitch-box" id="m7-tab-demo-url-display" style="word-break:break-all; font-family:var(--font-mono); font-size:11.5px; color:#38bdf8; background:var(--bg-card); padding:10px 12px; border:1px solid var(--border-color); border-radius:6px; margin-bottom:12px; user-select:all;">
+              Click "Generate Demo" to build URL
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+              <button class="btn btn-primary" id="btn-tab-generate-demo" onclick="handleGenerateDemoClick()" style="background:#D4AF37; border-color:#D4AF37; color:#000; font-weight:700; cursor:pointer;">
+                🚀 Generate Demo
+              </button>
+              <button class="btn btn-primary" id="btn-tab-open-demo" onclick="handleOpenDemoClick()" style="background:#2563eb; border-color:#2563eb; cursor:pointer; display:none;">
+                🌐 Open Demo
+              </button>
+              <button class="btn" id="btn-tab-copy-link" onclick="handleCopyDemoLinkClick()" style="cursor:pointer; display:none;">
+                📋 Copy Link
+              </button>
+              <button class="btn" id="btn-tab-prepare-wa" onclick="handleToggleWhatsAppDemoClick()" style="background:var(--accent-wa); border-color:var(--accent-wa); color:#fff; cursor:pointer; display:none;">
+                💬 Prepare WhatsApp
+              </button>
+            </div>
+
+            <!-- WhatsApp Message Preview Box -->
+            <div id="m7-tab-wa-box" style="display:none; padding:12px; background:rgba(37,211,102,0.06); border:1px solid rgba(37,211,102,0.25); border-radius:6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:11.5px; font-weight:600; color:#34d399;">💬 Pre-composed WhatsApp Pitch (Manual Dispatch Only)</span>
+                <span style="font-size:10px; color:var(--text-dim);">Zero-DB • Non-destructive</span>
+              </div>
+              <pre id="m7-tab-wa-text" style="white-space:pre-wrap; font-family:var(--font-sans); font-size:12px; color:var(--text-bright); margin:0 0 10px 0; line-height:1.5; background:var(--bg-input); padding:10px; border-radius:4px; border:1px solid var(--border-color);"></pre>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-sm" onclick="handleCopyDemoWhatsAppClick()" style="cursor:pointer;">📋 Copy Message</button>
+                <a id="m7-tab-wa-link" href="#" target="_blank" class="btn btn-sm" style="background:var(--accent-wa); color:#fff; border-color:var(--accent-wa); text-decoration:none;">💬 Launch WhatsApp Draft</a>
+              </div>
+            </div>
+          </div>
+        <!-- Tab 9: Sales Activity & CRM History -->
+        <div id="tab-activity" class="modal-tab-content" style="display:none;">
+          <div class="detail-section" style="border: 1px solid rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.04); border-radius: 8px; padding: 16px; margin-bottom:16px;">
+            <div class="detail-section-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; color:#38bdf8;">
+              <span style="font-size:14px; font-weight:700;">📞 Sales Activity & Call Outcome Details</span>
+              <button class="btn btn-sm btn-primary" onclick="openQuickCallFromModal()" style="background:#2563eb; border-color:#2563eb; cursor:pointer;">
+                ⚡ Log Call / Quick Action
+              </button>
+            </div>
+
+            <div class="detail-grid-2" style="margin-bottom:14px;">
+              <div class="detail-field">
+                <div class="detail-label">Current Call Status</div>
+                <div class="detail-value" id="md-tab-crm-call-status">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Current Category</div>
+                <div class="detail-value" id="md-tab-crm-category">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Last Contact / Call Date</div>
+                <div class="detail-value" id="md-tab-crm-last-called">--</div>
+              </div>
+              <div class="detail-field">
+                <div class="detail-label">Recorded Activities</div>
+                <div class="detail-value" id="md-tab-crm-count">0</div>
+              </div>
+            </div>
+
+            <div class="detail-label" style="margin-bottom:6px;">Latest Note</div>
+            <div class="pitch-box" id="md-tab-crm-latest-note" style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; font-size:12px; margin-bottom:12px;">
+              No notes recorded yet.
+            </div>
+
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button class="btn btn-sm" onclick="quickLogLeadActivity('CONNECTED', null)" style="border-color:#34d399; color:#34d399; font-weight:600;">🟢 Connected</button>
+              <button class="btn btn-sm" onclick="quickLogLeadActivity('NOT_CONNECTED', null)" style="border-color:#f87171; color:#f87171; font-weight:600;">🔴 Not Connected</button>
+              <button class="btn btn-sm" onclick="quickLogLeadActivity(null, 'INTERESTED')" style="border-color:#38bdf8; color:#38bdf8; font-weight:600;">💎 A — Interested</button>
+              <button class="btn btn-sm" onclick="quickLogLeadActivity(null, 'SEND')" style="border-color:#c084fc; color:#c084fc; font-weight:600;">🚀 B — Send</button>
+              <button class="btn btn-sm" onclick="quickLogLeadActivity(null, 'NO_ANSWER')" style="border-color:#fb923c; color:#fb923c; font-weight:600;">📵 C — No Answer</button>
+            </div>
+          </div>
+
+          <!-- Add Note Form -->
+          <div class="detail-section" style="margin-bottom:16px;">
+            <div class="detail-section-title">📝 Add Activity Note (Preserves History)</div>
+            <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+              <select id="modal-add-call-status" class="btn btn-sm" style="background:var(--bg-input);">
+                <option value="">Keep Call Status</option>
+                <option value="CONNECTED">🟢 Mark Connected</option>
+                <option value="NOT_CONNECTED">🔴 Mark Not Connected</option>
+                <option value="PENDING">⏳ Mark Pending</option>
+              </select>
+              <select id="modal-add-category" class="btn btn-sm" style="background:var(--bg-input);">
+                <option value="">Keep Category</option>
+                <option value="INTERESTED">💎 A — Interested</option>
+                <option value="SEND">🚀 B — Send</option>
+                <option value="NO_ANSWER">📵 C — No Answer</option>
+              </select>
+            </div>
+            <textarea id="modal-new-note-text" rows="2" placeholder="Write call note (e.g. Spoke with owner, asked for demo tomorrow)..." style="width:100%; box-sizing:border-box; background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; color:var(--text-main); font-size:12px; padding:8px 10px; margin-bottom:8px;"></textarea>
+            <div style="display:flex; justify-content:flex-end;">
+              <button class="btn btn-sm btn-primary" onclick="submitModalActivityNote()" style="background:#2563eb; border-color:#2563eb;">
+                💾 Save Activity Note
+              </button>
+            </div>
+          </div>
+
+          <!-- Complete Historical Timeline Feed -->
+          <div class="detail-section">
+            <div class="detail-section-title" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>📜 Full Activity & Note History</span>
+              <span style="font-size:11px; color:var(--text-dim);">Immutable history</span>
+            </div>
+            <div id="md-crm-history-list" class="timeline-feed" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK CALL ACTION MODAL (3-SECOND WORKFLOW) -->
+  <div class="modal-overlay" id="modal-quick-call" style="display:none; z-index:2000;" onclick="if(event.target===this) closeQuickCallModal()">
+    <div class="modal-card" style="max-width:540px; border: 1px solid rgba(56, 189, 248, 0.4); box-shadow: 0 20px 45px rgba(0,0,0,0.6);">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:20px;">📞</span>
+          <div>
+            <div class="modal-title" id="qc-business-name" style="font-size:15px;">Business Name</div>
+            <div style="font-size:11.5px; color:#38bdf8; font-family:var(--font-mono);" id="qc-phone-number">--</div>
+          </div>
+        </div>
+        <button class="btn btn-sm" onclick="closeQuickCallModal()">✕ Close</button>
+      </div>
+
+      <div class="modal-body" style="padding:16px;">
+        <!-- Step 1: Call Outcome -->
+        <div style="margin-bottom:14px;">
+          <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; display:block; margin-bottom:6px;">
+            1. Call Status
+          </label>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn" id="qc-btn-connected" onclick="selectQuickCallStatus('CONNECTED')" style="flex:1; padding:8px 12px; border-radius:6px; font-weight:600; cursor:pointer;">
+              🟢 Connected
+            </button>
+            <button type="button" class="btn" id="qc-btn-not-connected" onclick="selectQuickCallStatus('NOT_CONNECTED')" style="flex:1; padding:8px 12px; border-radius:6px; font-weight:600; cursor:pointer;">
+              🔴 Not Connected
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Category -->
+        <div style="margin-bottom:14px;">
+          <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; display:block; margin-bottom:6px;">
+            2. Outreach Category
+          </label>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn" id="qc-btn-cat-interested" onclick="selectQuickCategory('INTERESTED')" style="flex:1; padding:8px 10px; border-radius:6px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              💎 A — Interested
+            </button>
+            <button type="button" class="btn" id="qc-btn-cat-send" onclick="selectQuickCategory('SEND')" style="flex:1; padding:8px 10px; border-radius:6px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              🚀 B — Send
+            </button>
+            <button type="button" class="btn" id="qc-btn-cat-no-answer" onclick="selectQuickCategory('NO_ANSWER')" style="flex:1; padding:8px 10px; border-radius:6px; font-size:11.5px; font-weight:600; cursor:pointer;">
+              📵 C — No Answer
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Quick Notes Chips -->
+        <div style="margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">
+              3. Call Note (Editable & Persisted)
+            </label>
+            <span style="font-size:10px; color:var(--text-dim);">Click chip to insert</span>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+            <span class="action-chip" onclick="setQuickNote('Called today')">Called today</span>
+            <span class="action-chip" onclick="setQuickNote('Spoke with owner')">Spoke with owner</span>
+            <span class="action-chip" onclick="setQuickNote('Interested, asked for demo')">Interested, asked for demo</span>
+            <span class="action-chip" onclick="setQuickNote('Sent demo')">Sent demo</span>
+            <span class="action-chip" onclick="setQuickNote('Asked to call tomorrow')">Asked to call tomorrow</span>
+            <span class="action-chip" onclick="setQuickNote('Not interested')">Not interested</span>
+            <span class="action-chip" onclick="setQuickNote('No answer')">No answer</span>
+          </div>
+          <textarea id="qc-note-input" rows="3" placeholder="Write call note (e.g. Owner interested in complete package, send demo tomorrow)..." style="width:100%; box-sizing:border-box; background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; color:var(--text-main); font-size:12px; padding:8px 10px; resize:vertical; font-family:var(--font-sans);"></textarea>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; display:block; margin-bottom:4px;">
+            4. WhatsApp M6 Status (Optional Override)
+          </label>
+          <select id="qc-m6-status" style="width:100%; box-sizing:border-box; background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; color:var(--text-main); font-size:12px; padding:6px 10px;">
+            <option value="">(Keep Existing Status)</option>
+            <option value="SENT">✅ SENT (WhatsApp Message Sent)</option>
+            <option value="PENDING">⏳ PENDING (Queued)</option>
+            <option value="AWAITING_MANUAL_SEND">✋ AWAITING_MANUAL_SEND</option>
+            <option value="FAILED">❌ FAILED</option>
+            <option value="NOT_READY">⚠️ NOT_READY</option>
+            <option value="NO_WHATSAPP_NUMBER">🚫 NO_WHATSAPP_NUMBER</option>
+            <option value="ARCHIVE">📁 ARCHIVE</option>
+            <option value="SKIP">⏭️ SKIP</option>
+          </select>
+        </div>
+
+        <input type="hidden" id="qc-lead-id">
+        <input type="hidden" id="qc-selected-call-status">
+        <input type="hidden" id="qc-selected-category">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:10px; border-top:1px solid var(--border-color);">
+          <button type="button" class="btn" onclick="closeQuickCallModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" id="qc-btn-save" onclick="saveQuickCall()" style="background:#2563eb; border-color:#2563eb; font-weight:700; padding:6px 18px; cursor:pointer;">
+            💾 Save Call Activity
+          </button>
         </div>
       </div>
     </div>

@@ -100,6 +100,7 @@ class M6RunConfig:
     min_interval_s: int = MIN_SECONDS_BETWEEN_SENDS
     jitter_s: int = SEND_INTERVAL_JITTER_SECONDS
     quiet: bool = False
+    template: str = "demo"
 
     def resolved_limit(self) -> int:
         limit = self.limit if self.limit and self.limit > 0 else DEFAULT_SEND_LIMIT
@@ -259,8 +260,9 @@ def plan_lead(
     plan.recipient_source = source_field
 
     # --- message + validation ----------------------------------------------
+    tmpl = getattr(config, "template", "demo")
     try:
-        built = build_first_message(lead, include_pricing=config.include_pricing)
+        built = build_first_message(lead, include_pricing=config.include_pricing, template=tmpl)
     except MessageBuildError as exc:
         plan.validation = ValidationResult("NOT_READY", [f"message_build_failed:{exc}"])
         return plan
@@ -283,6 +285,7 @@ def plan_lead(
         recipient=e164,
         channel=channel_name,
         already_sent=False,
+        template=tmpl,
     )
     plan.prior_attempts = tracker.attempts_for(plan.lead_id)
     plan.duplicate_kind, plan.duplicate_reason = tracker.check_duplicate(

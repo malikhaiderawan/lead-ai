@@ -21,6 +21,7 @@ import csv
 import json
 import logging
 import re
+import urllib.parse
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -119,6 +120,8 @@ class ResearchRecord:
     research_coverage: dict[str, bool] = field(default_factory=dict)
     youtube_status: str = "unknown"
     youtube_activity: str = "unknown"
+    social_as_website: str | None = None
+    social_as_website_url: str | None = None
 
     research_status: str = "UNRESEARCHED"
     research_timestamp: str = ""
@@ -135,6 +138,7 @@ def _synthesize_products_and_services(
     record: ResearchRecord,
     web_res: WebsiteResearch,
     search_res: SearchResearch,
+    social_results: dict[str, SocialResearch] | None = None,
 ) -> str:
     """Synthesize what the business actually sells and provides based on observed facts."""
     items: list[str] = []
@@ -142,13 +146,28 @@ def _synthesize_products_and_services(
     if web_res.products_services_found:
         items.extend(web_res.products_services_found[:6])
 
+    # Check social media bios and commercial signals (e.g. formals, pret, collections)
+    if social_results:
+        for s_res in social_results.values():
+            if s_res.commercial_signals:
+                for sig in s_res.commercial_signals:
+                    if sig not in items:
+                        items.append(sig)
+            if getattr(s_res, "bio_text", None) and isinstance(s_res.bio_text, str):
+                m = re.findall(r'(?:from|specializing in|collection of|luxury|exclusive|handpicked)\s+([^.,;\n\r|—]+)', s_res.bio_text, re.IGNORECASE)
+                for match in m:
+                    clean_m = match.strip()
+                    if 3 < len(clean_m) < 60 and clean_m not in items:
+                        items.append(clean_m)
+
     if search_res.search_snippets:
         for snip in search_res.search_snippets[:3]:
-            m = re.findall(r'(?:offers|provides|specializes in|collection of|known for|serving)\s+([^.,;]+)', snip, re.IGNORECASE)
-            for match in m:
-                clean_m = match.strip()
-                if 5 < len(clean_m) < 60 and clean_m not in items:
-                    items.append(clean_m)
+            if snip and isinstance(snip, str):
+                m = re.findall(r'(?:offers|provides|specializes in|collection of|known for|serving)\s+([^.,;]+)', snip, re.IGNORECASE)
+                for match in m:
+                    clean_m = match.strip()
+                    if 5 < len(clean_m) < 60 and clean_m not in items:
+                        items.append(clean_m)
 
     cat = (record.category or "").strip()
     name = (record.business_name or "Business").strip()
@@ -294,6 +313,19 @@ def _identify_digital_gaps(
     has_social = any(s.status == "present" for s in social_results.values())
     social_names = [p.capitalize() for p, s in social_results.items() if s.status == "present"]
 
+    # 0. Social Used As Website Gap
+    if getattr(record, "social_as_website", None):
+        plat_title = record.social_as_website.capitalize()
+        gaps.append({
+            "gap_id": "social_as_website",
+            "gap": f"Uses {plat_title} Page in Place of Website on Google Maps",
+            "title": f"Uses {plat_title} Page in Place of Website on Google Maps",
+            "description": f"The business lists their {plat_title} page ({record.social_as_website_url}) as their official website on Google Business Profile, lacking an owned, branded e-commerce store with automated catalog and checkout.",
+            "evidence": f"Google Maps website field points to {plat_title} profile ({record.social_as_website_url}); no independent website domain exists.",
+            "source": "google_and_social_analysis",
+            "confidence": "HIGH",
+        })
+
     # 1. No Website Gap
     if not record.website or record.website_status in ("unknown", "does_not_exist", "missing"):
         if has_social:
@@ -435,7 +467,7 @@ def _map_malikaxiom_opportunities(
     for g in gaps:
         gid = g["gap_id"]
 
-        if gid in ("no_website_active_social", "no_digital_presence"):
+        if gid in ("no_website_active_social", "no_digital_presence", "social_as_website"):
             if is_retail_or_clothing:
                 opps.append({
                     "service": "E-Commerce Development",
@@ -683,6 +715,84 @@ def _target_market_note(record: ResearchRecord) -> str:
     return "unknown"
 
 
+# Recognised social platforms and their domain signatures
+_SOCIAL_DOMAINS_MAP: dict[str, tuple[str, ...]] = {
+    "facebook": (
+        "facebook.com",
+        "web.facebook.com",
+        "m.facebook.com",
+        "touch.facebook.com",
+        "fb.com",
+        "fb.me",
+        "fb.watch",
+    ),
+    "instagram": (
+        "instagram.com",
+        "www.instagram.com",
+        "instagr.am",
+    ),
+    "tiktok": (
+        "tiktok.com",
+        "www.tiktok.com",
+        "vm.tiktok.com",
+    ),
+    "linkedin": (
+        "linkedin.com",
+        "www.linkedin.com",
+    ),
+    "youtube": (
+        "youtube.com",
+        "www.youtube.com",
+        "youtu.be",
+        "m.youtube.com",
+    ),
+}
+
+
+def detect_social_url(url: str | None) -> tuple[str | None, str | None]:
+    """Check if a URL is actually a social media profile link.
+    Returns: (platform_name, normalized_url) or (None, None).
+    """
+    if not url or not str(url).strip():
+        return None, None
+    raw = str(url).strip()
+    norm = raw.lower()
+    for scheme in ("https://", "http://"):
+        if norm.startswith(scheme):
+            norm = norm[len(scheme):]
+            break
+
+    for platform, domains in _SOCIAL_DOMAINS_MAP.items():
+        for dom in domains:
+            if norm.startswith(dom) or f".{dom}" in norm.split("/")[0]:
+                clean = raw
+                if not clean.startswith(("http://", "https://")):
+                    clean = f"https://{clean}"
+                if platform == "facebook":
+                    clean = re.sub(r"https?://(?:web|m|touch)\.facebook\.com", "https://www.facebook.com", clean)
+                elif platform == "instagram":
+                    clean = re.sub(r"https?://(?:www\.)?instagr\.am", "https://www.instagram.com", clean)
+                return platform, clean
+    return None, None
+
+
+def extract_handle_from_url(url: str | None) -> str | None:
+    """Extract clean username/handle from profile URL."""
+    if not url:
+        return None
+    try:
+        parsed = urllib.parse.urlparse(url)
+        path = parsed.path.strip("/")
+        parts = [p for p in path.split("/") if p and p not in ("pages", "profile.php", "p", "reel", "explore", "tags")]
+        if parts:
+            candidate = parts[0]
+            if not candidate.isdigit() and len(candidate) > 2:
+                return candidate
+    except Exception:
+        pass
+    return None
+
+
 def build_record(lead: dict[str, Any], lead_id: str) -> ResearchRecord:
     """Build the raw research skeleton from input before deep multi-source checks."""
     raw = lead["raw"]
@@ -696,6 +806,11 @@ def build_record(lead: dict[str, Any], lead_id: str) -> ResearchRecord:
         return value.strip() if value and value.strip() else None
 
     website = get("website")
+    if website:
+        w_clean = website.strip().lower()
+        if w_clean in ("none", "none (dm only)", "n/a", "na", "no", "null", "nil", "false", "-", "dm only", "none (dm)", "none (whatsapp only)"):
+            website = None
+
     instagram = get("instagram")
     facebook = get("facebook")
     tiktok = get("tiktok")
@@ -706,12 +821,34 @@ def build_record(lead: dict[str, Any], lead_id: str) -> ResearchRecord:
     review_count = get("reviews")
     address = get("address")
     category = get("category")
-    phone = get("phone") or get("website_phones") or get("mobile_phone") or get("landline")
-    mobile_phone = get("mobile_phone")
     whatsapp = get("whatsapp")
+    phone = get("phone") or whatsapp or get("website_phones") or get("mobile_phone") or get("landline")
+    if not whatsapp and phone:
+        whatsapp = phone
+    mobile_phone = get("mobile_phone")
     landline = get("landline")
     email = get("email")
     name = get("business_name") or get("title") or get("business") or get("name") or get("company")
+
+    social_as_website = None
+    social_as_website_url = None
+
+    if website:
+        soc_plat, clean_soc_url = detect_social_url(website)
+        if soc_plat:
+            social_as_website = soc_plat
+            social_as_website_url = clean_soc_url
+            if soc_plat == "facebook" and not facebook:
+                facebook = clean_soc_url
+            elif soc_plat == "instagram" and not instagram:
+                instagram = clean_soc_url
+            elif soc_plat == "tiktok" and not tiktok:
+                tiktok = clean_soc_url
+            elif soc_plat == "linkedin" and not linkedin:
+                linkedin = clean_soc_url
+            elif soc_plat == "youtube" and not youtube:
+                youtube = clean_soc_url
+            website = None
 
     return ResearchRecord(
         lead_id=lead_id,
@@ -730,9 +867,9 @@ def build_record(lead: dict[str, Any], lead_id: str) -> ResearchRecord:
         row_number=lead.get("row_number", 0),
 
         website=website,
-        website_status="unknown",
+        website_status="missing" if social_as_website else "unknown",
         website_type=None,
-        website_quality_observation="",
+        website_quality_observation=(f"No dedicated website; uses {social_as_website.capitalize()} profile as website on Google Business Profile." if social_as_website else ""),
         ecommerce_status="unknown",
         checkout_status="unknown",
         online_ordering="unknown",
@@ -755,6 +892,8 @@ def build_record(lead: dict[str, Any], lead_id: str) -> ResearchRecord:
         linkedin_status="unknown",
         linkedin_activity="unknown",
         social_evidence=[],
+        social_as_website=social_as_website,
+        social_as_website_url=social_as_website_url,
 
         google_rating=rating,
         google_reviews=review_count,
@@ -803,7 +942,7 @@ def _research_one(lead: dict[str, Any], lead_id: str, timeout: float = 12.0) -> 
     record.search_findings = search_res.to_dict()
 
     # Apply discovered profiles if lead lacked them in input
-    if not record.website and search_res.discovered_website:
+    if not record.website and not record.social_as_website and search_res.discovered_website:
         record.website = search_res.discovered_website
     if not record.instagram and search_res.discovered_links.get("instagram"):
         record.instagram = search_res.discovered_links["instagram"]
@@ -816,21 +955,53 @@ def _research_one(lead: dict[str, Any], lead_id: str, timeout: float = 12.0) -> 
     if not record.youtube and search_res.discovered_links.get("youtube"):
         record.youtube = search_res.discovered_links["youtube"]
 
+    # Cross-platform handle resolution (e.g. FB -> IG or IG -> FB)
+    if record.facebook and not record.instagram:
+        fb_handle = extract_handle_from_url(record.facebook)
+        if fb_handle:
+            ig_candidate = f"https://www.instagram.com/{fb_handle}/"
+            ig_test = research_social("instagram", ig_candidate, timeout=min(timeout, 6.0))
+            if ig_test.resource_status == ResourceStatus.FOUND:
+                record.instagram = ig_candidate
+    elif record.instagram and not record.facebook:
+        ig_handle = extract_handle_from_url(record.instagram)
+        if ig_handle:
+            fb_candidate = f"https://www.facebook.com/{ig_handle}"
+            fb_test = research_social("facebook", fb_candidate, timeout=min(timeout, 6.0))
+            if fb_test.resource_status == ResourceStatus.FOUND:
+                record.facebook = fb_candidate
+
     # 2. Deep Multi-Page Website Exploration
-    website_res = research_website(record.website, timeout=timeout)
-    record.website_status = website_res.status
-    record._reachable_snapshot = website_res.reachable
-    record._http_status_snapshot = website_res.http_status
-    record.website_type = website_res.apparent_type
-    record.website_quality_observation = website_res.quality_observation
-    record.ecommerce_status = website_res.ecommerce_presence
-    record.checkout_status = website_res.checkout_order_capability
-    record.online_ordering = website_res.checkout_order_capability
-    record.whatsapp_contact = website_res.whatsapp_contact_option
-    record.contact_option_present = website_res.contact_option_present
-    record.obvious_broken_signals = website_res.obvious_broken_signals
-    record.important_observable_features = website_res.observable_features
-    record.website_evidence = [e.to_dict() for e in website_res.evidence]
+    if record.social_as_website:
+        website_res = WebsiteResearch(
+            url=record.social_as_website_url or "",
+            status="missing",
+            reachable="unreachable",
+            apparent_type=None,
+            quality_observation=f"No dedicated website; business uses {record.social_as_website.capitalize()} profile as website on Google Business Profile.",
+            ecommerce_presence="missing",
+            checkout_order_capability="missing",
+            whatsapp_contact_option="unknown",
+            contact_option_present="missing",
+        )
+        record.website_status = "missing"
+        record._reachable_snapshot = "unreachable"
+        record._http_status_snapshot = None
+    else:
+        website_res = research_website(record.website, timeout=timeout)
+        record.website_status = website_res.status
+        record._reachable_snapshot = website_res.reachable
+        record._http_status_snapshot = website_res.http_status
+        record.website_type = website_res.apparent_type
+        record.website_quality_observation = website_res.quality_observation
+        record.ecommerce_status = website_res.ecommerce_presence
+        record.checkout_status = website_res.checkout_order_capability
+        record.online_ordering = website_res.checkout_order_capability
+        record.whatsapp_contact = website_res.whatsapp_contact_option
+        record.contact_option_present = website_res.contact_option_present
+        record.obvious_broken_signals = website_res.obvious_broken_signals
+        record.important_observable_features = website_res.observable_features
+        record.website_evidence = [e.to_dict() for e in website_res.evidence]
 
     # Adopt links discovered on website
     if website_res.extracted_links:
@@ -899,7 +1070,7 @@ def _research_one(lead: dict[str, Any], lead_id: str, timeout: float = 12.0) -> 
     record.google_evidence = [e.to_dict() for e in google_res.evidence]
 
     # 5. Products & Services Commercial Offering
-    record.products_services_summary = _synthesize_products_and_services(record, website_res, search_res)
+    record.products_services_summary = _synthesize_products_and_services(record, website_res, search_res, social_results)
 
     # 6. Business Positioning & Maturity
     record.business_type = _business_type_guess(record)
@@ -924,6 +1095,10 @@ def _research_one(lead: dict[str, Any], lead_id: str, timeout: float = 12.0) -> 
     facts: list[str] = []
     if record.website and record.website_status == "exists":
         facts.append(f"Website exists: {record.website}")
+    if record.social_as_website:
+        facts.append(
+            f"Business does not operate a dedicated website; uses {record.social_as_website.capitalize()} profile ({record.social_as_website_url}) as website on Google Business Profile."
+        )
     if record._http_status_snapshot:
         facts.append(f"Website returned HTTP {record._http_status_snapshot}")
     for ev in record.website_evidence:
@@ -1251,6 +1426,8 @@ def _record_to_dict(record: ResearchRecord) -> dict[str, Any]:
         "obvious_broken_signals": record.obvious_broken_signals,
         "important_observable_features": record.important_observable_features,
         "website_evidence": record.website_evidence,
+        "social_as_website": record.social_as_website,
+        "social_as_website_url": record.social_as_website_url,
 
         "instagram": record.instagram,
         "instagram_status": record.instagram_status,

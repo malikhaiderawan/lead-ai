@@ -26,16 +26,50 @@ venv/
 env/
 ENV/
 
-# Testing & Coverage
+# Environment Variables & Secrets
+.env
+.env.*
+*.env
+*.env.local
+
+# Testing & Coverage (Requested: do not push test files)
+tests/
+**/tests/
+test_*.py
 .pytest_cache/
 .coverage
 htmlcov/
 .tox/
 .nox/
 
-# Temporary / Scratch
+# Data files (Requested: do not push CSV or Excel files)
+*.csv
+**/*.csv
+*.xlsx
+**/*.xlsx
+*.xls
+**/*.xls
+
+# Output artifacts & batches
+**/output/*.json
+**/output/*.csv
+**/output/*.xlsx
+**/output/*.md
+**/output/batches/
+**/output/pre_m4_m5_backup_*/
+!**/output/.gitkeep
+!**/input/.gitkeep
+
+# Temporary / Scratch / Backups
 *.log
 temp_*.js
+*.bak
+**/*.bak
+*~
+scratch/
+**/scratch/
+**/backups/
+*.tar.gz
 
 # Large Binaries / Third-party vendor binaries
 **/vendor/playwright/driver/node
@@ -44,6 +78,7 @@ temp_*.js
 
 # OS / Editor
 .DS_Store
+**/.DS_Store
 Thumbs.db
 .vscode/
 .idea/

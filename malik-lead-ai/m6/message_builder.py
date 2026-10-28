@@ -243,8 +243,46 @@ def pricing_applies(lead: M5Lead) -> bool:
     )
 
 
-def build_first_message(lead: M5Lead, *, include_pricing: bool = True) -> BuiltMessage:
+def build_demo_message(lead: M5Lead, *, include_pricing: bool = True) -> BuiltMessage:
+    """Compose the M7 Personalized Boutique Storefront Demo WhatsApp outreach message."""
+    raw_name = (lead.business_name or "").strip()
+    if not raw_name:
+        raise MessageBuildError("m5_business_name_missing")
+    business_name = clean_business_name(raw_name)
+
+    from dashboard.demo_generator import (
+        build_demo_whatsapp_message,
+        generate_personalized_demo_url,
+    )
+
+    demo_url = generate_personalized_demo_url(business_name)
+    text = build_demo_whatsapp_message(business_name, demo_url, include_pricing=include_pricing)
+    service = (lead.primary_service or "").strip() or "Business Digitalization"
+    body = text.rsplit("MalikAxiom Technology", 1)[0].strip()
+
+    return BuiltMessage(
+        text=text,
+        service=service,
+        observation="Aapka Instagram dekha — collection kaafi classy hai 👌",
+        opportunity_line="live premium storefront demo specially prepare kiya hai",
+        benefit="Live boutique storefront demo with 24/7 AI Brand Assistant",
+        body_word_count=len(body.split()),
+        max_body_words=200,
+        pricing_included=include_pricing,
+        note="m7_storefront_demo_template",
+    )
+
+
+def build_first_message(
+    lead: M5Lead,
+    *,
+    include_pricing: bool = True,
+    template: str = "standard",
+) -> BuiltMessage:
     """Compose a concise, natural, lead-specific outreach message for one M5 lead."""
+    if template == "demo":
+        return build_demo_message(lead, include_pricing=include_pricing)
+
     raw_name = (lead.business_name or "").strip()
     if not raw_name:
         raise MessageBuildError("m5_business_name_missing")
@@ -305,6 +343,7 @@ __all__ = [
     "MessageBuildError",
     "clean_business_name",
     "build_first_message",
+    "build_demo_message",
     "build_observation",
     "benefit_for_service",
     "pricing_applies",

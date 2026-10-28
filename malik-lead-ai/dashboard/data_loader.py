@@ -20,6 +20,8 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
+from .activity_manager import activity_manager
+
 # Ensure vendored openpyxl is in sys.path if available
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 VENDOR_DIR = PROJECT_ROOT / "vendor"
@@ -70,7 +72,7 @@ class LeadRecord:
     lead_id: str
     business_name: str
     business_type: str = ""
-    category: str = ""
+    business_category: str = ""
     location: str = ""
     city: str = ""
     address: str = ""
@@ -168,6 +170,13 @@ class LeadRecord:
     notes: str = ""
     revenue: float = 0.0
 
+    # M7 Sales Activity & Call CRM
+    call_status: str = "PENDING"        # PENDING | CONNECTED | NOT_CONNECTED
+    category: str = ""                  # INTERESTED | SEND | NO_ANSWER | ""
+    last_called_at: str = ""            # ISO timestamp of last call
+    latest_note: str = ""               # Latest note entered
+    activity_history: list[dict[str, Any]] = field(default_factory=list)
+
     # Data integrity & Conflict tracking
     conflicts: list[str] = field(default_factory=list)
     data_sources: list[str] = field(default_factory=list)
@@ -193,16 +202,19 @@ class LeadRecord:
 
     @property
     def pitch_hook(self) -> str:
-        if self.outreach_opening:
-            return self.outreach_opening
-        if self.outreach_subject:
-            return self.outreach_subject
+        # Avoid trivial greeting headers like "Hi Buy 7Days,"
+        if self.outreach_opening and len(self.outreach_opening.strip()) > 20 and not self.outreach_opening.strip().lower().startswith(("hi ", "hello ", "dear ", "assalam")):
+            return self.outreach_opening.strip()
+        if self.outreach_subject and len(self.outreach_subject.strip()) > 10:
+            return self.outreach_subject.strip()
         if self.outreach_message:
-            msg = self.outreach_message.strip()
-            first_line = msg.split("\n")[0].strip()
-            if len(first_line) > 10:
-                return first_line
-            return msg[:120]
+            lines = [l.strip() for l in self.outreach_message.split("\n") if l.strip()]
+            for line in lines:
+                if not line.lower().startswith(("hi ", "hello ", "dear ", "assalam")):
+                    if len(line) > 20:
+                        return line
+            if lines:
+                return lines[0][:120]
         return ""
 
     @property
@@ -226,12 +238,12 @@ class LeadRecord:
     def is_skipped(self) -> bool:
         if self.is_archived:
             return False
-        if self.sales_stage == "SKIPPED":
+        if self.sales_stage in ("SKIPPED", "SKIP"):
             return True
         if self.final_action == "SKIP" or self.outreach_priority == "SKIP" or self.sales_potential == "SKIP":
             return True
-        if self.m6_status in ("SKIPPED_LIMIT", "SKIPPED_NO_WHATSAPP"):
-            return True
+        # NOTE: m6_status == 'SKIPPED_LIMIT' means WhatsApp outreach reached a batch or daily limit,
+        # NOT that the lead is disqualified. It remains an active, high-priority sales lead.
         if self.m6_status == "NOT_ELIGIBLE" and "SKIP" in (self.m6_error or "").upper():
             return True
         return False
@@ -255,13 +267,13 @@ class LeadRecord:
     def archive_skip_reason(self) -> str:
         if not (self.is_archived or self.is_skipped):
             return ""
-        for r in (self.review_reason, self.duplicate_reason, self.m6_error, self.m6_note, self.why_this_lead):
-            if r and str(r).strip():
+        for r in (self.review_reason, self.duplicate_reason, self.m6_error, self.m6_note):
+            if r and str(r).strip() and not str(r).strip().startswith("run send limit"):
                 return str(r).strip()
         if self.is_archived:
-            return "Marked as ARCHIVE during qualification / low sales potential"
+            return "Marked as ARCHIVE during qualification"
         if self.is_skipped:
-            return "Marked as SKIP / non-target or send limit reached"
+            return "Marked as SKIP during qualification"
         return ""
 
 
@@ -558,6 +570,37 @@ class DashboardDataLoader:
             for bfile in self.batches_dir.glob("*.csv"):
                 self._load_batch_file(bfile, leads_map)
 
+        # 8.5 Load M7 Sales Activity State (Persistent Call CRM & Notes)
+        try:
+            m7_activities = activity_manager.get_all_activities()
+            for lid, act in m7_activities.items():
+                if lid in leads_map:
+                    lead = leads_map[lid]
+                    lead.call_status = act.get("call_status", "PENDING")
+                    lead.category = act.get("category", "")
+                    lead.last_called_at = act.get("last_called_at", "")
+                    lead.latest_note = act.get("latest_note", "")
+                    lead.activity_history = act.get("history", [])
+                    if act.get("m6_status"):
+                        lead.m6_status = act["m6_status"]
+                        if lead.m6_status == "SENT":
+                            lead.sales_stage = "CONTACTED"
+                            lead.last_contacted_at = lead.last_called_at or lead.m6_sent_at or ""
+                        elif lead.m6_status == "ARCHIVE":
+                            lead.sales_stage = "ARCHIVED"
+                            lead.final_action = "ARCHIVE"
+                        elif lead.m6_status == "SKIP":
+                            lead.sales_stage = "SKIPPED"
+                            lead.final_action = "SKIP"
+                    if lead.latest_note and not lead.notes:
+                        lead.notes = lead.latest_note
+                    lead.data_sources.append("m7_activity_state.json")
+        except Exception as exc:
+            logger.warning("Error loading M7 activity state: %s", exc)
+
+        # 8.8. Load all raw leads from input/ CSV files (Automatic discovery of new leads)
+        self._load_input_csvs(leads_map)
+
         # 9. Derive sales stages, cities, timestamps, and detect data conflicts
         now_iso = datetime.now(timezone.utc).isoformat()
         for lead in leads_map.values():
@@ -685,7 +728,9 @@ class DashboardDataLoader:
                     lid = item.get("lead_id") or ""
                     bname = item.get("business_name") or ""
                     lead = self._get_or_create_lead(leads_map, lid, bname)
-                    lead.category = _safe_str(item.get("category"), lead.category)
+                    lead.business_category = _safe_str(item.get("category"), lead.business_category)
+                    if not lead.business_type:
+                        lead.business_type = lead.business_category
                     lead.location = _safe_str(item.get("location"), lead.location)
                     lead.sales_potential = _safe_str(item.get("sales_potential"), lead.sales_potential)
                     lead.confidence = _safe_str(item.get("confidence"), lead.confidence)
@@ -809,8 +854,10 @@ class DashboardDataLoader:
                         lead.whatsapp = _safe_str(row.get("whatsapp"))
                     if not lead.location:
                         lead.location = _safe_str(row.get("location"))
-                    if not lead.category:
-                        lead.category = _safe_str(row.get("category"))
+                    if not lead.business_category:
+                        lead.business_category = _safe_str(row.get("category"))
+                    if not lead.business_type:
+                        lead.business_type = lead.business_category
                     if not lead.outreach_priority:
                         lead.outreach_priority = _safe_str(row.get("sales_action"), default_priority)
                     if not lead.sales_potential or lead.sales_potential == "UNKNOWN":
@@ -873,6 +920,15 @@ class DashboardDataLoader:
                         if not lead.outreach_priority:
                             lead.outreach_priority = "CONTACT LATER"
 
+                    sales_act = _safe_str(row.get("sales_action") or row.get("outreach_priority"))
+                    if sales_act:
+                        if not lead.outreach_priority:
+                            lead.outreach_priority = sales_act
+                        if sales_act == "CONTACT FIRST":
+                            lead.in_contact_first = True
+                        elif sales_act == "CONTACT LATER":
+                            lead.in_contact_later = True
+
                     if not lead.sales_potential or lead.sales_potential == "UNKNOWN":
                         lead.sales_potential = _safe_str(row.get("sales_potential"), lead.sales_potential)
                     if not lead.primary_service:
@@ -896,18 +952,145 @@ class DashboardDataLoader:
         except Exception as exc:
             logger.warning("Error loading batch file %s: %s", path, exc)
 
+    def _load_input_csvs(self, leads_map: dict[str, LeadRecord]) -> None:
+        """Scan input/*.csv and automatically register any raw ingested leads not yet processed."""
+        if not self.input_dir.exists():
+            return
+
+        def _norm_phone(phone: str | None) -> str:
+            if not phone:
+                return ""
+            digits = re.sub(r"\D", "", phone)
+            if digits.startswith("92") and len(digits) >= 11:
+                return digits[-10:]
+            if digits.startswith("0") and len(digits) >= 10:
+                return digits[-10:]
+            return digits
+
+        # Fast lookup maps
+        phone_lookup: dict[str, LeadRecord] = {}
+        name_lookup: dict[str, LeadRecord] = {}
+
+        for lead in leads_map.values():
+            for p_field in (lead.phone, lead.whatsapp, lead.mobile_phone):
+                norm = _norm_phone(p_field)
+                if norm:
+                    phone_lookup[norm] = lead
+            clean_n = re.sub(r"[^\w\s]", "", lead.business_name.lower()).strip()
+            if clean_n:
+                name_lookup[clean_n] = lead
+
+        added = 0
+        for p in sorted(self.input_dir.glob("*.csv")):
+            if not p.is_file() or p.name.startswith("."):
+                continue
+            try:
+                stat = p.stat()
+                mtime_iso = datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc).isoformat()
+                with p.open(encoding="utf-8", errors="replace") as f:
+                    reader = csv.DictReader(f)
+                    for r in reader:
+                        bname = _safe_str(r.get("business_name") or r.get("Business Name") or r.get("Name") or r.get("name"))
+                        phone = _safe_str(r.get("phone") or r.get("Phone") or r.get("mobile_phone") or r.get("Mobile") or r.get("whatsapp") or r.get("WhatsApp"))
+                        if not bname and not phone:
+                            continue
+
+                        matched_lead: LeadRecord | None = None
+                        norm_p = _norm_phone(phone)
+                        if norm_p and norm_p in phone_lookup:
+                            matched_lead = phone_lookup[norm_p]
+                        if not matched_lead and bname:
+                            clean_n = re.sub(r"[^\w\s]", "", bname.lower()).strip()
+                            if clean_n and clean_n in name_lookup:
+                                matched_lead = name_lookup[clean_n]
+
+                        src_tag = f"input:{p.name}"
+                        if matched_lead:
+                            if src_tag not in matched_lead.data_sources:
+                                matched_lead.data_sources.append(src_tag)
+                            if not matched_lead.phone and phone:
+                                matched_lead.phone = phone
+                            if not matched_lead.location:
+                                matched_lead.location = _safe_str(r.get("address") or r.get("location") or r.get("Location"))
+                            if not matched_lead.website:
+                                matched_lead.website = _safe_str(r.get("website") or r.get("Website"))
+                            if not matched_lead.instagram:
+                                matched_lead.instagram = _safe_str(r.get("instagram") or r.get("Instagram"))
+                            if not matched_lead.facebook:
+                                matched_lead.facebook = _safe_str(r.get("facebook") or r.get("Facebook"))
+                            if not matched_lead.business_category:
+                                matched_lead.business_category = _safe_str(r.get("category") or r.get("Category"))
+                            if not matched_lead.google_maps_url:
+                                matched_lead.google_maps_url = _safe_str(r.get("google_maps_url"))
+                            if not matched_lead.discovered_at:
+                                matched_lead.discovered_at = mtime_iso
+                        else:
+                            cleaned = re.sub(r"[^a-zA-Z0-9_]+", "_", bname.lower()).strip("_")
+                            lid = f"lead_{cleaned[:35]}" if cleaned else f"lead_in_{added+1}"
+                            base_lid = lid
+                            cnt = 1
+                            while lid in leads_map:
+                                lid = f"{base_lid}_{cnt}"
+                                cnt += 1
+
+                            new_lead = LeadRecord(
+                                lead_id=lid,
+                                business_name=bname or "Unknown Business",
+                                phone=phone,
+                                mobile_phone=_safe_str(r.get("mobile_phone") or r.get("Mobile")),
+                                whatsapp=_safe_str(r.get("whatsapp") or r.get("WhatsApp")),
+                                website=_safe_str(r.get("website") or r.get("Website")),
+                                instagram=_safe_str(r.get("instagram") or r.get("Instagram")),
+                                facebook=_safe_str(r.get("facebook") or r.get("Facebook")),
+                                location=_safe_str(r.get("address") or r.get("location") or r.get("Location")),
+                                business_category=_safe_str(r.get("category") or r.get("Category")),
+                                business_type=_safe_str(r.get("category") or r.get("Category")),
+                                google_rating=_safe_str(r.get("rating") or r.get("Rating")),
+                                google_maps_url=_safe_str(r.get("google_maps_url")),
+                                source_file=p.name,
+                                sales_stage="NEW",
+                                research_status="PENDING",
+                                qualification_status="PENDING",
+                                sales_potential="PENDING",
+                                outreach_priority="PENDING",
+                                m6_status="NOT_READY",
+                                discovered_at=mtime_iso,
+                            )
+                            try:
+                                new_lead.google_reviews = int(r.get("reviews") or r.get("Reviews") or 0)
+                            except Exception:
+                                pass
+                            new_lead.data_sources.append(src_tag)
+                            leads_map[lid] = new_lead
+                            added += 1
+
+                            if norm_p:
+                                phone_lookup[norm_p] = new_lead
+                            clean_n = re.sub(r"[^\w\s]", "", bname.lower()).strip()
+                            if clean_n:
+                                name_lookup[clean_n] = new_lead
+            except Exception as exc:
+                logger.warning("Error loading input leads from %s: %s", p, exc)
+
     def _finalize_lead_stage_and_city(self, lead: LeadRecord) -> None:
         """Extract Pakistani city cleanly, determine pipeline sales stage, and check conflicts."""
         # 1. City extraction
         loc = f"{lead.location} {lead.address}".lower()
-        for city in ("Islamabad", "Rawalpindi", "Lahore", "Karachi", "Faisalabad", "Multan", "Peshawar", "Sialkot", "Gujranwala", "Hyderabad", "Quetta", "Gujrat"):
+        for city in ("Islamabad", "Rawalpindi", "Lahore", "Karachi", "Faisalabad", "Multan", "Peshawar", "Sialkot", "Gujranwala", "Hyderabad", "Quetta", "Gujrat", "Dubai", "London"):
             if city.lower() in loc:
                 lead.city = city
                 break
         if not lead.city and lead.location:
-            parts = [p.strip() for p in lead.location.split(",") if p.strip()]
-            if parts:
-                lead.city = parts[0]
+            # Check for JSON address string e.g. {"borough":"","city":"Lahore",...}
+            city_m = re.search(r'"city":\s*"([^"]+)"', lead.location)
+            if city_m and city_m.group(1).strip():
+                lead.city = city_m.group(1).strip()
+            else:
+                parts = [p.strip() for p in lead.location.split(",") if p.strip() and not p.strip().startswith("{") and "borough" not in p]
+                if parts:
+                    lead.city = parts[0]
+                else:
+                    lead.city = "Lahore"
 
         # 2. Sales Stage derivation (Strict evidence based - no guessing)
         if lead.m6_status == "SENT":

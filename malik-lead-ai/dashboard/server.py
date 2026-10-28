@@ -21,8 +21,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+from .activity_manager import activity_manager
 from .analytics import DashboardAnalytics
 from .data_loader import DashboardDataLoader, LeadRecord
+from .demo_generator import generate_demo_package, generate_personalized_demo_url
 
 logger = logging.getLogger(__name__)
 
@@ -41,17 +43,20 @@ class DashboardHandler(BaseHTTPRequestHandler):
         logger.info("%s - %s", self.address_string(), format % args)
 
     def do_GET(self) -> None:
-        parsed_url = urllib.parse.urlparse(self.path)
-        path = parsed_url.path
-        query = urllib.parse.parse_qs(parsed_url.query)
+        try:
+            parsed_url = urllib.parse.urlparse(self.path)
+            path = parsed_url.path
+            query = urllib.parse.parse_qs(parsed_url.query)
 
-        # Route API endpoints
-        if path.startswith("/api/"):
-            self._handle_api(path, query)
-            return
+            # Route API endpoints
+            if path.startswith("/api/"):
+                self._handle_api(path, query)
+                return
 
-        # Route static files
-        self._serve_static(path)
+            # Route static files
+            self._serve_static(path)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
     def do_POST(self) -> None:
         parsed_url = urllib.parse.urlparse(self.path)
@@ -65,6 +70,78 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 "total_leads": len(leads),
                 "total_files": len(files),
                 "timestamp": datetime.now(timezone.utc).isoformat(),
+            })
+            return
+
+        if path in ("/api/crm/activity", "/api/crm/quick-call", "/api/crm/note", "/api/crm/m6-status"):
+            try:
+                content_len = int(self.headers.get("Content-Length", 0))
+                post_body = self.rfile.read(content_len).decode("utf-8") if content_len > 0 else "{}"
+                payload = json.loads(post_body)
+            except Exception as exc:
+                self._send_error(HTTPStatus.BAD_REQUEST, f"Malformed JSON: {exc}")
+                return
+
+            lead_id = payload.get("lead_id", "").strip()
+            if not lead_id:
+                self._send_error(HTTPStatus.BAD_REQUEST, "Missing lead_id")
+                return
+
+            call_status = payload.get("call_status")
+            category = payload.get("category")
+            m6_status = payload.get("m6_status")
+            note = payload.get("note", "")
+            action_type = payload.get("action_type") or ("M6_STATUS_UPDATE" if m6_status and not call_status and not category else "CALL")
+            business_name = payload.get("business_name", "")
+
+            leads_map, _ = self.data_loader.load_all()
+            if not business_name and lead_id in leads_map:
+                business_name = leads_map[lead_id].business_name
+
+            updated_entry = activity_manager.record_activity(
+                lead_id,
+                business_name=business_name,
+                call_status=call_status,
+                category=category,
+                m6_status=m6_status,
+                note=note,
+                action_type=action_type,
+            )
+
+            # Instantly reflect changes in-memory
+            if lead_id in leads_map:
+                lead = leads_map[lead_id]
+                lead.call_status = updated_entry.get("call_status", lead.call_status)
+                lead.category = updated_entry.get("category", lead.category)
+                lead.last_called_at = updated_entry.get("last_called_at", lead.last_called_at)
+                lead.latest_note = updated_entry.get("latest_note", lead.latest_note)
+                lead.activity_history = updated_entry.get("history", lead.activity_history)
+                if m6_status is not None:
+                    lead.m6_status = updated_entry.get("m6_status", m6_status)
+                    if lead.m6_status == "SENT":
+                        lead.sales_stage = "CONTACTED"
+                        now_stamp = datetime.now(timezone.utc).isoformat()
+                        lead.m6_sent_at = lead.m6_sent_at or now_stamp
+                        lead.last_contacted_at = now_stamp
+                        if lead.final_action in ("ARCHIVE", "SKIP"):
+                            lead.final_action = "CONTACT"
+                        if lead.outreach_priority in ("ARCHIVE", "SKIP"):
+                            lead.outreach_priority = "CONTACT FIRST"
+                    elif lead.m6_status == "ARCHIVE":
+                        lead.sales_stage = "ARCHIVED"
+                        lead.final_action = "ARCHIVE"
+                    elif lead.m6_status == "SKIP":
+                        lead.sales_stage = "SKIPPED"
+                        lead.final_action = "SKIP"
+                if lead.latest_note:
+                    lead.notes = lead.latest_note
+
+            self._send_json({
+                "status": "OK",
+                "message": "Activity and status recorded successfully",
+                "lead_id": lead_id,
+                "m6_status": lead.m6_status if lead_id in leads_map else m6_status,
+                "data": updated_entry,
             })
             return
 
@@ -160,6 +237,30 @@ class DashboardHandler(BaseHTTPRequestHandler):
             })
             return
 
+        elif path == "/api/demo/generate":
+            self._handle_demo_generate(leads_map, query)
+            return
+
+        elif path == "/api/crm/metrics":
+            date_str = query.get("date", [""])[0].strip() or None
+            metrics = activity_manager.calculate_crm_metrics(
+                total_leads_count=len(leads_map),
+                leads_map=leads_map,
+                target_date_str=date_str,
+            )
+            self._send_json(metrics)
+            return
+
+        elif path == "/api/crm/activities":
+            lead_id = query.get("lead_id", [""])[0].strip()
+            if lead_id:
+                entry = activity_manager.get_lead_activity(lead_id)
+                self._send_json(entry)
+            else:
+                all_entries = activity_manager.get_all_activities()
+                self._send_json({"activities": all_entries, "count": len(all_entries)})
+            return
+
         self._send_error(HTTPStatus.NOT_FOUND, f"API endpoint {path} not found")
 
     def _handle_leads_list(self, leads_map: dict[str, LeadRecord], query: dict[str, list[str]]) -> None:
@@ -172,6 +273,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
         city = query.get("city", [""])[0].strip()
         milestone = query.get("milestone", [""])[0].strip()
         tab = query.get("tab", query.get("filter", [""]))[0].strip().upper()
+
+        # M7 Sales CRM specific filters
+        call_status = query.get("call_status", [""])[0].strip().upper()
+        category_filter = query.get("category", query.get("crm_category", [""]))[0].strip().upper()
+        activity_filter = query.get("activity", query.get("activity_filter", [""]))[0].strip().upper()
 
         date_filter = query.get("date_filter", ["ALL_TIME"])[0]
         custom_start = query.get("custom_start", [""])[0]
@@ -189,7 +295,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
             # Tab / Preset filter
             if tab and tab not in ("ALL", ""):
-                if tab == "ACTIVE" and not lead.is_active:
+                if tab in ("NEW", "UNPROCESSED") and lead.sales_stage != "NEW":
+                    continue
+                elif tab == "ACTIVE" and (not lead.is_active or lead.sales_stage == "NEW"):
                     continue
                 elif tab in ("CONTACT FIRST", "CONTACT_FIRST") and not (lead.outreach_priority == "CONTACT FIRST" and lead.is_active):
                     continue
@@ -266,31 +374,129 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 elif milestone == "M6_WHATSAPP" and not (lead.m6_status != "PENDING" or lead.m6_recipient):
                     continue
 
+            # Call status filtering (M7 Sales CRM)
+            if call_status and call_status != "ALL":
+                if call_status == "PENDING":
+                    # Strictly eligible CONTACT FIRST leads with no recorded call attempts
+                    is_cf = (
+                        lead.is_active
+                        and bool(lead.phone)
+                        and not lead.is_archived
+                        and not lead.is_skipped
+                        and (lead.outreach_priority == "CONTACT FIRST" or (lead.in_contact_first and lead.outreach_priority != "CONTACT LATER"))
+                        and lead.outreach_priority not in ("ARCHIVE", "SKIP")
+                        and lead.final_action not in ("ARCHIVE", "SKIP")
+                        and lead.sales_potential != "SKIP"
+                    )
+                    has_call = (
+                        lead.call_status in ("CONNECTED", "NOT_CONNECTED")
+                        or bool(lead.last_called_at)
+                        or any(h.get("action_type") == "CALL" or h.get("call_status") in ("CONNECTED", "NOT_CONNECTED") for h in lead.activity_history)
+                    )
+                    if not is_cf or has_call or lead.call_status != "PENDING":
+                        continue
+                elif call_status in ("CONNECTED", "CALL_CONNECTED") and lead.call_status != "CONNECTED":
+                    continue
+                elif call_status in ("NOT_CONNECTED", "NOT CONNECTED") and lead.call_status != "NOT_CONNECTED":
+                    continue
+
+            # Category filtering (M7 CRM: A — INTERESTED, B — SEND, C — NO ANSWER)
+            if category_filter and category_filter != "ALL":
+                if category_filter in ("INTERESTED", "A") and lead.category != "INTERESTED":
+                    continue
+                elif category_filter in ("SEND", "DEMO", "B") and lead.category != "SEND":
+                    continue
+                elif category_filter in ("NO_ANSWER", "NO ANSWER", "C") and lead.category != "NO_ANSWER":
+                    continue
+                elif category_filter not in ("INTERESTED", "SEND", "NO_ANSWER", "A", "B", "C") and lead.category != category_filter:
+                    continue
+
+            # Activity filtering (M7 CRM)
+            if activity_filter and activity_filter != "ALL":
+                today_utc = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+                if activity_filter in ("CALLED_TODAY", "CALLED TODAY"):
+                    has_called_today = bool(lead.last_called_at and lead.last_called_at[:10] == today_utc) or any(
+                        h.get("timestamp", "")[:10] == today_utc and (h.get("action_type") == "CALL" or h.get("call_status") in ("CONNECTED", "NOT_CONNECTED"))
+                        for h in lead.activity_history
+                    )
+                    if not has_called_today:
+                        continue
+                elif activity_filter in ("NOT_CALLED_TODAY", "NOT CALLED TODAY"):
+                    has_called_today = bool(lead.last_called_at and lead.last_called_at[:10] == today_utc) or any(
+                        h.get("timestamp", "")[:10] == today_utc and (h.get("action_type") == "CALL" or h.get("call_status") in ("CONNECTED", "NOT_CONNECTED"))
+                        for h in lead.activity_history
+                    )
+                    if has_called_today:
+                        continue
+                elif activity_filter in ("DEMO_SENT", "DEMO SENT"):
+                    is_demo = lead.category == "SEND" or "demo" in (lead.latest_note or "").lower()
+                    if not is_demo:
+                        continue
+                elif activity_filter == "INTERESTED":
+                    if lead.category != "INTERESTED":
+                        continue
+                elif activity_filter in ("NO_ANSWER", "NO ANSWER"):
+                    if lead.category != "NO_ANSWER":
+                        continue
+
             filtered.append(lead)
 
         # Sorting
         def sort_key(l: LeadRecord) -> Any:
-            val = getattr(l, sort_by, "")
-            return (val is not None, str(val).lower())
+            if sort_by in ("newest_activity", "activity_desc"):
+                latest_ts = l.last_called_at or (l.activity_history[-1]["timestamp"] if l.activity_history else "") or l.last_updated_at or ""
+                return (bool(latest_ts), latest_ts)
+            elif sort_by in ("oldest_activity", "activity_asc"):
+                latest_ts = l.last_called_at or (l.activity_history[-1]["timestamp"] if l.activity_history else "") or l.last_updated_at or ""
+                return (not bool(latest_ts), latest_ts)
+            elif sort_by in ("last_called", "last_called_desc"):
+                return (bool(l.last_called_at), l.last_called_at)
+            elif sort_by in ("never_called", "never_called_first"):
+                return (l.call_status == "PENDING" and not l.last_called_at, l.business_name.lower())
+            elif sort_by in ("interested_first", "interested"):
+                return (l.category == "INTERESTED", l.last_called_at or "")
+            elif sort_by in ("pending_calls_first", "pending_first"):
+                is_unattempted_cf = (
+                    l.call_status == "PENDING"
+                    and not l.last_called_at
+                    and (l.outreach_priority == "CONTACT FIRST" or l.in_contact_first)
+                    and not l.is_archived
+                    and not l.is_skipped
+                )
+                return (is_unattempted_cf, l.business_name.lower())
+            else:
+                val = getattr(l, sort_by, "")
+                return (val is not None, str(val).lower())
 
-        filtered.sort(key=sort_key, reverse=(sort_dir == "desc"))
+        if sort_by in ("newest_activity", "last_called", "interested_first", "pending_calls_first", "never_called"):
+            filtered.sort(key=sort_key, reverse=True if sort_dir != "asc" else False)
+        elif sort_by == "oldest_activity":
+            filtered.sort(key=sort_key, reverse=False if sort_dir != "desc" else True)
+        else:
+            filtered.sort(key=sort_key, reverse=(sort_dir == "desc"))
 
         total_matching = len(filtered)
         total_pages = max(1, (total_matching + limit - 1) // limit)
         start_idx = (page - 1) * limit
         page_leads = filtered[start_idx : start_idx + limit]
 
+        date_matched = [
+            l for l in leads_map.values()
+            if DashboardAnalytics._lead_matches_date_range(l, date_filter, custom_start, custom_end)
+        ]
+
         tab_counts = {
-            "ALL": len(leads_map),
-            "ACTIVE": sum(1 for l in leads_map.values() if l.is_active),
-            "CONTACT_FIRST": sum(1 for l in leads_map.values() if l.outreach_priority == "CONTACT FIRST" and l.is_active),
-            "CONTACT_LATER": sum(1 for l in leads_map.values() if l.outreach_priority == "CONTACT LATER" and l.is_active),
-            "HIGH_POTENTIAL": sum(1 for l in leads_map.values() if l.sales_potential == "HIGH" and l.is_active),
-            "SENT": sum(1 for l in leads_map.values() if l.m6_status == "SENT"),
-            "FAILED": sum(1 for l in leads_map.values() if l.m6_status == "FAILED"),
-            "NOT_READY": sum(1 for l in leads_map.values() if l.m6_status in ("NOT_READY", "NO_WHATSAPP_NUMBER")),
-            "ARCHIVE": sum(1 for l in leads_map.values() if l.is_archived),
-            "SKIP": sum(1 for l in leads_map.values() if l.is_skipped),
+            "ALL": len(date_matched),
+            "NEW": sum(1 for l in date_matched if l.sales_stage == "NEW"),
+            "ACTIVE": sum(1 for l in date_matched if l.is_active and l.sales_stage != "NEW"),
+            "CONTACT_FIRST": sum(1 for l in date_matched if l.outreach_priority == "CONTACT FIRST" and l.is_active),
+            "CONTACT_LATER": sum(1 for l in date_matched if l.outreach_priority == "CONTACT LATER" and l.is_active),
+            "HIGH_POTENTIAL": sum(1 for l in date_matched if l.sales_potential == "HIGH" and l.is_active),
+            "SENT": sum(1 for l in date_matched if l.m6_status == "SENT"),
+            "FAILED": sum(1 for l in date_matched if l.m6_status == "FAILED"),
+            "NOT_READY": sum(1 for l in date_matched if l.m6_status in ("NOT_READY", "NO_WHATSAPP_NUMBER") and l.sales_stage != "NEW"),
+            "ARCHIVE": sum(1 for l in date_matched if l.is_archived),
+            "SKIP": sum(1 for l in date_matched if l.is_skipped),
         }
 
         def lead_to_dict(l: LeadRecord) -> dict[str, Any]:
@@ -426,8 +632,15 @@ class DashboardHandler(BaseHTTPRequestHandler):
         custom_end = query.get("custom_end", [""])[0]
         search = query.get("search", [""])[0].lower().strip()
         raw_tab = query.get("tab", query.get("priority", ["ALL"]))[0].upper().replace(" ", "_")
+        call_status = query.get("call_status", [""])[0].strip().upper()
         potential = query.get("potential", [""])[0].upper()
         city = query.get("city", [""])[0]
+
+        # Support tab as call_status if passed directly
+        if raw_tab in ("CONNECTED", "NOT_CONNECTED", "PENDING"):
+            if not call_status:
+                call_status = raw_tab
+            raw_tab = "ALL"
 
         # Step 1: Filter base callable pool (Strictly active, phone verified, CONTACT FIRST / LATER, no terminal/excluded M6 states)
         callable_pool: list[LeadRecord] = []
@@ -437,8 +650,6 @@ class DashboardHandler(BaseHTTPRequestHandler):
             if not l.is_active or not l.phone:
                 continue
             if l.is_archived or l.is_skipped:
-                continue
-            if l.m6_status in ("SENT", "FAILED", "NOT_READY", "NO_WHATSAPP_NUMBER", "SKIPPED_LIMIT", "SKIPPED_ALREADY_SENT", "SKIPPED_NO_WHATSAPP"):
                 continue
             if l.final_action in ("ARCHIVE", "SKIP") or l.outreach_priority in ("ARCHIVE", "SKIP"):
                 continue
@@ -453,14 +664,25 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
             callable_pool.append(l)
 
+        def is_pending_call(l: LeadRecord) -> bool:
+            return (
+                l.call_status == "PENDING"
+                and not l.last_called_at
+                and not any(h.get("action_type") == "CALL" or h.get("call_status") in ("CONNECTED", "NOT_CONNECTED") for h in getattr(l, "activity_history", []))
+            )
+
         # Tab counts across entire date-filtered callable base pool
         counts = {
             "ALL": len(callable_pool),
             "CONTACT_FIRST": sum(1 for l in callable_pool if l.outreach_priority == "CONTACT FIRST" or (l.in_contact_first and l.outreach_priority != "CONTACT LATER")),
             "CONTACT_LATER": sum(1 for l in callable_pool if not (l.outreach_priority == "CONTACT FIRST" or (l.in_contact_first and l.outreach_priority != "CONTACT LATER"))),
+            "CALL_ALL": len(callable_pool),
+            "CALL_PENDING": sum(1 for l in callable_pool if is_pending_call(l)),
+            "CALL_CONNECTED": sum(1 for l in callable_pool if l.call_status == "CONNECTED"),
+            "CALL_NOT_CONNECTED": sum(1 for l in callable_pool if l.call_status == "NOT_CONNECTED"),
         }
 
-        # Step 2: Filter records by tab, potential, city, search
+        # Step 2: Filter records by tab, call_status, potential, city, search
         calling_leads: list[dict[str, Any]] = []
         for l in callable_pool:
             is_first = (l.outreach_priority == "CONTACT FIRST" or (l.in_contact_first and l.outreach_priority != "CONTACT LATER"))
@@ -468,6 +690,18 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 continue
             elif raw_tab in ("CONTACT_LATER", "CONTACT LATER") and is_first:
                 continue
+
+            # Call status filtering (Connected, Not Connected, Pending / Not called yet)
+            if call_status and call_status != "ALL":
+                if call_status in ("PENDING", "NOT_CALLED", "UNTOUCHED"):
+                    if not is_pending_call(l):
+                        continue
+                elif call_status in ("CONNECTED", "CALL_CONNECTED"):
+                    if l.call_status != "CONNECTED":
+                        continue
+                elif call_status in ("NOT_CONNECTED", "NOT CONNECTED"):
+                    if l.call_status != "NOT_CONNECTED":
+                        continue
 
             if potential and l.sales_potential.upper() != potential:
                 continue
@@ -490,6 +724,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             d["gaps"] = l.gaps
             d["pitch_hook"] = l.pitch_hook
             d["source_files"] = l.source_files
+            d["call_status"] = l.call_status
+            d["last_called_at"] = l.last_called_at
             calling_leads.append(d)
 
         # Step 3: Sort order: CONTACT FIRST first, then CONTACT LATER; then High potential, then business name
@@ -555,6 +791,10 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self._send_json({"leads": ig_leads, "total": len(ig_leads), "counts": counts})
 
     def _handle_pipeline_kanban(self, leads_map: dict[str, LeadRecord], query: dict[str, list[str]]) -> None:
+        date_filter = query.get("date_filter", ["ALL_TIME"])[0]
+        custom_start = query.get("custom_start", [""])[0]
+        custom_end = query.get("custom_end", [""])[0]
+
         stages = {
             "NEW": [],
             "RESEARCHED": [],
@@ -567,7 +807,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
             "LOST": [],
         }
 
+        matched_count = 0
         for lead in leads_map.values():
+            if not DashboardAnalytics._lead_matches_date_range(lead, date_filter, custom_start, custom_end):
+                continue
+            matched_count += 1
             stg = lead.sales_stage if lead.sales_stage in stages else "NEW"
             stages[stg].append({
                 "lead_id": lead.lead_id,
@@ -582,7 +826,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 "last_contact": lead.last_contacted_at,
             })
 
-        self._send_json({"stages": stages, "total_leads": len(leads_map)})
+        self._send_json({"stages": stages, "total_leads": matched_count, "all_time_total": len(leads_map)})
 
     def _handle_source_preview(self, raw_path: str) -> None:
         if not raw_path:
@@ -631,6 +875,38 @@ class DashboardHandler(BaseHTTPRequestHandler):
         except Exception as exc:
             self._send_error(HTTPStatus.INTERNAL_SERVER_ERROR, f"Error reading file: {exc}")
 
+    def _handle_demo_generate(self, leads_map: dict[str, LeadRecord], query: dict[str, list[str]]) -> None:
+        lead_id = query.get("lead_id", [""])[0].strip()
+        biz_name = query.get("business_name", [""])[0].strip()
+        phone = query.get("phone", [""])[0].strip()
+
+        if lead_id and lead_id in leads_map:
+            lead = leads_map[lead_id]
+            if not biz_name:
+                biz_name = lead.business_name
+            if not phone:
+                phone = lead.phone or lead.m6_recipient
+
+        if not biz_name:
+            self._send_error(
+                HTTPStatus.BAD_REQUEST,
+                "A valid business_name or valid lead_id is required to generate a personalized demo URL.",
+            )
+            return
+
+        try:
+            demo_pkg = generate_demo_package(
+                lead_id=lead_id or None,
+                business_name=biz_name,
+                phone=phone or None,
+            )
+            self._send_json(demo_pkg)
+        except ValueError as exc:
+            self._send_error(HTTPStatus.BAD_REQUEST, str(exc))
+        except Exception as exc:
+            logger.error("Error generating personalized demo: %s", exc)
+            self._send_error(HTTPStatus.INTERNAL_SERVER_ERROR, "Failed to generate demo URL")
+
     def _serve_static(self, path: str) -> None:
         rel = path.lstrip("/") or "index.html"
         file_path = (STATIC_DIR / rel).resolve()
@@ -672,18 +948,23 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-cache, must-revalidate")
             self.end_headers()
             self.wfile.write(data)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
         except Exception as exc:
             self._send_error(HTTPStatus.INTERNAL_SERVER_ERROR, f"Error serving static file: {exc}")
 
     def _send_json(self, data: Any, status: HTTPStatus = HTTPStatus.OK) -> None:
-        body = json.dumps(data, indent=2, ensure_ascii=False).encode("utf-8")
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Cache-Control", "no-cache")
-        self.end_headers()
-        self.wfile.write(body)
+        try:
+            body = json.dumps(data, indent=2, ensure_ascii=False).encode("utf-8")
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Cache-Control", "no-cache")
+            self.end_headers()
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
     def _send_error(self, status: HTTPStatus, message: str) -> None:
         self._send_json({"error": message, "status": status.value}, status=status)

@@ -565,18 +565,108 @@
       scrollbar-width: none;
     }
 
-    /* Reduced Motion Accessibility */
-    @media (prefers-reduced-motion: reduce) {
-      *, ::before, ::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
+    /* ================= KIWI-STYLE ORGANIC MOTION & HIGH-FASHION ANIMATIONS ================= */
+    .fruit-float {
+      animation: fruitFloat 4.2s ease-in-out infinite;
+      will-change: transform;
+    }
+    .fruit-float-delayed {
+      animation: fruitFloat 5s ease-in-out infinite 1.2s;
+      will-change: transform;
+    }
+    .fruit-float-reverse {
+      animation: fruitFloatReverse 5.6s ease-in-out infinite 0.6s;
+      will-change: transform;
+    }
+    @keyframes fruitFloat {
+      0%, 100% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
       }
-      .reveal-init {
-        opacity: 1 !important;
-        transform: none !important;
+      50% {
+        transform: translate3d(0, -8px, 0) rotate(1.8deg);
       }
+    }
+    @keyframes fruitFloatReverse {
+      0%, 100% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+      }
+      50% {
+        transform: translate3d(0, 8px, 0) rotate(-1.8deg);
+      }
+    }
+
+    /* Kiwi-Style Segmented Pill Glider Track */
+    .kiwi-segmented-container {
+      position: relative;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #E2E8F0;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    #kiwi-pill-glider {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      width: 0;
+      background: #0F172A;
+      border-radius: 9999px;
+      transition: all 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 1;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.28);
+      pointer-events: none;
+    }
+    .kiwi-tab-pill {
+      position: relative;
+      z-index: 2;
+      transition: color 0.28s ease, transform 0.2s ease;
+    }
+    .kiwi-tab-pill:active {
+      transform: scale(0.96);
+    }
+
+    /* Fly-to-Cart Particle Animation */
+    .fly-cart-particle {
+      position: fixed;
+      width: 14px;
+      height: 14px;
+      background: #D4AF37;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.85);
+      transition: all 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes cartBadgeShake {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      20% { transform: scale(1.35) rotate(-14deg); }
+      40% { transform: scale(1.25) rotate(14deg); }
+      60% { transform: scale(1.15) rotate(-6deg); }
+      80% { transform: scale(1.05) rotate(3deg); }
+    }
+    .cart-shake-active {
+      animation: cartBadgeShake 0.65s var(--ease-luxury) forwards !important;
+    }
+
+    /* 3D Perspective Card Tilt on Mouse Movement */
+    .card-3d-tilt {
+      transform-style: preserve-3d;
+      transition: transform 0.18s ease-out, box-shadow 0.25s ease;
+      will-change: transform;
+    }
+
+    /* Shoppable Catwalk Video Carousel */
+    .reel-card-hover {
+      transition: transform 0.4s var(--ease-luxury), box-shadow 0.4s var(--ease-luxury);
+    }
+    .reel-card-hover:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.18);
     }
   </style>
 </head>
@@ -859,13 +949,13 @@
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-90 pointer-events-none"></div>
 
               <!-- Top-Right Floating Glass Badge -->
-              <div class="absolute top-4 right-4 z-10 ultra-glass px-3.5 py-1.5 rounded-full text-xs font-bold text-amber-300 border border-amber-400/40 shadow-xl flex items-center gap-1.5">
+              <div class="absolute top-4 right-4 z-10 ultra-glass px-3.5 py-1.5 rounded-full text-xs font-bold text-amber-300 border border-amber-400/40 shadow-xl flex items-center gap-1.5 fruit-float">
                 <i class="fa-solid fa-crown text-amber-400"></i>
                 <span>👑 Couture Edition</span>
               </div>
 
               <!-- Bottom Floating Glass Outfit Card -->
-              <div class="absolute bottom-4 left-4 right-4 z-10 ultra-glass-hero p-3.5 rounded-2xl border border-white/25 shadow-2xl flex items-center justify-between gap-3">
+              <div class="absolute bottom-4 left-4 right-4 z-10 ultra-glass-hero p-3.5 rounded-2xl border border-white/25 shadow-2xl flex items-center justify-between gap-3 fruit-float-reverse">
                 <div class="min-w-0">
                   <span class="text-[9px] uppercase font-bold text-amber-400 tracking-wider block">Luxury Pret</span>
                   <h4 class="text-xs sm:text-sm font-semibold text-[#0F172A] truncate">Noor-e-Chaman Silk Pret</h4>
@@ -973,12 +1063,12 @@
               
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-90 pointer-events-none"></div>
 
-              <div class="absolute top-4 right-4 z-10 ultra-glass px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-300 border border-emerald-400/40 shadow-xl flex items-center gap-1.5">
+              <div class="absolute top-4 right-4 z-10 ultra-glass px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-300 border border-emerald-400/40 shadow-xl flex items-center gap-1.5 fruit-float">
                 <i class="fa-solid fa-seedling text-emerald-400"></i>
                 <span>🌸 Pure Lawn 3-Pc</span>
               </div>
 
-              <div class="absolute bottom-4 left-4 right-4 z-10 ultra-glass-hero p-3.5 rounded-2xl border border-white/25 shadow-2xl flex items-center justify-between gap-3">
+              <div class="absolute bottom-4 left-4 right-4 z-10 ultra-glass-hero p-3.5 rounded-2xl border border-white/25 shadow-2xl flex items-center justify-between gap-3 fruit-float-reverse">
                 <div class="min-w-0">
                   <span class="text-[9px] uppercase font-bold text-emerald-400 tracking-wider block">Unstitched 3-Pc</span>
                   <h4 class="text-xs sm:text-sm font-semibold text-[#0F172A] truncate">Gul-e-Rana Embroidered Lawn</h4>
@@ -1086,12 +1176,12 @@
               
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-90 pointer-events-none"></div>
 
-              <div class="absolute top-4 right-4 z-10 ultra-glass px-3.5 py-1.5 rounded-full text-xs font-bold text-pink-300 border border-pink-400/40 shadow-xl flex items-center gap-1.5">
+              <div class="absolute top-4 right-4 z-10 ultra-glass px-3.5 py-1.5 rounded-full text-xs font-bold text-pink-300 border border-pink-400/40 shadow-xl flex items-center gap-1.5 fruit-float">
                 <i class="fa-solid fa-gem text-pink-400"></i>
                 <span>✨ Micro Velvet 9000</span>
               </div>
 
-              <div class="absolute bottom-4 left-4 right-4 z-10 ultra-glass-hero p-3.5 rounded-2xl border border-white/25 shadow-2xl flex items-center justify-between gap-3">
+              <div class="absolute bottom-4 left-4 right-4 z-10 ultra-glass-hero p-3.5 rounded-2xl border border-white/25 shadow-2xl flex items-center justify-between gap-3 fruit-float-reverse">
                 <div class="min-w-0">
                   <span class="text-[9px] uppercase font-bold text-pink-400 tracking-wider block">Velvet & Silk</span>
                   <h4 class="text-xs sm:text-sm font-semibold text-[#0F172A] truncate">Shahi Velvet Kaftan & Shawl</h4>
@@ -1216,6 +1306,110 @@
     </div>
   </section>
 
+  <!-- ================= SECTION 5B — CATWALK IN MOTION (SHOPPABLE REELS LOOKBOOK) ================= -->
+  <section class="py-10 sm:py-16 w-full bg-[#FAF9F6] border-b border-[#E2E8F0] relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+      <div class="reveal-init reveal-left">
+        <div class="inline-flex items-center gap-2 text-xs uppercase font-bold tracking-[0.25em]" style="color: var(--brand-primary);">
+          <i class="fa-solid fa-film text-amber-500"></i>
+          <span>Runway In Motion</span>
+          <span class="w-8 h-[1px]" style="background: #0F172A;"></span>
+        </div>
+        <h2 class="font-serif text-2xl xs:text-3xl sm:text-4xl font-bold text-[#0F172A] mt-1">
+          Shoppable Catwalk Reels
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 font-normal">
+          Experience fabric silhouette & drape in motion. Click any reel to inspect or order instantly.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 reveal-init reveal-right">
+        <span class="text-xs bg-white text-slate-800 border border-slate-200 px-3.5 py-1.5 rounded-full font-bold shadow-sm flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+          <span>Live Runway Lookbook</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- 4-Reel Lookbook Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        
+        <!-- Reel Card 1 -->
+        <div class="reel-card-hover rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm relative group aspect-[9/15] sm:aspect-[9/16] cursor-pointer" onclick="quickViewProduct(1)">
+          <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=90" alt="Silk Pret Catwalk" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+          <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 border border-white/20">
+            <i class="fa-solid fa-play text-[8px] text-amber-400"></i>
+            <span>0:15 Runway</span>
+          </div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-white space-y-1">
+            <span class="text-[9px] uppercase tracking-wider text-amber-300 font-extrabold block">Luxury Pret</span>
+            <h4 class="text-xs sm:text-sm font-bold truncate">Noor-e-Chaman Silk</h4>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs font-mono font-bold text-amber-300">PKR 14,500</span>
+              <span class="bg-white text-slate-900 text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow hover:bg-amber-300 transition">Shop Look</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reel Card 2 -->
+        <div class="reel-card-hover rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm relative group aspect-[9/15] sm:aspect-[9/16] cursor-pointer" onclick="quickViewProduct(2)">
+          <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=90" alt="Embroidered Lawn Reel" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+          <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 border border-white/20">
+            <i class="fa-solid fa-play text-[8px] text-emerald-400"></i>
+            <span>0:12 Flow</span>
+          </div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-white space-y-1">
+            <span class="text-[9px] uppercase tracking-wider text-emerald-300 font-extrabold block">Lawn 3-Piece</span>
+            <h4 class="text-xs sm:text-sm font-bold truncate">Gul-e-Rana Embroidered</h4>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs font-mono font-bold text-emerald-300">PKR 8,950</span>
+              <span class="bg-white text-slate-900 text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow hover:bg-emerald-300 transition">Shop Look</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reel Card 3 -->
+        <div class="reel-card-hover rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm relative group aspect-[9/15] sm:aspect-[9/16] cursor-pointer" onclick="quickViewProduct(3)">
+          <img src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=90" alt="Velvet Shawl Reel" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+          <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 border border-white/20">
+            <i class="fa-solid fa-play text-[8px] text-pink-400"></i>
+            <span>0:18 Motion</span>
+          </div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-white space-y-1">
+            <span class="text-[9px] uppercase tracking-wider text-pink-300 font-extrabold block">Velvet & Silk</span>
+            <h4 class="text-xs sm:text-sm font-bold truncate">Zabeen Velvet Kaftan</h4>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs font-mono font-bold text-pink-300">PKR 18,900</span>
+              <span class="bg-white text-slate-900 text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow hover:bg-pink-300 transition">Shop Look</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reel Card 4 -->
+        <div class="reel-card-hover rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm relative group aspect-[9/15] sm:aspect-[9/16] cursor-pointer" onclick="quickViewProduct(4)">
+          <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=90" alt="Festive Chiffon Reel" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+          <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 border border-white/20">
+            <i class="fa-solid fa-play text-[8px] text-amber-400"></i>
+            <span>0:14 Drapes</span>
+          </div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-white space-y-1">
+            <span class="text-[9px] uppercase tracking-wider text-amber-300 font-extrabold block">Festive Chiffon</span>
+            <h4 class="text-xs sm:text-sm font-bold truncate">Mehr-un-Nisa Chiffon</h4>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs font-mono font-bold text-amber-300">PKR 16,500</span>
+              <span class="bg-white text-slate-900 text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow hover:bg-amber-300 transition">Shop Look</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- ================= SECTION 6 — NEW ARRIVALS & FULL CATALOG (100% RESPONSIVE) ================= -->
   <main id="catalog-section" class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-14 flex-grow w-full overflow-hidden">
     
@@ -1246,29 +1440,32 @@
       </div>
     </div>
 
-    <!-- Category Pills Tabs (Smooth Mobile Swipeable) -->
-    <div class="reveal-init reveal-up delay-75 flex items-center gap-2 overflow-x-auto pb-3 mb-6 sm:mb-8 no-scrollbar -mx-3 px-3 sm:mx-0 sm:px-0">
-      <button onclick="filterCategory('All')" class="cat-pill active px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap text-black shadow-md transition flex-shrink-0" style="background: #0F172A; color: #FFFFFF;" data-pill="All">
-        All Outfits (<span id="count-all">10</span>)
-      </button>
-      <button onclick="filterCategory('Luxury Pret')" class="cat-pill px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap bg-white hover:bg-[#F8FAFC] text-[#334155] border border-[#E2E8F0] hover:border-[#0F172A] transition flex-shrink-0" data-pill="Luxury Pret">
-        Luxury Pret (<span id="count-pret">3</span>)
-      </button>
-      <button onclick="filterCategory('Festive Chiffon')" class="cat-pill px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap bg-white hover:bg-[#F8FAFC] text-[#334155] border border-[#E2E8F0] hover:border-[#0F172A] transition flex-shrink-0" data-pill="Festive Chiffon">
-        Festive Chiffon (<span id="count-chiffon">2</span>)
-      </button>
-      <button onclick="filterCategory('Unstitched Lawn')" class="cat-pill px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap bg-white hover:bg-[#F8FAFC] text-[#334155] border border-[#E2E8F0] hover:border-[#0F172A] transition flex-shrink-0" data-pill="Unstitched Lawn">
-        Unstitched 3-Pc (<span id="count-lawn">2</span>)
-      </button>
-      <button onclick="filterCategory('Velvet & Silk')" class="cat-pill px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap bg-white hover:bg-[#F8FAFC] text-[#334155] border border-[#E2E8F0] hover:border-[#0F172A] transition flex-shrink-0" data-pill="Velvet & Silk">
-        Velvet & Silk (<span id="count-velvet">2</span>)
-      </button>
-      <button onclick="filterCategory('Bridal & Formals')" class="cat-pill px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap bg-white hover:bg-[#F8FAFC] text-[#334155] border border-[#E2E8F0] hover:border-[#0F172A] transition flex-shrink-0" data-pill="Bridal & Formals">
-        Bridal & Formals (<span id="count-bridal">1</span>)
-      </button>
-      <button onclick="filterCategory('Sale')" class="cat-pill px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition flex-shrink-0" data-pill="Sale">
-        🔥 Special Sale (30% OFF)
-      </button>
+    <!-- Category Pills Tabs (Kiwi Segmented Fluid Glider) -->
+    <div class="reveal-init reveal-up delay-75 mb-6 sm:mb-8 -mx-3 px-3 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar">
+      <div id="category-pills-track" class="kiwi-segmented-container">
+        <div id="kiwi-pill-glider"></div>
+        <button onclick="filterCategory('All', this)" class="cat-pill kiwi-tab-pill active px-4 py-2 rounded-full text-xs font-bold tracking-wider whitespace-nowrap text-white flex-shrink-0" data-pill="All">
+          All Outfits (<span id="count-all">10</span>)
+        </button>
+        <button onclick="filterCategory('Luxury Pret', this)" class="cat-pill kiwi-tab-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap text-slate-700 flex-shrink-0" data-pill="Luxury Pret">
+          Luxury Pret (<span id="count-pret">3</span>)
+        </button>
+        <button onclick="filterCategory('Festive Chiffon', this)" class="cat-pill kiwi-tab-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap text-slate-700 flex-shrink-0" data-pill="Festive Chiffon">
+          Festive Chiffon (<span id="count-chiffon">2</span>)
+        </button>
+        <button onclick="filterCategory('Unstitched Lawn', this)" class="cat-pill kiwi-tab-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap text-slate-700 flex-shrink-0" data-pill="Unstitched Lawn">
+          Unstitched 3-Pc (<span id="count-lawn">2</span>)
+        </button>
+        <button onclick="filterCategory('Velvet & Silk', this)" class="cat-pill kiwi-tab-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap text-slate-700 flex-shrink-0" data-pill="Velvet & Silk">
+          Velvet & Silk (<span id="count-velvet">2</span>)
+        </button>
+        <button onclick="filterCategory('Bridal & Formals', this)" class="cat-pill kiwi-tab-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap text-slate-700 flex-shrink-0" data-pill="Bridal & Formals">
+          Bridal & Formals (<span id="count-bridal">1</span>)
+        </button>
+        <button onclick="filterCategory('Sale', this)" class="cat-pill kiwi-tab-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap text-rose-600 font-bold flex-shrink-0" data-pill="Sale">
+          🔥 Special Sale (30% OFF)
+        </button>
+      </div>
     </div>
 
     <!-- Product Grid -->
@@ -3095,7 +3292,7 @@
         const piecesBadge = p.pieces || (p.title.includes('3-Pc') || p.title.includes('3-Piece') ? '3-Piece' : (p.title.includes('2-Pc') || p.title.includes('2-Piece') ? '2-Piece' : 'Standard'));
 
         return `
-        <div class="ultra-glass product-card-hover rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group bg-white border border-[#E2E8F0]">
+        <div class="ultra-glass product-card-hover card-3d-tilt rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group bg-white border border-[#E2E8F0]">
           
           <!-- Image Port with Badges -->
           <div class="relative overflow-hidden aspect-[3/4] bg-white cursor-pointer" onclick="quickViewProduct(${p.id})">
@@ -3290,22 +3487,56 @@
       if (countBridal) countBridal.textContent = PRODUCTS.filter(p => p.category === 'Bridal & Formals').length;
     }
 
-        function filterCategory(cat) {
+    function updateKiwiGlider(targetBtn) {
+      const glider = document.getElementById('kiwi-pill-glider');
+      if (!glider) return;
+      
+      let btn = targetBtn;
+      if (!btn || !btn.getBoundingClientRect) {
+        btn = document.querySelector(`.cat-pill[data-pill="${currentCategory}"]`);
+      }
+      if (!btn) return;
+
+      const offsetLeft = btn.offsetLeft;
+      const width = btn.offsetWidth;
+
+      glider.style.left = `${offsetLeft}px`;
+      glider.style.width = `${width}px`;
+      glider.style.opacity = '1';
+
+      const parent = btn.parentElement;
+      if (parent && parent.scrollWidth > parent.clientWidth) {
+        const scrollTarget = offsetLeft - (parent.clientWidth / 2) + (width / 2);
+        parent.scrollTo({ left: Math.max(0, scrollTarget), behavior: 'smooth' });
+      }
+    }
+
+    function filterCategory(cat, targetBtn) {
       currentCategory = cat;
       
-      document.querySelectorAll('.cat-pill').forEach(pill => {
-        if (pill.getAttribute('data-pill') === cat) {
-          pill.className = 'cat-pill active px-3.5 sm:px-4 py-2 rounded-full text-xs font-bold tracking-wider whitespace-nowrap text-white shadow-sm transition flex-shrink-0';
-          pill.style.background = '#0F172A';
+      const pills = document.querySelectorAll('.cat-pill');
+      let activePillEl = targetBtn;
+
+      pills.forEach(pill => {
+        const pillCat = pill.getAttribute('data-pill');
+        if (pillCat === cat) {
+          if (!activePillEl) activePillEl = pill;
+          pill.classList.add('active', 'text-white');
+          pill.classList.remove('text-slate-700');
           pill.style.color = '#FFFFFF';
-          pill.style.borderColor = '#0F172A';
         } else {
-          pill.className = 'cat-pill px-3.5 sm:px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap bg-white text-slate-700 border border-[#E2E8F0] hover:border-slate-900 transition flex-shrink-0';
-          pill.style.background = '#FFFFFF';
-          pill.style.color = '#334155';
-          pill.style.borderColor = '#E2E8F0';
+          pill.classList.remove('active', 'text-white');
+          if (pillCat === 'Sale') {
+            pill.style.color = '#E11D48';
+          } else {
+            pill.style.color = '#334155';
+          }
         }
       });
+
+      if (activePillEl) {
+        updateKiwiGlider(activePillEl);
+      }
 
       document.querySelectorAll('.category-nav-link').forEach(link => {
         if (link.getAttribute('data-cat') === cat) {
@@ -3504,12 +3735,57 @@
     }
 
     // --- 13. Cart Drawer Operations & Button State Transitions ---
+    function triggerFlyToCart(btn) {
+      if (!btn) return;
+      const btnRect = btn.getBoundingClientRect();
+      const targetBadge = (window.innerWidth < 1024 && document.getElementById('mobile-cart-badge'))
+        ? document.getElementById('mobile-cart-badge')
+        : document.getElementById('cart-badge');
+      
+      if (!targetBadge) return;
+      const targetRect = targetBadge.getBoundingClientRect();
+
+      const particle = document.createElement('div');
+      particle.className = 'fly-cart-particle';
+      particle.style.left = `${btnRect.left + btnRect.width / 2 - 7}px`;
+      particle.style.top = `${btnRect.top + btnRect.height / 2 - 7}px`;
+      particle.style.transform = 'scale(1)';
+      particle.style.opacity = '1';
+      document.body.appendChild(particle);
+
+      // Force reflow
+      particle.getBoundingClientRect();
+
+      requestAnimationFrame(() => {
+        particle.style.left = `${targetRect.left + targetRect.width / 2 - 7}px`;
+        particle.style.top = `${targetRect.top + targetRect.height / 2 - 7}px`;
+        particle.style.transform = 'scale(0.35)';
+        particle.style.opacity = '0.15';
+      });
+
+      setTimeout(() => {
+        if (particle.parentElement) {
+          particle.parentElement.removeChild(particle);
+        }
+        const badges = [document.getElementById('cart-badge'), document.getElementById('mobile-cart-badge')];
+        badges.forEach(b => {
+          if (b) {
+            b.classList.remove('cart-shake-active');
+            void b.offsetWidth;
+            b.classList.add('cart-shake-active');
+            setTimeout(() => b.classList.remove('cart-shake-active'), 650);
+          }
+        });
+      }, 720);
+    }
+
     function quickAddProductToCart(id, btn) {
       const p = PRODUCTS.find(item => item.id === id);
       if (!p) return;
       addToCart(p, p.sizes[0], 1);
 
       if (btn) {
+        triggerFlyToCart(btn);
         const origHtml = btn.innerHTML;
         const origBg = btn.style.background;
         btn.innerHTML = `<i class="fa-solid fa-check text-xs"></i> <span>Added ✓</span>`;
@@ -3527,6 +3803,7 @@
       if (!selectedModalProduct) return;
       addToCart(selectedModalProduct, selectedModalSize, selectedModalQty);
       if (btn) {
+        triggerFlyToCart(btn);
         const origHtml = btn.innerHTML;
         btn.innerHTML = `<i class="fa-solid fa-check text-xs"></i> <span>Added to Bag ✓</span>`;
         btn.style.background = '#25D366';
@@ -4489,6 +4766,11 @@
       setTimeout(triggerRandomSaleToast, 3500);
       setInterval(triggerRandomSaleToast, 16000);
 
+      // Kiwi-Style Segmented Pill Glider & 3D Tilt Initialization
+      initCard3DTilt();
+      setTimeout(() => updateKiwiGlider(), 120);
+      window.addEventListener('resize', () => updateKiwiGlider(), { passive: true });
+
       // Smooth Navbar Background Transition on Scroll
       window.addEventListener('scroll', () => {
         const nav = document.querySelector('header.glass-nav');
@@ -4501,6 +4783,40 @@
         }
       }, { passive: true });
     });
+
+    function initCard3DTilt() {
+      const grid = document.getElementById('product-grid');
+      if (!grid) return;
+
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        grid.addEventListener('mousemove', (e) => {
+          const card = e.target.closest('.card-3d-tilt');
+          if (!card) return;
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -5.5;
+          const rotateY = ((x - centerX) / centerX) * 5.5;
+          card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.015, 1.015, 1.015)`;
+        });
+
+        grid.addEventListener('mouseleave', () => {
+          const cards = grid.querySelectorAll('.card-3d-tilt');
+          cards.forEach(c => {
+            c.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+          });
+        }, true);
+
+        grid.addEventListener('mouseout', (e) => {
+          const card = e.target.closest('.card-3d-tilt');
+          if (card && (!e.relatedTarget || !card.contains(e.relatedTarget))) {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+          }
+        });
+      }
+    }
   </script>
 </body>
 </html>

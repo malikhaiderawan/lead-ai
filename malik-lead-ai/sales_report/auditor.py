@@ -268,7 +268,9 @@ def _check_contact_quality(rec: dict[str, Any]) -> str:
     issues: list[str] = []
 
     channel = _safe(rec.get("outreach_channel")).strip()
-    phone   = _safe(rec.get("phone"))
+    phone   = _safe(rec.get("phone")) or _safe(rec.get("whatsapp")) or _safe(rec.get("mobile_phone"))
+    if phone and not rec.get("phone"):
+        rec["phone"] = phone
     ig      = _safe(rec.get("instagram"))
     fb      = _safe(rec.get("facebook"))
 

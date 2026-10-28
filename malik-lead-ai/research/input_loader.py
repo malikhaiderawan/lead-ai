@@ -37,8 +37,8 @@ STANDARDIZED_COLUMNS: tuple[str, ...] = (
 
 # Each concept accepts these column name variants (case-insensitive, trimmed).
 COLUMN_MAPPING: dict[str, tuple[str, ...]] = {
-    "business_name": ("business_name", "title", "business", "name", "company", "store_name", "shop_name"),
-    "phone": ("phone", "phone_number", "contact", "telephone", "gen_phone", "google phones", "google_phones", "phones", "contact_number"),
+    "business_name": ("business_name", "title", "business", "name", "company", "store_name", "shop_name", "brand_name"),
+    "phone": ("phone", "phone_number", "contact", "telephone", "gen_phone", "google phones", "google_phones", "phones", "contact_number", "whatsapp_number", "whatsapp_phone", "wa_number"),
     "website_phones": ("website_phones", "website phones", "web_phone", "web_phones"),
     "email": ("email", "emails", "email_address", "contact_email", "mail", "email_addresses"),
     "website": ("website", "site", "url", "website_url", "web_url"),

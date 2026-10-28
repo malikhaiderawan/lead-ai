@@ -25,6 +25,27 @@ python3 main.py pipeline input/<your_file_name>.csv
 
 ---
 
+## 🌾 2A. Instagram Startup & D2C Bio Harvester (Google SERP Engine)
+Instagram-only businesses (Pret wear, bakeries, salons, jewelry designers) ko bina Instagram login ke Google Search se nikaalne ke liye:
+
+```bash
+# 1. Local Pakistan (Lahore Pret Wear - 30 leads):
+python3 main.py harvest --city Lahore --category "pret wear" --limit 30
+
+# 2. International (London Jewelry Brands - 30 leads):
+python3 main.py harvest --city London --country UK --category "jewelry brand" --limit 30
+
+# 3. International (Dubai Luxury Fashion - 50 leads):
+python3 main.py harvest --city Dubai --country AE --category "luxury clothing" --limit 50
+
+# 4. Harvest + Auto Pipeline (Ek hi command mein harvest + analyze + outreach generate):
+python3 main.py harvest --city Lahore --category "pret wear" --limit 30 --auto-pipeline
+```
+
+*(Tafseeli guide ke liye dekhein: `HARVEST_GUIDE.md`)*
+
+---
+
 ## 📲 3. WhatsApp Outreach Execution (M6)
 
 ### 🔍 Preview / Testing (Dry Run — Kuch send nahi hota, links aur messages verify karein):

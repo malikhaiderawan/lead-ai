@@ -36,6 +36,43 @@ def build_wa_link(recipient_e164: str, message: str) -> str:
     return f"https://wa.me/{digits}?text={urllib.parse.quote(message, safe='')}"
 
 
+def build_web_wa_link(recipient_e164: str, message: str) -> str:
+    """Build a direct web.whatsapp.com link with the message pre-filled."""
+    digits = "".join(ch for ch in recipient_e164 if ch.isdigit())
+    if not digits:
+        raise ChannelError(f"Cannot build a WhatsApp link for recipient {recipient_e164!r}")
+    return f"https://web.whatsapp.com/send?phone={digits}&text={urllib.parse.quote(message, safe='')}"
+
+
+def _copy_to_clipboard(text: str) -> None:
+    """Copy text directly to system clipboard on macOS for convenient Cmd+V pasting."""
+    import platform
+    import subprocess
+    if platform.system() == "Darwin":
+        try:
+            subprocess.run(["pbcopy"], input=text.encode("utf-8"), check=False)
+        except Exception:  # noqa: BLE001
+            pass
+
+
+def _open_desktop_browser(url: str) -> bool:
+    """Open the URL in the user's active Google Chrome if available, else default browser."""
+    import platform
+    import subprocess
+    from pathlib import Path
+
+    if platform.system() == "Darwin":
+        chrome_app = Path("/Applications/Google Chrome.app")
+        if chrome_app.exists():
+            try:
+                res = subprocess.run(["open", "-a", "Google Chrome", url], capture_output=True, text=True)
+                if res.returncode == 0:
+                    return True
+            except Exception:  # noqa: BLE001
+                pass
+    return webbrowser.open(url)
+
+
 def confirmed_result(detail: str = "Confirmed by the user as sent manually.", link: str = "") -> SendResult:
     """Result to store after the human confirms the send."""
     from ..storage import utc_now_iso
@@ -57,13 +94,14 @@ class WhatsAppAssistChannel(OutreachChannel):
 
     def __init__(self, open_browser: bool = True, browser_open=None) -> None:
         self.open_browser = open_browser
-        self._browser_open = browser_open or webbrowser.open
+        self._browser_open = browser_open or _open_desktop_browser
 
     def preview_link(self, recipient: str, message: str) -> str:
         return build_wa_link(recipient, message)
 
     def send(self, recipient: str, message: str, *, lead: M5Lead | None = None) -> SendResult:
         link = build_wa_link(recipient, message)
+        web_link = build_web_wa_link(recipient, message)
         if not self.open_browser:
             return SendResult(
                 status=STATUS_AWAITING_MANUAL,
@@ -72,8 +110,10 @@ class WhatsAppAssistChannel(OutreachChannel):
                 link=link,
             )
 
+        _copy_to_clipboard(message)
+
         try:
-            opened = self._browser_open(link)
+            opened = self._browser_open(web_link)
         except Exception as exc:  # noqa: BLE001
             logger.error("Failed to open WhatsApp link: %s", exc)
             return SendResult(
@@ -93,9 +133,9 @@ class WhatsAppAssistChannel(OutreachChannel):
 
         return SendResult(
             status=STATUS_AWAITING_MANUAL,
-            detail="WhatsApp chat opened with the message pre-filled — press Send once, then confirm.",
+            detail="WhatsApp chat opened in Google Chrome with the message pre-filled — press Send once, then confirm.",
             verification="pending",
-            link=link,
+            link=web_link,
         )
 
     def describe(self) -> str:
@@ -103,4 +143,5 @@ class WhatsAppAssistChannel(OutreachChannel):
         return f"whatsapp (assist, {mode})"
 
 
-__all__ = ["WhatsAppAssistChannel", "build_wa_link", "confirmed_result"]
+__all__ = ["WhatsAppAssistChannel", "build_wa_link", "build_web_wa_link", "confirmed_result"]
+

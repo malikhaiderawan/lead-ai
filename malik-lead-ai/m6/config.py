@@ -96,7 +96,20 @@ REQUIRED_CONTACT_TOKENS: Final[tuple[str, ...]] = (
 
 ALLOWED_EMAILS: Final[frozenset[str]] = frozenset({EMAIL})
 ALLOWED_LINK_HOSTS: Final[frozenset[str]] = frozenset(
-    {"malikaxiomtech.com", "www.malikaxiomtech.com", "malikaxiomtech.com/", "wa.me", "web.whatsapp.com"}
+    {
+        "malikaxiomtech.com",
+        "www.malikaxiomtech.com",
+        "malikaxiomtech.com/",
+        "wa.me",
+        "web.whatsapp.com",
+        "website-demo-five-navy.vercel.app",
+        "website-demo-five-navy.vercel.app/",
+    }
+)
+DEMO_REQUIRED_CONTACT_TOKENS: Final[tuple[str, ...]] = (
+    COMPANY_NAME,
+    WEBSITE_DOMAIN,
+    "Haider",
 )
 
 # Only used when the user explicitly passes --include-pricing.

@@ -25,7 +25,12 @@ const State = {
     status: '',
     milestone: '',
     city: '',
+    call_status: '',
+    category: '',
+    activity: '',
+    sort_by: '',
   },
+  crmMetrics: null,
   waFilter: {
     status: '',
     search: '',
@@ -33,6 +38,7 @@ const State = {
   },
   coldCallingFilter: {
     tab: 'ALL',
+    call_status: '',
     search: '',
     priority: '',
     potential: '',
@@ -116,6 +122,10 @@ function initNavigation() {
 }
 
 function switchView(viewName, filterOverrides = {}) {
+  if (viewName === 'crm') {
+    switchView('leads');
+    return;
+  }
   State.currentView = viewName;
 
   // Update sidebar active link
@@ -222,34 +232,153 @@ function loadViewData(viewName) {
    Date Filtering & Search Controls
    -------------------------------------------------------------------------- */
 
+function setGlobalDateFilter(val, specificDate = '') {
+  State.dateFilter = val;
+  State.leadsPage = 1;
+
+  const dateSelect = document.getElementById('global-date-filter');
+  const tableDateSelect = document.getElementById('filter-lead-date');
+  const ccDateSelect = document.getElementById('filter-cc-date');
+  const specificContainer = document.getElementById('specific-date-container');
+  const customContainer = document.getElementById('custom-date-container');
+  const specificInput = document.getElementById('specific-date-input');
+
+  if (dateSelect) dateSelect.value = val;
+  if (tableDateSelect) tableDateSelect.value = val;
+  if (ccDateSelect && ['ALL_TIME', 'TODAY', 'YESTERDAY', 'PARSO', 'SPECIFIC_DATE', 'PAST_7_DAYS'].includes(val)) {
+    ccDateSelect.value = val;
+  }
+
+  if (val === 'SPECIFIC_DATE') {
+    if (specificContainer) specificContainer.style.display = 'flex';
+    if (customContainer) customContainer.style.display = 'none';
+    if (specificDate) {
+      State.customStart = specificDate;
+      State.customEnd = specificDate;
+      if (specificInput) specificInput.value = specificDate;
+      refreshAll();
+    } else if (specificInput && specificInput.value) {
+      State.customStart = specificInput.value;
+      State.customEnd = specificInput.value;
+      refreshAll();
+    } else {
+      // Focus on the date picker if empty
+      if (specificInput) specificInput.focus();
+    }
+  } else if (val === 'CUSTOM') {
+    if (specificContainer) specificContainer.style.display = 'none';
+    if (customContainer) customContainer.style.display = 'flex';
+  } else {
+    if (specificContainer) specificContainer.style.display = 'none';
+    if (customContainer) customContainer.style.display = 'none';
+    State.customStart = '';
+    State.customEnd = '';
+    refreshAll();
+  }
+}
+
 function initDateFilters() {
   const dateSelect = document.getElementById('global-date-filter');
-  const customContainer = document.getElementById('custom-date-container');
+  const tableDateSelect = document.getElementById('filter-lead-date');
+  const ccDateSelect = document.getElementById('filter-cc-date');
+  const btnApplySpecific = document.getElementById('btn-apply-specific-date');
+  const specificInput = document.getElementById('specific-date-input');
   const btnApplyCustom = document.getElementById('btn-apply-custom-date');
 
-  dateSelect.addEventListener('change', () => {
-    State.dateFilter = dateSelect.value;
-    if (dateSelect.value === 'CUSTOM') {
-      customContainer.style.display = 'flex';
-    } else {
-      customContainer.style.display = 'none';
-      State.customStart = '';
-      State.customEnd = '';
-      refreshAll();
-    }
-  });
+  // Set default date input value to yesterday (when most recent leads were added) if not set
+  if (specificInput && !specificInput.value) {
+    specificInput.value = '2026-10-21';
+  }
 
-  btnApplyCustom.addEventListener('click', () => {
-    const startVal = document.getElementById('custom-date-start').value;
-    const endVal = document.getElementById('custom-date-end').value;
-    if (startVal && endVal) {
-      State.customStart = startVal;
-      State.customEnd = endVal;
-      refreshAll();
-    } else {
-      showToast('Please select both start and end dates', 'warning');
-    }
-  });
+  if (dateSelect) {
+    dateSelect.addEventListener('change', () => {
+      setGlobalDateFilter(dateSelect.value);
+    });
+  }
+
+  if (tableDateSelect) {
+    tableDateSelect.addEventListener('change', () => {
+      setGlobalDateFilter(tableDateSelect.value);
+    });
+  }
+
+  if (ccDateSelect) {
+    ccDateSelect.addEventListener('change', () => {
+      setGlobalDateFilter(ccDateSelect.value);
+    });
+  }
+
+  if (btnApplySpecific && specificInput) {
+    btnApplySpecific.addEventListener('click', () => {
+      const val = specificInput.value;
+      if (val) {
+        State.dateFilter = 'SPECIFIC_DATE';
+        State.customStart = val;
+        State.customEnd = val;
+        State.leadsPage = 1;
+        refreshAll();
+        showToast(`Showing leads for ${val}`, 'info');
+      } else {
+        showToast('Please select a specific date', 'warning');
+      }
+    });
+
+    specificInput.addEventListener('change', () => {
+      if (specificInput.value) {
+        State.dateFilter = 'SPECIFIC_DATE';
+        State.customStart = specificInput.value;
+        State.customEnd = specificInput.value;
+        State.leadsPage = 1;
+        refreshAll();
+        showToast(`Showing leads for ${specificInput.value}`, 'info');
+      }
+    });
+  }
+
+  if (btnApplyCustom) {
+    btnApplyCustom.addEventListener('click', () => {
+      const startVal = document.getElementById('custom-date-start').value;
+      const endVal = document.getElementById('custom-date-end').value;
+      if (startVal && endVal) {
+        State.dateFilter = 'CUSTOM';
+        State.customStart = startVal;
+        State.customEnd = endVal;
+        State.leadsPage = 1;
+        refreshAll();
+        showToast(`Showing leads from ${startVal} to ${endVal}`, 'info');
+      } else if (startVal) {
+        State.dateFilter = 'SPECIFIC_DATE';
+        State.customStart = startVal;
+        State.customEnd = startVal;
+        State.leadsPage = 1;
+        refreshAll();
+        showToast(`Showing leads for ${startVal}`, 'info');
+      } else {
+        showToast('Please select dates to filter', 'warning');
+      }
+    });
+  }
+}
+
+function resetDateFilterToAllTime() {
+  const dateSelect = document.getElementById('global-date-filter');
+  const tableDateSelect = document.getElementById('filter-lead-date');
+  const ccDateSelect = document.getElementById('filter-cc-date');
+  const specificContainer = document.getElementById('specific-date-container');
+  const customContainer = document.getElementById('custom-date-container');
+
+  if (dateSelect) dateSelect.value = 'ALL_TIME';
+  if (tableDateSelect) tableDateSelect.value = 'ALL_TIME';
+  if (ccDateSelect) ccDateSelect.value = 'ALL_TIME';
+  if (specificContainer) specificContainer.style.display = 'none';
+  if (customContainer) customContainer.style.display = 'none';
+
+  State.dateFilter = 'ALL_TIME';
+  State.customStart = '';
+  State.customEnd = '';
+  State.leadsPage = 1;
+  refreshAll();
+  showToast('Reset to All Time (Showing all leads)', 'info');
 }
 
 function initSearch() {
@@ -284,12 +413,14 @@ function initTableFilters() {
   });
 
   // Master leads filter listeners
-  ['priority', 'potential', 'channel', 'status', 'milestone', 'city'].forEach(filterKey => {
-    const id = filterKey === 'status' ? 'filter-lead-m6-status' : `filter-lead-${filterKey}`;
+  ['priority', 'potential', 'channel', 'status', 'milestone', 'city', 'call-status', 'category', 'activity', 'sort'].forEach(filterKey => {
+    let id = `filter-lead-${filterKey}`;
+    if (filterKey === 'status') id = 'filter-lead-m6-status';
+    const stateKey = filterKey === 'sort' ? 'sort_by' : filterKey.replace('-', '_');
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('change', () => {
-        State.leadsFilter[filterKey] = el.value;
+        State.leadsFilter[stateKey] = el.value;
         State.leadsPage = 1;
         fetchMasterLeads();
       });
@@ -301,12 +432,23 @@ function initTableFilters() {
   if (btnResetLeads) {
     btnResetLeads.addEventListener('click', () => {
       State.leadsTab = 'ALL';
-      State.leadsFilter = { priority: '', potential: '', channel: '', status: '', milestone: '', city: '' };
+      State.leadsFilter = {
+        priority: '',
+        potential: '',
+        channel: '',
+        status: '',
+        milestone: '',
+        city: '',
+        call_status: '',
+        category: '',
+        activity: '',
+        sort_by: '',
+      };
       document.querySelectorAll('.leads-tabs-bar .tab-btn').forEach(b => {
         if (b.getAttribute('data-tab') === 'ALL') b.classList.add('active');
         else b.classList.remove('active');
       });
-      ['priority', 'potential', 'channel', 'city'].forEach(k => {
+      ['priority', 'potential', 'channel', 'city', 'call-status', 'category', 'activity', 'sort'].forEach(k => {
         const el = document.getElementById(`filter-lead-${k}`);
         if (el) el.value = '';
       });
@@ -359,10 +501,23 @@ function initTableFilters() {
     });
   }
 
-  // Cold Calling tab listeners
-  document.querySelectorAll('#cold-calling-tabs-bar .tab-btn').forEach(btn => {
+  // Cold Calling Call Status tab listeners (Pending, Connected, Not Connected, All)
+  document.querySelectorAll('#cold-calling-tabs-bar button[data-call-status]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#cold-calling-tabs-bar .tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#cold-calling-tabs-bar button[data-call-status]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const val = btn.getAttribute('data-call-status') || 'ALL';
+      State.coldCallingFilter.call_status = val === 'ALL' ? '' : val;
+      const ccStatusSelect = document.getElementById('filter-cold-calling-status');
+      if (ccStatusSelect) ccStatusSelect.value = State.coldCallingFilter.call_status;
+      fetchColdCalling();
+    });
+  });
+
+  // Cold Calling Priority tab listeners (All, Contact First, Contact Later)
+  document.querySelectorAll('#cold-calling-tabs-bar button[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#cold-calling-tabs-bar button[data-tab]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       State.coldCallingFilter.tab = btn.getAttribute('data-tab') || 'ALL';
       fetchColdCalling();
@@ -370,6 +525,23 @@ function initTableFilters() {
   });
 
   // Cold Calling filter listeners
+  const ccStatusSelect = document.getElementById('filter-cold-calling-status');
+  if (ccStatusSelect) {
+    ccStatusSelect.addEventListener('change', () => {
+      const val = ccStatusSelect.value;
+      State.coldCallingFilter.call_status = val;
+      document.querySelectorAll('#cold-calling-tabs-bar button[data-call-status]').forEach(b => {
+        const btnVal = b.getAttribute('data-call-status');
+        if ((!val && btnVal === 'ALL') || btnVal === val) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      fetchColdCalling();
+    });
+  }
+
   const ccSearch = document.getElementById('filter-cold-calling-search');
   if (ccSearch) {
     let ccDebounce = null;
@@ -401,11 +573,16 @@ function initTableFilters() {
   const btnResetCC = document.getElementById('btn-reset-cold-calling-filters');
   if (btnResetCC) {
     btnResetCC.addEventListener('click', () => {
-      State.coldCallingFilter = { tab: 'ALL', search: '', priority: '', potential: '', city: '' };
-      document.querySelectorAll('#cold-calling-tabs-bar .tab-btn').forEach(b => {
+      State.coldCallingFilter = { tab: 'ALL', call_status: '', search: '', priority: '', potential: '', city: '' };
+      document.querySelectorAll('#cold-calling-tabs-bar button[data-call-status]').forEach(b => {
+        if (b.getAttribute('data-call-status') === 'ALL') b.classList.add('active');
+        else b.classList.remove('active');
+      });
+      document.querySelectorAll('#cold-calling-tabs-bar button[data-tab]').forEach(b => {
         if (b.getAttribute('data-tab') === 'ALL') b.classList.add('active');
         else b.classList.remove('active');
       });
+      if (ccStatusSelect) ccStatusSelect.value = '';
       if (ccSearch) ccSearch.value = '';
       if (ccPotential) ccPotential.value = '';
       if (ccCity) ccCity.value = '';
@@ -581,7 +758,7 @@ function renderFunnel(milestones, total) {
       <div>
         <div style="display:flex; justify-content:space-between; font-size:11.5px; margin-bottom:3px;">
           <span style="color:var(--text-muted); font-weight:500;">${s.label}</span>
-          <span style="font-weight:700; color:#fff;">${s.count.toLocaleString()}</span>
+          <span style="font-weight:700; color:var(--text-main);">${s.count.toLocaleString()}</span>
         </div>
         <div style="background:var(--bg-input); height:6px; border-radius:3px; overflow:hidden;">
           <div style="background:${s.color}; width:${pct}%; height:100%; border-radius:3px; transition:width 0.4s ease;"></div>
@@ -601,7 +778,7 @@ function renderQuickAttention(items) {
   }
 
   container.innerHTML = items.slice(0, 5).map(item => `
-    <div class="timeline-item" onclick="openLeadModal('${escapeHtml(item.lead_id)}')">
+    <div class="timeline-item" onclick="openLeadModal('${escapeJsString(item.lead_id)}')">
       <div class="timeline-icon" style="color:var(--accent-red);">🚨</div>
       <div class="timeline-content">
         <div class="timeline-title">${escapeHtml(item.business_name || item.lead_id)}</div>
@@ -625,7 +802,7 @@ function renderQuickActivity(events) {
     const timeStr = formatTimestamp(ev.timestamp);
     const icon = getMilestoneIcon(ev.milestone);
     return `
-      <div class="timeline-item" onclick="openLeadModal('${escapeHtml(ev.lead_id)}')">
+      <div class="timeline-item" onclick="openLeadModal('${escapeJsString(ev.lead_id)}')">
         <div class="timeline-icon">${icon}</div>
         <div class="timeline-content">
           <div class="timeline-title">${escapeHtml(ev.business_name || ev.lead_id)}</div>
@@ -654,7 +831,7 @@ function renderTopCities(geo) {
       <div style="font-size:11.5px;">
         <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
           <span style="color:var(--text-muted);">${escapeHtml(city)}</span>
-          <span style="color:#fff; font-weight:600;">${count}</span>
+          <span style="color:var(--text-main); font-weight:600;">${count}</span>
         </div>
         <div style="background:var(--bg-input); height:4px; border-radius:2px; overflow:hidden;">
           <div style="background:var(--primary-blue); width:${pct}%; height:100%;"></div>
@@ -682,7 +859,7 @@ function renderTopChannels(channels) {
       <div style="font-size:11.5px;">
         <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
           <span style="color:var(--text-muted);">${c.name}</span>
-          <span style="color:#fff; font-weight:600;">${c.count}</span>
+          <span style="color:var(--text-main); font-weight:600;">${c.count}</span>
         </div>
         <div style="background:var(--bg-input); height:4px; border-radius:2px; overflow:hidden;">
           <div style="background:${c.color}; width:${pct}%; height:100%;"></div>
@@ -727,7 +904,7 @@ function renderActivityView(events) {
     const icon = getMilestoneIcon(ev.milestone);
     const timeStr = formatTimestamp(ev.timestamp);
     return `
-      <div class="timeline-item" onclick="openLeadModal('${escapeHtml(ev.lead_id)}')">
+      <div class="timeline-item" onclick="openLeadModal('${escapeJsString(ev.lead_id)}')">
         <div class="timeline-icon">${icon}</div>
         <div class="timeline-content">
           <div style="display:flex; align-items:center; gap:8px;">
@@ -783,14 +960,14 @@ function renderPipeline(stages) {
     }
 
     const cardsHtml = list.map(item => `
-      <div class="kanban-card" onclick="openLeadModal('${escapeHtml(item.lead_id)}')">
+      <div class="kanban-card" onclick="openLeadModal('${escapeJsString(item.lead_id)}')">
         <div class="kanban-card-title">${escapeHtml(item.business_name || item.lead_id)}</div>
         <div style="font-size:11px; color:var(--text-muted); display:flex; justify-content:space-between;">
           <span>${escapeHtml(item.city || 'Pakistan')}</span>
           <span style="color:var(--text-main); font-family:var(--font-mono);">${escapeHtml(item.phone || 'No Phone')}</span>
         </div>
         <div class="kanban-card-meta">
-          <span style="font-family:var(--font-mono); font-size:10px; font-weight:700; color:#fff; background:var(--bg-input); padding:1px 5px; border-radius:3px; border:1px solid var(--border-color);">${item.qualification_score !== undefined && item.qualification_score !== null ? item.qualification_score : '—'}</span>
+          <span style="font-family:var(--font-mono); font-size:10px; font-weight:700; color:var(--text-main); background:var(--bg-input); padding:1px 5px; border-radius:3px; border:1px solid var(--border-color);">${item.qualification_score !== undefined && item.qualification_score !== null ? item.qualification_score : '—'}</span>
           <span class="badge ${getPotentialBadgeClass(item.potential)}">${escapeHtml(item.potential || 'MOD')}</span>
           <span class="badge ${getStatusBadgeClass(item.m6_status)}">${escapeHtml(item.m6_status || 'PENDING')}</span>
         </div>
@@ -836,6 +1013,10 @@ async function fetchMasterLeads() {
       status: State.leadsFilter.status,
       milestone: State.leadsFilter.milestone,
       city: State.leadsFilter.city,
+      call_status: State.leadsFilter.call_status,
+      category: State.leadsFilter.category,
+      activity: State.leadsFilter.activity,
+      sort_by: State.leadsFilter.sort_by,
     };
 
     const res = await fetch(`/api/leads?${buildQueryString(extraParams)}`);
@@ -857,6 +1038,9 @@ function renderMasterLeads(data) {
 
   State.leadsPage = pag.page;
   State.leadsTotalPages = pag.total_pages;
+  State.currentLeads = leads;
+  State.leadsMap = new Map();
+  leads.forEach(l => State.leadsMap.set(l.lead_id, l));
 
   // Update tab counts
   if (tabCounts.ALL !== undefined) {
@@ -865,6 +1049,7 @@ function renderMasterLeads(data) {
       if (el) el.textContent = (count || 0).toLocaleString();
     };
     setTabCount('tab-count-all', tabCounts.ALL);
+    setTabCount('tab-count-new', tabCounts.NEW);
     setTabCount('tab-count-active', tabCounts.ACTIVE);
     setTabCount('tab-count-contact-first', tabCounts.CONTACT_FIRST);
     setTabCount('tab-count-contact-later', tabCounts.CONTACT_LATER);
@@ -886,7 +1071,36 @@ function renderMasterLeads(data) {
   document.getElementById('btn-next-page').disabled = (State.leadsPage >= State.leadsTotalPages);
 
   if (leads.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:32px; color:var(--text-dim);">No leads match the selected criteria.</td></tr>`;
+    const allCountStr = (tabCounts.ALL || 0).toLocaleString();
+    let dateLabel = 'selected date filter';
+    if (State.dateFilter === 'TODAY') dateLabel = 'Today (Aaj)';
+    else if (State.dateFilter === 'YESTERDAY') dateLabel = 'Yesterday (Kal)';
+    else if (State.dateFilter === 'PARSO') dateLabel = 'Day Before Yesterday (Parso)';
+    else if (State.dateFilter === 'SPECIFIC_DATE') dateLabel = `Date: ${State.customStart || 'Selected Date'}`;
+    else if (State.dateFilter === 'CUSTOM') dateLabel = `Range: ${State.customStart} to ${State.customEnd}`;
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" style="text-align:center; padding:36px 20px;">
+          <div style="font-size:28px; margin-bottom:8px;">📅</div>
+          <div style="font-size:15px; font-weight:700; color:var(--text-main); margin-bottom:6px;">No Leads Found for "${dateLabel}"</div>
+          <div style="font-size:12px; color:var(--text-muted); max-width:520px; margin:0 auto 16px auto; line-height:1.6;">
+            Pipeline mein leads previous dates par ingest aur verify hui hain. Aap foran niche diye gaye buttons se Kal ya Parso ki leads dekh sakhte hain:
+          </div>
+          <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-sm" onclick="setGlobalDateFilter('YESTERDAY')" style="background:rgba(56,189,248,0.15); border-color:#38bdf8; color:#38bdf8; font-weight:700; padding:6px 14px; cursor:pointer;">
+              ⏮️ Kal / Yesterday (78 Leads)
+            </button>
+            <button class="btn btn-sm" onclick="setGlobalDateFilter('PARSO')" style="background:rgba(168,85,247,0.15); border-color:#c084fc; color:#c084fc; font-weight:700; padding:6px 14px; cursor:pointer;">
+              ⏳ Parso (23 Leads)
+            </button>
+            <button class="btn btn-sm btn-primary" onclick="resetDateFilterToAllTime()" style="background:#2563eb; border-color:#2563eb; font-weight:700; padding:6px 14px; cursor:pointer;">
+              📅 Show All Time (${allCountStr} Leads)
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
     return;
   }
 
@@ -894,38 +1108,90 @@ function renderMasterLeads(data) {
     const isArch = Boolean(l.is_archived || l.sales_stage === 'ARCHIVED');
     const isSkip = Boolean(l.is_skipped || l.sales_stage === 'SKIPPED');
     const waLink = (!isArch && !isSkip && (l.m6_recipient || l.phone)) ? `https://wa.me/${(l.m6_recipient || l.phone).replace(/[^0-9]/g, '')}` : '';
-    const hasPitch = Boolean(l.outreach_message);
-    const displayStatus = isArch ? 'ARCHIVE' : (isSkip ? 'SKIP' : (l.m6_status || l.sales_stage || 'PENDING'));
-    const reasonText = l.archive_skip_reason || l.opportunity || l.why_this_lead || '—';
+    const m6DisplayStatus = isArch ? 'ARCHIVE' : (isSkip ? 'SKIP' : (l.m6_status || 'PENDING'));
+    const callStatus = l.call_status || 'PENDING';
+    const crmCategory = l.category || '';
+    const lastCalled = l.last_called_at ? formatRelativeTime(l.last_called_at) : '';
+    const notePreview = l.latest_note || '';
+    const leadDate = l.discovered_at ? l.discovered_at.slice(0, 10) : (l.researched_at ? l.researched_at.slice(0, 10) : '');
+
+    // Safely encode lead data for inline button handler
+    const leadJson = escapeAttr(JSON.stringify({
+      lead_id: l.lead_id,
+      business_name: l.business_name || l.lead_id,
+      phone: l.phone || '',
+      call_status: callStatus,
+      category: crmCategory,
+      latest_note: notePreview,
+      last_called_at: l.last_called_at || '',
+    }));
 
     return `
-      <tr onclick="openLeadModal('${escapeHtml(l.lead_id)}')">
+      <tr onclick="openLeadModal('${escapeJsString(l.lead_id)}')" style="cursor:pointer;" title="Click any row to open complete M1-M5 lead details">
         <td>
-          <div style="font-weight:600; color:#fff;">${escapeHtml(l.business_name || l.lead_id)}</div>
-          <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${escapeHtml(l.lead_id)}</div>
-        </td>
-        <td><span style="color:var(--text-muted);">${escapeHtml(l.city || l.location || '—')}</span></td>
-        <td>
-          <div>${l.phone ? `<span style="font-family:var(--font-mono); font-size:11.5px; color:#fff;">📞 ${escapeHtml(l.phone)}</span>` : '<span style="color:var(--text-dim); font-size:11px;">No Phone</span>'}</div>
-          ${l.instagram ? `<div style="font-size:11px; color:var(--accent-insta);">📸 @${escapeHtml(l.instagram)}</div>` : ''}
-          ${l.website ? `<div style="font-size:10.5px; color:var(--primary-blue);">🌐 ${escapeHtml(l.website.replace(/^https?:\/\//, '').slice(0, 20))}</div>` : ''}
-        <td>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <span style="font-family:var(--font-mono); font-weight:700; color:#fff; font-size:11.5px; background:var(--bg-input); padding:2px 6px; border-radius:4px; border:1px solid var(--border-color);" title="Qualification Score">${l.qualification_score !== null && l.qualification_score !== undefined ? l.qualification_score : '—'}</span>
-            <span class="badge ${getPotentialBadgeClass(l.sales_potential)}" style="font-size:10px;">${escapeHtml(l.sales_potential || 'MOD')}</span>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px;">
+            <div>
+              <div style="font-weight:600; color:var(--text-main); cursor:pointer;" onclick="openLeadModal('${escapeJsString(l.lead_id)}')" title="Click to view M1-M5 Pipeline Details">
+                ${escapeHtml(l.business_name || l.lead_id)}
+              </div>
+              <div style="font-size:11px; color:var(--text-muted); margin-top:2px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <span>${escapeHtml(l.city || l.location || '—')}</span>
+                <span>•</span>
+                <span style="font-family:var(--font-mono);">${escapeHtml(l.lead_id)}</span>
+                ${leadDate ? `<span class="badge" style="background:rgba(56,189,248,0.1); color:#38bdf8; font-size:10px; padding:1px 5px;" title="Date Lead Added">📅 ${escapeHtml(leadDate)}</span>` : ''}
+              </div>
+            </div>
+            <button class="btn btn-sm" onclick="event.stopPropagation(); openLeadModal('${escapeJsString(l.lead_id)}')" style="font-size:10px; padding:2px 7px; background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); font-weight:700; border-radius:4px; white-space:nowrap; cursor:pointer;" title="Inspect what happened in M1 to M5">🔍 M1-M5</button>
           </div>
         </td>
-        <td><span class="badge ${getChannelBadgeClass(l.outreach_channel)}">${escapeHtml(l.outreach_channel || 'WhatsApp')}</span></td>
-        <td><span class="badge ${getStatusBadgeClass(displayStatus)}">${escapeHtml(displayStatus)}</span></td>
-        <td style="font-size:11.5px; max-width:220px; color:${isArch || isSkip ? 'var(--accent-amber)' : 'var(--text-muted)'}; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
-          ${escapeHtml(reasonText)}
+        <td>
+          <div>
+            ${l.phone ? `<a href="tel:${escapeAttr(l.phone)}" onclick="event.stopPropagation();" style="font-family:var(--font-mono); font-size:11.5px; color:#38bdf8; text-decoration:none;">📞 ${escapeHtml(l.phone)}</a>` : '<span style="color:var(--text-dim); font-size:11px;">No Phone</span>'}
+            ${waLink ? `<a href="${waLink}" target="_blank" onclick="event.stopPropagation();" style="margin-left:4px; font-size:11px; color:var(--accent-wa); text-decoration:none;" title="Open WhatsApp">💬</a>` : ''}
+          </div>
+          ${l.instagram ? `<div style="font-size:10.5px; color:var(--accent-insta);">📸 @${escapeHtml(l.instagram)}</div>` : ''}
         </td>
-        <td style="font-size:11px; color:var(--text-dim); font-family:var(--font-mono);">${formatDate(l.discovered_at)}</td>
+        <td onclick="event.stopPropagation();">
+          <select class="badge-select ${getStatusBadgeClass(m6DisplayStatus)}" 
+                  title="Click to manually edit M6 status"
+                  onchange="quickChangeM6Status('${escapeJsString(l.lead_id)}', this.value)" 
+                  onclick="event.stopPropagation();">
+            <option value="SENT" ${m6DisplayStatus === 'SENT' ? 'selected' : ''}>✅ SENT</option>
+            <option value="PENDING" ${m6DisplayStatus === 'PENDING' ? 'selected' : ''}>⏳ PENDING</option>
+            <option value="AWAITING_MANUAL_SEND" ${m6DisplayStatus === 'AWAITING_MANUAL_SEND' ? 'selected' : ''}>✋ MANUAL</option>
+            <option value="FAILED" ${m6DisplayStatus === 'FAILED' ? 'selected' : ''}>❌ FAILED</option>
+            <option value="NOT_READY" ${m6DisplayStatus === 'NOT_READY' ? 'selected' : ''}>⚠️ NOT READY</option>
+            <option value="NO_WHATSAPP_NUMBER" ${m6DisplayStatus === 'NO_WHATSAPP_NUMBER' ? 'selected' : ''}>🚫 NO WA</option>
+            <option value="ARCHIVE" ${m6DisplayStatus === 'ARCHIVE' ? 'selected' : ''}>📁 ARCHIVE</option>
+            <option value="SKIP" ${m6DisplayStatus === 'SKIP' ? 'selected' : ''}>⏭️ SKIP</option>
+          </select>
+        </td>
+        <td>
+          <span class="badge ${getCrmCallBadgeClass(callStatus)}">${escapeHtml(callStatus)}</span>
+        </td>
+        <td>
+          <span class="badge ${getCrmCategoryBadgeClass(crmCategory)}">${escapeHtml(crmCategory ? getCategoryDisplay(crmCategory) : '—')}</span>
+        </td>
+        <td style="max-width:200px;">
+          <div>${lastCalled ? `<span style="font-size:11px; color:var(--text-main); font-weight:600;">🕒 ${lastCalled}</span>` : '<span style="color:var(--text-dim); font-size:11px;">Never Called</span>'}</div>
+          ${notePreview ? `<div style="font-size:11px; color:var(--text-muted); font-style:italic; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeAttr(notePreview)}">"${escapeHtml(notePreview)}"</div>` : ''}
+        </td>
+        <td>
+          <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+            <span class="badge ${getPotentialBadgeClass(l.sales_potential)}" style="font-size:10px;">${escapeHtml(l.sales_potential || 'MOD')}</span>
+            <span class="badge ${getChannelBadgeClass(l.outreach_channel)}" style="font-size:10px;">${escapeHtml(l.outreach_channel || 'WA')}</span>
+          </div>
+        </td>
         <td onclick="event.stopPropagation();" style="white-space:nowrap;">
-          <div style="display:flex; gap:6px;">
-            ${waLink ? `<a href="${waLink}" target="_blank" class="btn btn-sm" title="Open WhatsApp Chat" style="color:var(--accent-wa); background:var(--accent-wa-dim); border-color:transparent;">💬 Open WA</a>` : ''}
-            ${hasPitch ? `<button class="btn btn-sm" title="Copy Pitch" onclick="copyPitchText('${escapeAttr(l.outreach_message)}')">📋 Pitch</button>` : ''}
-            <button class="btn btn-sm" onclick="openLeadModal('${escapeHtml(l.lead_id)}')">👁 Details</button>
+          <div style="display:flex; gap:4px; align-items:center;">
+            <button class="btn btn-sm" title="View Complete M1-M5 Pipeline Details" onclick="event.stopPropagation(); openLeadModal('${escapeJsString(l.lead_id)}')" style="background:rgba(56,189,248,0.15); border:1px solid #38bdf8; color:#38bdf8; font-weight:700; padding:2px 8px; cursor:pointer;">👁 Details</button>
+            <button class="btn btn-sm btn-primary" title="Quick Call Workflow" onclick="event.stopPropagation(); openQuickCallModal('${escapeJsString(l.lead_id)}')" style="background:#2563eb; border-color:#2563eb; font-weight:600; padding:2px 7px;">📞 Call Done</button>
+            <button class="btn btn-sm" title="Mark Connected" onclick="event.stopPropagation(); quickRowCallStatus('${escapeJsString(l.lead_id)}', 'CONNECTED')" style="border-color:#34d399; color:#34d399; padding:2px 6px;">🟢</button>
+            <button class="btn btn-sm" title="Mark Not Connected" onclick="event.stopPropagation(); quickRowCallStatus('${escapeJsString(l.lead_id)}', 'NOT_CONNECTED')" style="border-color:#f87171; color:#f87171; padding:2px 6px;">🔴</button>
+            <button class="btn btn-sm" title="Mark Interested" onclick="event.stopPropagation(); quickRowCategory('${escapeJsString(l.lead_id)}', 'INTERESTED')" style="border-color:#38bdf8; color:#38bdf8; font-weight:700; padding:2px 6px;">💎 A</button>
+            <button class="btn btn-sm" title="Mark Send" onclick="event.stopPropagation(); quickRowCategory('${escapeJsString(l.lead_id)}', 'SEND')" style="border-color:#c084fc; color:#c084fc; font-weight:700; padding:2px 6px;">🚀 B</button>
+            <button class="btn btn-sm" title="Mark No Answer" onclick="event.stopPropagation(); quickRowCategory('${escapeJsString(l.lead_id)}', 'NO_ANSWER')" style="border-color:#fb923c; color:#fb923c; font-weight:700; padding:2px 6px;">📵 C</button>
+            <button class="btn btn-sm" title="Add Note" onclick="event.stopPropagation(); openQuickCallModal('${escapeJsString(l.lead_id)}')" style="padding:2px 6px;">📝</button>
           </div>
         </td>
       </tr>
@@ -975,13 +1241,28 @@ function renderWhatsApp(data) {
     const waLink = cleanNum ? `https://wa.me/${cleanNum}` : '';
 
     return `
-      <tr onclick="openLeadModal('${escapeHtml(l.lead_id)}')">
+      <tr onclick="openLeadModal('${escapeJsString(l.lead_id)}')">
         <td>
-          <div style="font-weight:600; color:#fff;">${escapeHtml(l.business_name || l.lead_id)}</div>
+          <div style="font-weight:600; color:var(--text-main);">${escapeHtml(l.business_name || l.lead_id)}</div>
           <div style="font-size:11px; color:var(--text-dim);">${escapeHtml(l.city || 'Islamabad/Rwp')}</div>
         </td>
-        <td style="font-family:var(--font-mono); color:#fff;">${phoneNum ? escapeHtml(phoneNum) : '<span style="color:var(--text-dim);">No Number</span>'}</td>
-        <td><span class="badge ${getStatusBadgeClass(l.m6_status)}">${escapeHtml(l.m6_status || 'PENDING')}</span></td>
+        <td style="font-family:var(--font-mono); color:var(--text-main);">${phoneNum ? escapeHtml(phoneNum) : '<span style="color:var(--text-dim);">No Number</span>'}</td>
+        <td onclick="event.stopPropagation();">
+          <select class="badge-select ${getStatusBadgeClass(l.m6_status || 'PENDING')}" 
+                  title="Click to manually edit WhatsApp status"
+                  onchange="quickChangeM6Status('${escapeJsString(l.lead_id)}', this.value)" 
+                  onclick="event.stopPropagation();">
+            <option value="SENT" ${(l.m6_status === 'SENT') ? 'selected' : ''}>✅ SENT</option>
+            <option value="PENDING" ${(l.m6_status === 'PENDING' || !l.m6_status) ? 'selected' : ''}>⏳ PENDING</option>
+            <option value="SKIPPED_LIMIT" ${(l.m6_status === 'SKIPPED_LIMIT') ? 'selected' : ''}>⏱️ LIMIT REACHED</option>
+            <option value="AWAITING_MANUAL_SEND" ${(l.m6_status === 'AWAITING_MANUAL_SEND') ? 'selected' : ''}>✋ MANUAL</option>
+            <option value="FAILED" ${(l.m6_status === 'FAILED') ? 'selected' : ''}>❌ FAILED</option>
+            <option value="NOT_READY" ${(l.m6_status === 'NOT_READY') ? 'selected' : ''}>⚠️ NOT READY</option>
+            <option value="NO_WHATSAPP_NUMBER" ${(l.m6_status === 'NO_WHATSAPP_NUMBER') ? 'selected' : ''}>🚫 NO WA</option>
+            <option value="ARCHIVE" ${(l.m6_status === 'ARCHIVE') ? 'selected' : ''}>📁 ARCHIVE</option>
+            <option value="SKIP" ${(l.m6_status === 'SKIP') ? 'selected' : ''}>⏭️ SKIP</option>
+          </select>
+        </td>
         <td style="font-family:var(--font-mono);">${l.m6_send_attempts || 0}</td>
         <td style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${formatTimestamp(l.m6_sent_at || l.m6_last_attempt_at)}</td>
         <td style="font-size:11.5px; color:var(--accent-amber); max-width:200px; word-break:break-word;">${escapeHtml(l.m6_error || '—')}</td>
@@ -1004,6 +1285,7 @@ async function fetchColdCalling() {
   try {
     const res = await fetch(`/api/cold-calling?${buildQueryString({
       tab: State.coldCallingFilter.tab,
+      call_status: State.coldCallingFilter.call_status,
       search: State.coldCallingFilter.search,
       potential: State.coldCallingFilter.potential,
       city: State.coldCallingFilter.city,
@@ -1020,6 +1302,20 @@ function renderColdCalling(data) {
   const counts = data.counts || {};
   const leads = data.leads || [];
 
+  // Call Status counts
+  const countCallAll = document.getElementById('cc-call-count-all');
+  if (countCallAll) countCallAll.textContent = (counts.CALL_ALL || counts.ALL || 0).toLocaleString();
+
+  const countCallPending = document.getElementById('cc-call-count-pending');
+  if (countCallPending) countCallPending.textContent = (counts.CALL_PENDING || 0).toLocaleString();
+
+  const countCallConnected = document.getElementById('cc-call-count-connected');
+  if (countCallConnected) countCallConnected.textContent = (counts.CALL_CONNECTED || 0).toLocaleString();
+
+  const countCallNotConnected = document.getElementById('cc-call-count-not-connected');
+  if (countCallNotConnected) countCallNotConnected.textContent = (counts.CALL_NOT_CONNECTED || 0).toLocaleString();
+
+  // Priority counts
   const countAll = document.getElementById('cc-tab-count-all');
   if (countAll) countAll.textContent = (counts.ALL || 0).toLocaleString();
 
@@ -1030,13 +1326,16 @@ function renderColdCalling(data) {
   if (countLater) countLater.textContent = (counts.CONTACT_LATER || 0).toLocaleString();
 
   const headerCount = document.getElementById('cold-calling-count');
-  if (headerCount) headerCount.textContent = `${leads.length} Callable Leads`;
+  if (headerCount) {
+    const statusLabel = State.coldCallingFilter.call_status ? ` • ${State.coldCallingFilter.call_status.replace('_', ' ')}` : '';
+    headerCount.textContent = `${leads.length} Callable Leads${statusLabel}`;
+  }
 
   const tbody = document.getElementById('cold-calling-tbody');
   if (!tbody) return;
 
   if (leads.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:32px; color:var(--text-dim);">No cold calling leads found matching this filter.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13" style="text-align:center; padding:32px; color:var(--text-dim);">No cold calling leads found matching this filter.</td></tr>`;
     return;
   }
 
@@ -1045,18 +1344,30 @@ function renderColdCalling(data) {
     const waLink = cleanNum ? `https://wa.me/${cleanNum}` : '';
     const srcName = l.source_file ? l.source_file.split('/').pop() : '—';
     const dateStr = formatDate(l.discovered_at || l.qualified_at);
+    const callStatus = l.call_status || 'PENDING';
+    const callDateStr = l.last_called_at ? formatTimestamp(l.last_called_at) : '';
+    const isConn = callStatus === 'CONNECTED';
+    const isNotConn = callStatus === 'NOT_CONNECTED';
+    const statusBadgeClass = isConn ? 'badge-connected' : (isNotConn ? 'badge-not-connected' : 'badge-call-pending');
+    const statusText = isConn ? '🟢 CONNECTED' : (isNotConn ? '🔴 NOT CONNECTED' : '⏳ PENDING');
 
     return `
-      <tr onclick="openLeadModal('${escapeHtml(l.lead_id)}')">
+      <tr onclick="openLeadModal('${escapeJsString(l.lead_id)}')">
         <td>
           <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${escapeHtml(l.lead_id)}</span>
         </td>
         <td>
-          <div style="font-weight:600; color:#fff;">${escapeHtml(l.business_name || l.lead_id)}</div>
+          <div style="font-weight:600; color:var(--text-main);">${escapeHtml(l.business_name || l.lead_id)}</div>
         </td>
         <td><span style="color:var(--text-muted); font-size:11.5px;">${escapeHtml(l.city || l.location || '—')}</span></td>
         <td>
           ${l.phone ? `<a href="tel:${escapeAttr(l.phone)}" onclick="event.stopPropagation();" style="font-family:var(--font-mono); font-weight:600; color:var(--primary-blue); font-size:11.5px; text-decoration:none;">📞 ${escapeHtml(l.phone)}</a>` : '<span style="color:var(--text-dim); font-size:11px;">—</span>'}
+        </td>
+        <td>
+          <div style="display:inline-flex; flex-direction:column; gap:2px;">
+            <span class="badge ${statusBadgeClass}" style="font-size:10px; font-weight:700; padding:2px 7px;">${statusText}</span>
+            ${callDateStr ? `<span style="font-size:9.5px; color:var(--text-dim); font-family:var(--font-mono); margin-top:1px;">${callDateStr}</span>` : ''}
+          </div>
         </td>
         <td>
           ${waLink ? `<a href="${waLink}" target="_blank" onclick="event.stopPropagation();" class="badge badge-sent" style="text-decoration:none; font-size:10px;">💬 Chat</a>` : '<span style="color:var(--text-dim); font-size:11px;">—</span>'}
@@ -1066,7 +1377,7 @@ function renderColdCalling(data) {
         </td>
         <td>
           <div style="display:flex; align-items:center; gap:4px;">
-            <span style="font-family:var(--font-mono); font-weight:700; color:#fff; font-size:11.5px;">${l.qualification_score !== null && l.qualification_score !== undefined ? l.qualification_score : '—'}</span>
+            <span style="font-family:var(--font-mono); font-weight:700; color:var(--text-main); font-size:11.5px;">${l.qualification_score !== null && l.qualification_score !== undefined ? l.qualification_score : '—'}</span>
             <span class="badge ${getPotentialBadgeClass(l.sales_potential)}" style="font-size:9.5px; padding:1px 5px;">${escapeHtml(l.sales_potential || 'MOD')}</span>
           </div>
         </td>
@@ -1089,7 +1400,9 @@ function renderColdCalling(data) {
         <td onclick="event.stopPropagation();" style="white-space:nowrap;">
           <div style="display:flex; gap:6px;">
             ${l.phone ? `<a href="tel:${escapeAttr(l.phone)}" class="btn btn-sm btn-primary" title="Call Now">📞 Call</a>` : ''}
-            <button class="btn btn-sm" onclick="openLeadModal('${escapeHtml(l.lead_id)}')">Angle</button>
+            <button class="btn btn-sm btn-primary" title="Quick Call Workflow" onclick="event.stopPropagation(); openQuickCallModal('${escapeJsString(l.lead_id)}')" style="background:#2563eb; border-color:#2563eb; font-weight:600; padding:2px 7px;">📞 Call Done</button>
+            <button class="btn btn-sm" title="Generate Personalized Boutique Demo" onclick="openLeadModal('${escapeJsString(l.lead_id)}', 'tab-demo')" style="color:#D4AF37; border-color:rgba(212,175,55,0.4); background:rgba(212,175,55,0.08); font-weight:600;">🚀 Demo</button>
+            <button class="btn btn-sm" onclick="openLeadModal('${escapeJsString(l.lead_id)}')">Angle</button>
           </div>
         </td>
       </tr>
@@ -1133,9 +1446,9 @@ function renderInstagram(leads) {
     const pitch = l.outreach_message || 'Assalam o Alaikum! I came across your boutique on Instagram...';
 
     return `
-      <tr onclick="openLeadModal('${escapeHtml(l.lead_id)}')">
+      <tr onclick="openLeadModal('${escapeJsString(l.lead_id)}')">
         <td>
-          <div style="font-weight:600; color:#fff;">${escapeHtml(l.business_name || l.lead_id)}</div>
+          <div style="font-weight:600; color:var(--text-main);">${escapeHtml(l.business_name || l.lead_id)}</div>
           <span class="badge badge-insta" style="margin-top:3px;">No Direct Phone</span>
         </td>
         <td>
@@ -1170,8 +1483,8 @@ async function fetchMilestoneM2() {
   const leads = data.leads || [];
 
   tbody.innerHTML = leads.map(l => `
-    <tr onclick="openLeadModal('${escapeHtml(l.lead_id)}')">
-      <td style="font-weight:600; color:#fff;">${escapeHtml(l.business_name || l.lead_id)}</td>
+    <tr onclick="openLeadModal('${escapeJsString(l.lead_id)}')">
+      <td style="font-weight:600; color:var(--text-main);">${escapeHtml(l.business_name || l.lead_id)}</td>
       <td>${l.website ? `<a href="${escapeAttr(l.website)}" target="_blank" onclick="event.stopPropagation();" style="color:var(--primary-blue);">🌐 ${escapeHtml(l.website)}</a>` : '<span style="color:var(--text-dim);">None</span>'}</td>
       <td>${l.instagram ? `<span style="color:var(--accent-insta);">@${escapeHtml(l.instagram)}</span>` : '<span style="color:var(--text-dim);">None</span>'}</td>
       <td>${l.facebook ? `<span style="color:var(--primary-blue);">FB Profile</span>` : '<span style="color:var(--text-dim);">None</span>'}</td>
@@ -1191,9 +1504,9 @@ async function fetchMilestoneM3() {
   const leads = data.leads || [];
 
   tbody.innerHTML = leads.map(l => `
-    <tr onclick="openLeadModal('${escapeHtml(l.lead_id)}')">
-      <td style="font-weight:600; color:#fff;">${escapeHtml(l.business_name || l.lead_id)}</td>
-      <td style="font-family:var(--font-mono); font-weight:700; color:#fff;">${l.qualification_score !== null ? l.qualification_score : '—'}</td>
+    <tr onclick="openLeadModal('${escapeJsString(l.lead_id)}')">
+      <td style="font-weight:600; color:var(--text-main);">${escapeHtml(l.business_name || l.lead_id)}</td>
+      <td style="font-family:var(--font-mono); font-weight:700; color:var(--text-main);">${l.qualification_score !== null ? l.qualification_score : '—'}</td>
       <td><span class="badge ${getPotentialBadgeClass(l.sales_potential)}">${escapeHtml(l.sales_potential || 'MOD')}</span></td>
       <td><span class="badge ${getPriorityBadgeClass(l.outreach_priority)}">${escapeHtml(l.outreach_priority || 'CONTACT')}</span></td>
       <td style="color:var(--primary-blue);">${escapeHtml(l.primary_service || 'E-Commerce / Ads')}</td>
@@ -1211,8 +1524,8 @@ async function fetchMilestoneM4() {
   const leads = data.leads || [];
 
   tbody.innerHTML = leads.map(l => `
-    <tr onclick="openLeadModal('${escapeHtml(l.lead_id)}')">
-      <td style="font-weight:600; color:#fff;">${escapeHtml(l.business_name || l.lead_id)}</td>
+    <tr onclick="openLeadModal('${escapeJsString(l.lead_id)}')">
+      <td style="font-weight:600; color:var(--text-main);">${escapeHtml(l.business_name || l.lead_id)}</td>
       <td><span class="badge ${getChannelBadgeClass(l.outreach_channel)}">${escapeHtml(l.outreach_channel || 'WhatsApp')}</span></td>
       <td style="color:var(--primary-blue); font-size:11.5px;">${escapeHtml(l.primary_service || 'Automation')}</td>
       <td style="font-family:var(--font-mono); font-size:11.5px;">${l.pitch_word_count || (l.outreach_message ? l.outreach_message.split(/\s+/).length : 0)}w</td>
@@ -1243,14 +1556,14 @@ async function fetchMilestoneM5() {
     if (l.in_manual_instagram) lists.push('Manual IG');
 
     return `
-      <tr onclick="openLeadModal('${escapeHtml(l.lead_id)}')">
-        <td style="font-weight:600; color:#fff;">${escapeHtml(l.business_name || l.lead_id)}</td>
+      <tr onclick="openLeadModal('${escapeJsString(l.lead_id)}')">
+        <td style="font-weight:600; color:var(--text-main);">${escapeHtml(l.business_name || l.lead_id)}</td>
         <td><span class="badge ${getPriorityBadgeClass(l.outreach_priority)}">${escapeHtml(l.outreach_priority || 'CONTACT')}</span></td>
         <td><span class="badge ${l.in_master ? 'badge-high' : 'badge-low'}">${l.in_master ? 'In Master CSV' : 'Discovered'}</span></td>
         <td style="font-size:11.5px; color:var(--text-muted);">${lists.join(', ') || 'Standard List'}</td>
         <td style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);">${formatDate(l.discovered_at)}</td>
         <td onclick="event.stopPropagation();">
-          <button class="btn btn-sm" onclick="openLeadModal('${escapeHtml(l.lead_id)}')">Inspect</button>
+          <button class="btn btn-sm" onclick="openLeadModal('${escapeJsString(l.lead_id)}')">Inspect</button>
         </td>
       </tr>
     `;
@@ -1278,7 +1591,7 @@ async function fetchAttention() {
     }
 
     feed.innerHTML = items.map(item => `
-      <div class="timeline-item" onclick="openLeadModal('${escapeHtml(item.lead_id)}')">
+      <div class="timeline-item" onclick="openLeadModal('${escapeJsString(item.lead_id)}')">
         <div class="timeline-icon" style="color:var(--accent-red);">🚨</div>
         <div class="timeline-content">
           <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1289,7 +1602,7 @@ async function fetchAttention() {
           <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">Action: ${escapeHtml(item.recommended_action)}</div>
         </div>
         <div onclick="event.stopPropagation();">
-          <button class="btn btn-sm btn-primary" onclick="openLeadModal('${escapeHtml(item.lead_id)}')">Resolve ➔</button>
+          <button class="btn btn-sm btn-primary" onclick="openLeadModal('${escapeJsString(item.lead_id)}')">Resolve ➔</button>
         </div>
       </div>
     `).join('');
@@ -1317,7 +1630,7 @@ async function fetchAnalytics() {
         <div>
           <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
             <span style="color:var(--text-muted);">${k}</span>
-            <span style="font-weight:700; color:#fff;">${v}</span>
+            <span style="font-weight:700; color:var(--text-main);">${v}</span>
           </div>
           <div style="background:var(--bg-input); height:8px; border-radius:4px; overflow:hidden;">
             <div style="background:var(--primary-blue); width:${Math.round((v/chMax)*100)}%; height:100%;"></div>
@@ -1341,7 +1654,7 @@ async function fetchAnalytics() {
         <div>
           <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
             <span style="color:var(--text-muted);">${p.label}</span>
-            <span style="font-weight:700; color:#fff;">${p.count}</span>
+            <span style="font-weight:700; color:var(--text-main);">${p.count}</span>
           </div>
           <div style="background:var(--bg-input); height:8px; border-radius:4px; overflow:hidden;">
             <div style="background:${p.color}; width:${Math.round((p.count/potMax)*100)}%; height:100%;"></div>
@@ -1360,7 +1673,7 @@ async function fetchAnalytics() {
         <div>
           <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
             <span style="color:var(--text-muted);">${escapeHtml(city)}</span>
-            <span style="font-weight:700; color:#fff;">${count}</span>
+            <span style="font-weight:700; color:var(--text-main);">${count}</span>
           </div>
           <div style="background:var(--bg-input); height:8px; border-radius:4px; overflow:hidden;">
             <div style="background:var(--accent-insta); width:${Math.round((count/max)*100)}%; height:100%;"></div>
@@ -1421,7 +1734,7 @@ async function fetchSources() {
     tbody.innerHTML = files.map(f => `
       <tr>
         <td>
-          <div style="font-weight:600; color:#fff; font-family:var(--font-mono); font-size:12px;">${escapeHtml(f.filename)}</div>
+          <div style="font-weight:600; color:var(--text-main); font-family:var(--font-mono); font-size:12px;">${escapeHtml(f.filename)}</div>
           <div style="font-size:11px; color:var(--text-dim);">${escapeHtml(f.relative_path)}</div>
         </td>
         <td><span class="badge ${getMilestoneBadgeClass(f.milestone)}">${escapeHtml(f.milestone)}</span></td>
@@ -1460,7 +1773,7 @@ async function openLeadModal(leadId, targetTab = 'tab-overview') {
 
     // Archive / Skip Alert Banner & Safety
     const isArch = Boolean(lead.is_archived || lead.sales_stage === 'ARCHIVED' || lead.outreach_priority === 'ARCHIVE' || lead.final_action === 'ARCHIVE');
-    const isSkip = Boolean(lead.is_skipped || lead.sales_stage === 'SKIPPED' || lead.outreach_priority === 'SKIP' || lead.sales_potential === 'SKIP' || lead.final_action === 'SKIP');
+    const isSkip = !isArch && Boolean(lead.sales_stage === 'SKIPPED' || lead.outreach_priority === 'SKIP' || lead.sales_potential === 'SKIP' || lead.final_action === 'SKIP' || (lead.is_skipped && lead.outreach_priority !== 'CONTACT FIRST' && lead.final_action !== 'CONTACT'));
     const alertBanner = document.getElementById('modal-lead-alert-banner');
     const reasonContainer = document.getElementById('md-archive-skip-container');
     const reasonEl = document.getElementById('md-archive-skip-reason');
@@ -1496,8 +1809,11 @@ async function openLeadModal(leadId, targetTab = 'tab-overview') {
     }
 
     // Tab 1: Overview
-    const displayPriority = isArch ? 'ARCHIVE' : (isSkip ? 'SKIP' : (lead.outreach_priority || lead.final_action || 'CONTACT'));
-    const displayStatus = isArch ? 'ARCHIVE' : (isSkip ? 'SKIP' : (lead.m6_status || lead.sales_stage || 'PENDING'));
+    const displayPriority = isArch ? 'ARCHIVE' : (isSkip ? 'SKIP' : (lead.outreach_priority || lead.final_action || 'CONTACT FIRST'));
+    let displayStatus = isArch ? 'ARCHIVE' : (isSkip ? 'SKIP' : (lead.m6_status || lead.sales_stage || 'PENDING'));
+    if (lead.m6_status === 'SKIPPED_LIMIT' && !isSkip && !isArch) {
+      displayStatus = 'LIMIT REACHED (Next Batch)';
+    }
     const scoreStr = (lead.qualification_score !== null && lead.qualification_score !== undefined) ? `${lead.qualification_score} / 100` : '—';
 
     document.getElementById('md-biz-name').textContent = lead.business_name || '—';
@@ -1512,6 +1828,9 @@ async function openLeadModal(leadId, targetTab = 'tab-overview') {
     document.getElementById('md-priority').innerHTML = `<span class="badge ${getPriorityBadgeClass(displayPriority)}">${escapeHtml(displayPriority)}</span>`;
     document.getElementById('md-wa-status').innerHTML = `<span class="badge ${getStatusBadgeClass(displayStatus)}">${escapeHtml(displayStatus)}</span>`;
 
+    // Render M1 to M5 Pipeline Stepper & Skip Reason Audit Box
+    renderModalM1toM5Stepper(lead, isArch, isSkip, displayPriority);
+
     const ovHook = document.getElementById('md-ov-pitch-hook');
     if (ovHook) ovHook.textContent = lead.pitch_hook || lead.outreach_opening || lead.outreach_subject || '—';
 
@@ -1520,6 +1839,40 @@ async function openLeadModal(leadId, targetTab = 'tab-overview') {
 
     const ovGaps = document.getElementById('md-ov-gaps');
     if (ovGaps) ovGaps.textContent = lead.gaps || 'Manual WhatsApp & DM order management';
+
+    // Initialize M7 Boutique Demo Generator for this lead
+    const m7BizName = lead.business_name || lead.lead_id || '';
+    const m7PreviewEl = document.getElementById('m7-demo-biz-name-preview');
+    const m7TabBizEl = document.getElementById('m7-tab-biz-name');
+    if (m7PreviewEl) m7PreviewEl.textContent = m7BizName || 'this lead';
+    if (m7TabBizEl) m7TabBizEl.textContent = m7BizName || '—';
+
+    // Reset demo ready state in modal
+    State.currentDemoUrl = null;
+    State.currentDemoWhatsAppMsg = null;
+    const m7Unready = document.getElementById('m7-demo-unready');
+    const m7Ready = document.getElementById('m7-demo-ready');
+    const m7UrlDisp = document.getElementById('m7-demo-url-display');
+    const m7WaBox = document.getElementById('m7-wa-preview-box');
+    const m7TabUrlDisp = document.getElementById('m7-tab-demo-url-display');
+    const m7TabOpenBtn = document.getElementById('btn-tab-open-demo');
+    const m7TabCopyBtn = document.getElementById('btn-tab-copy-link');
+    const m7TabPrepBtn = document.getElementById('btn-tab-prepare-wa');
+    const m7TabWaBox = document.getElementById('m7-tab-wa-box');
+
+    if (m7Unready) m7Unready.style.display = 'block';
+    if (m7Ready) m7Ready.style.display = 'none';
+    if (m7UrlDisp) m7UrlDisp.textContent = '--';
+    if (m7WaBox) m7WaBox.style.display = 'none';
+    if (m7TabUrlDisp) m7TabUrlDisp.textContent = 'Click "Generate Demo" to build URL';
+    if (m7TabOpenBtn) m7TabOpenBtn.style.display = 'none';
+    if (m7TabCopyBtn) m7TabCopyBtn.style.display = 'none';
+    if (m7TabPrepBtn) m7TabPrepBtn.style.display = 'none';
+    if (m7TabWaBox) m7TabWaBox.style.display = 'none';
+
+    if (targetTab === 'tab-demo') {
+      setTimeout(() => handleGenerateDemoClick(lead), 50);
+    }
 
     // Quick Action Buttons on Overview Tab
     const quickActions = document.getElementById('modal-quick-actions');
@@ -1535,6 +1888,7 @@ async function openLeadModal(leadId, targetTab = 'tab-overview') {
       if (lead.outreach_message) {
         actionsHtml += `<button class="btn btn-sm" onclick="copyCurrentPitch()">📋 Copy Pitch Hook</button>`;
       }
+      actionsHtml += `<button class="btn btn-sm" onclick="handleGenerateDemoClick()" style="background:rgba(212,175,55,0.15); border:1px solid rgba(212,175,55,0.4); color:#D4AF37; font-weight:600;">🚀 Generate Demo</button>`;
       if (!isArch && !isSkip && cleanNum) {
         actionsHtml += `
           <a href="https://wa.me/${cleanNum}?text=${encodeURIComponent(pitch)}" target="_blank" class="btn btn-sm" style="background:var(--accent-wa); border-color:var(--accent-wa); color:#fff;">
@@ -1582,6 +1936,10 @@ async function openLeadModal(leadId, targetTab = 'tab-overview') {
 
     // Tab 6: Delivery
     document.getElementById('md-m6-status').innerHTML = `<span class="badge ${getStatusBadgeClass(displayStatus)}">${escapeHtml(displayStatus)}</span>`;
+    const modalEditM6 = document.getElementById('modal-edit-m6-status');
+    if (modalEditM6) {
+      modalEditM6.value = lead.m6_status || displayStatus || 'PENDING';
+    }
     document.getElementById('md-m6-recipient').textContent = lead.m6_recipient || lead.phone || '—';
     document.getElementById('md-m6-sent-at').textContent = formatTimestamp(lead.m6_sent_at || lead.last_contacted_at);
     document.getElementById('md-m6-attempts').textContent = `${lead.m6_send_attempts || 0} attempts`;
@@ -1622,6 +1980,9 @@ async function openLeadModal(leadId, targetTab = 'tab-overview') {
       `).join('');
     }
 
+    // Populate CRM & Sales Activity Data for Modal
+    populateModalCRM(lead);
+
     // Switch to target tab (defaults to tab-overview)
     switchModalTab(targetTab || 'tab-overview');
 
@@ -1630,6 +1991,148 @@ async function openLeadModal(leadId, targetTab = 'tab-overview') {
   } catch (err) {
     console.error('Lead detail error:', err);
     showToast('Failed to open lead details', 'error');
+  }
+}
+
+function renderModalM1toM5Stepper(lead, isArch, isSkip, displayPriority) {
+  // Step M1: Discovery
+  const m1Badge = document.getElementById('step-m1-badge');
+  const m1Desc = document.getElementById('step-m1-desc');
+  if (m1Badge) {
+    m1Badge.className = 'badge badge-sent';
+    m1Badge.textContent = 'DONE';
+  }
+  if (m1Desc) {
+    m1Desc.textContent = lead.city || 'Discovered';
+  }
+
+  // Step M2: Research
+  const m2Badge = document.getElementById('step-m2-badge');
+  const m2Desc = document.getElementById('step-m2-desc');
+  const hasWeb = Boolean(lead.website);
+  if (m2Badge) {
+    if (lead.website_reachable === 'unreachable' || lead.website_status === 'unreachable') {
+      m2Badge.className = 'badge badge-failed';
+      m2Badge.textContent = 'UNREACHABLE';
+    } else if (hasWeb) {
+      m2Badge.className = 'badge badge-sent';
+      m2Badge.textContent = 'RESEARCHED';
+    } else if (lead.instagram) {
+      m2Badge.className = 'badge badge-connected';
+      m2Badge.textContent = 'INSTAGRAM';
+    } else {
+      m2Badge.className = 'badge badge-low';
+      m2Badge.textContent = 'LOCAL ONLY';
+    }
+  }
+  if (m2Desc) {
+    m2Desc.textContent = hasWeb ? (lead.ecommerce_status === 'present' ? 'E-Comm Found' : 'Site Audited') : (lead.instagram ? 'Social Found' : 'No Website');
+  }
+
+  // Step M3: Qualification
+  const m3Badge = document.getElementById('step-m3-badge');
+  const m3Desc = document.getElementById('step-m3-desc');
+  const scoreVal = lead.qualification_score !== null && lead.qualification_score !== undefined ? lead.qualification_score : null;
+  if (m3Badge) {
+    if (scoreVal !== null) {
+      m3Badge.className = scoreVal >= 60 ? 'badge badge-interested' : (scoreVal >= 30 ? 'badge badge-send' : 'badge badge-low');
+      m3Badge.textContent = `${scoreVal}/100`;
+    } else {
+      m3Badge.className = 'badge badge-low';
+      m3Badge.textContent = 'EVALUATED';
+    }
+  }
+  if (m3Desc) {
+    m3Desc.textContent = lead.qualification_status || (scoreVal && scoreVal >= 50 ? 'Passed' : 'Reviewed');
+  }
+
+  // Step M4: Outreach
+  const m4Badge = document.getElementById('step-m4-badge');
+  const m4Desc = document.getElementById('step-m4-desc');
+  const hasPitch = Boolean(lead.outreach_message && lead.outreach_message.trim().length > 30);
+  if (m4Badge) {
+    if (hasPitch) {
+      m4Badge.className = 'badge badge-sent';
+      m4Badge.textContent = 'PITCH READY';
+    } else if (isArch || isSkip) {
+      m4Badge.className = 'badge badge-skip';
+      m4Badge.textContent = 'SKIPPED';
+    } else {
+      m4Badge.className = 'badge badge-low';
+      m4Badge.textContent = 'DRAFT';
+    }
+  }
+  if (m4Desc) {
+    m4Desc.textContent = hasPitch ? (lead.outreach_channel || 'WhatsApp') : (isArch ? 'Disqualified' : 'Skipped');
+  }
+
+  // Step M5: Final Routing
+  const m5Badge = document.getElementById('step-m5-badge');
+  const m5Desc = document.getElementById('step-m5-desc');
+  if (m5Badge) {
+    m5Badge.className = `badge ${getPriorityBadgeClass(displayPriority)}`;
+    m5Badge.textContent = displayPriority;
+  }
+  if (m5Desc) {
+    m5Desc.textContent = isArch ? 'Archived' : (isSkip ? 'Skipped' : (displayPriority === 'CONTACT FIRST' ? 'Top Priority' : 'Secondary'));
+  }
+
+  // Decision & Reason Box
+  const decisionBox = document.getElementById('modal-journey-decision-box');
+  if (decisionBox) {
+    decisionBox.style.display = 'block';
+    if (isArch) {
+      decisionBox.className = 'journey-decision-box journey-box-archive';
+      decisionBox.innerHTML = `
+        <div style="font-weight:700; color:#f59e0b; display:flex; align-items:center; gap:8px;">
+          <span>📦 M5 DECISION: ARCHIVED LEAD</span>
+          <span class="badge badge-archive" style="font-size:10px;">ARCHIVE</span>
+        </div>
+        <div style="margin-top:6px; color:var(--text-main); font-size:12px; line-height:1.5;">
+          <strong>Why it was Archived:</strong> ${escapeHtml(lead.archive_skip_reason || lead.review_reason || 'Archived during qualification stage.')}
+        </div>
+        <div style="margin-top:6px; font-size:11px; color:var(--text-dim);">
+          🔒 <em>This lead is preserved in the system for historical audit. Automated outreach was stopped at M5 because sales potential or service fit was not met. Click the tabs above to see full details of M1 through M5.</em>
+        </div>
+      `;
+    } else if (isSkip) {
+      decisionBox.className = 'journey-decision-box journey-box-skip';
+      decisionBox.innerHTML = `
+        <div style="font-weight:700; color:#ef4444; display:flex; align-items:center; gap:8px;">
+          <span>🚫 M5 DECISION: SKIPPED LEAD</span>
+          <span class="badge badge-skip" style="font-size:10px;">SKIP</span>
+        </div>
+        <div style="margin-top:6px; color:var(--text-main); font-size:12px; line-height:1.5;">
+          <strong>Why it was Skipped:</strong> ${escapeHtml(lead.archive_skip_reason || lead.review_reason || 'Missing required contact info or criteria.')}
+        </div>
+        <div style="margin-top:6px; font-size:11px; color:var(--text-dim);">
+          💡 <em>Lead skipped in outreach queue. Click the <strong>Research (M2)</strong> or <strong>Qualification (M3)</strong> tabs above to audit full signals.</em>
+        </div>
+      `;
+    } else if (displayPriority === 'CONTACT FIRST') {
+      decisionBox.className = 'journey-decision-box journey-box-contact-first';
+      decisionBox.innerHTML = `
+        <div style="font-weight:700; color:#10b981; display:flex; align-items:center; gap:8px;">
+          <span>🔥 M5 DECISION: CONTACT FIRST (Top Priority Qualified Lead)</span>
+          <span class="badge badge-contact-first" style="font-size:10px;">ACTIVE</span>
+        </div>
+        <div style="margin-top:6px; color:var(--text-main); font-size:12px; line-height:1.5;">
+          <strong>Opportunity / Why Qualified:</strong> ${escapeHtml(lead.opportunity || lead.why_this_lead || 'High sales potential with verified contact and clear growth opportunity.')}
+        </div>
+        ${lead.gaps ? `<div style="margin-top:4px; font-size:11.5px; color:var(--text-muted);"><strong>Identified Gap:</strong> ${escapeHtml(lead.gaps)}</div>` : ''}
+      `;
+    } else {
+      decisionBox.className = 'journey-decision-box journey-box-contact-later';
+      decisionBox.innerHTML = `
+        <div style="font-weight:700; color:#38bdf8; display:flex; align-items:center; gap:8px;">
+          <span>⏳ M5 DECISION: CONTACT LATER (Secondary Priority)</span>
+          <span class="badge badge-contact-later" style="font-size:10px;">BATCH LATER</span>
+        </div>
+        <div style="margin-top:6px; color:var(--text-main); font-size:12px; line-height:1.5;">
+          <strong>Status:</strong> ${escapeHtml(lead.opportunity || lead.why_this_lead || 'Queued for secondary follow-up.')}
+        </div>
+      `;
+    }
   }
 }
 
@@ -1664,6 +2167,152 @@ function copyCurrentPitch() {
   } else {
     showToast('No outreach pitch available for this lead', 'warning');
   }
+}
+
+/* --------------------------------------------------------------------------
+   Milestone 7 (M7) — Personalized Boutique Demo Generator (Isolated)
+   -------------------------------------------------------------------------- */
+
+const M7_MASTER_DEMO_BASE = "https://website-demo-five-navy.vercel.app/";
+
+function generatePersonalizedDemoUrl(businessName) {
+  if (!businessName || typeof businessName !== 'string' || !businessName.trim()) {
+    throw new Error('A valid, non-empty business name is required to generate a personalized demo URL.');
+  }
+  const cleanName = businessName.trim();
+  const brand = encodeURIComponent(cleanName);
+  const title = encodeURIComponent(`${cleanName} | Online Store`);
+  return `${M7_MASTER_DEMO_BASE}?brand=${brand}&title=${title}`;
+}
+
+function buildDemoWhatsAppMessage(businessName, demoUrl) {
+  const cleanBrand = (businessName || '').trim() || 'Brand';
+  return (
+    `Assalam o Alaikum ${cleanBrand} Team! 🌸\n\n` +
+    `Main Haider from MalikAxiom Technology Lahore.\n\n` +
+    `Aapka Instagram dekha — collection kaafi classy hai 👌 Is liye ${cleanBrand} ke naam se ek live premium storefront demo specially prepare kiya hai 👇🔥\n\n` +
+    `🔗 ${demoUrl}\n\n` +
+    `🤖 24/7 AI Brand Assistant — aapke brand se related customers ke har tarah ke questions ka jawab de sakta hai, including products, prices, sizes, fabric, delivery & more.\n\n` +
+    `🛒 Seamless WhatsApp Ordering — product, size & color select karke direct order.\n\n` +
+    `🎨 12+ Premium Themes — Themes button se apne logo/brand color ke saath live matching try karein.\n\n` +
+    `💰 Complete setup starting from PKR 10,000\n\n` +
+    `✨ Yeh sirf ek sample demo hai — design, colors aur layout aapki brand identity ke mutabiq fully customize ho sakta hai. Hamare paas aur bhi luxury layouts available hain.\n\n` +
+    `Aapko concept kaisa laga? Agar aap kahen to main aapke saath complete features & setup share kar doon. 🤝\n\n` +
+    `MalikAxiom Technology\n` +
+    `🌐 malikaxiomtech.com`
+  );
+}
+
+function handleGenerateDemoClick(leadOverride) {
+  const lead = leadOverride || State.cachedLead;
+  if (!lead) {
+    showToast('No lead selected. Please select a lead first.', 'warning');
+    return;
+  }
+
+  const rawName = lead.business_name || '';
+  if (!rawName || typeof rawName !== 'string' || !rawName.trim()) {
+    showToast('Cannot generate demo: Lead is missing a valid business name.', 'error');
+    return;
+  }
+
+  try {
+    const demoUrl = generatePersonalizedDemoUrl(rawName);
+    const waMsg = buildDemoWhatsAppMessage(rawName, demoUrl);
+
+    State.currentDemoUrl = demoUrl;
+    State.currentDemoBizName = rawName.trim();
+    State.currentDemoWhatsAppMsg = waMsg;
+
+    // 1. Update Overview Tab Section Elements
+    const unreadyEl = document.getElementById('m7-demo-unready');
+    const readyEl = document.getElementById('m7-demo-ready');
+    const urlDisplay = document.getElementById('m7-demo-url-display');
+    const waMsgText = document.getElementById('m7-wa-message-text');
+
+    if (unreadyEl) unreadyEl.style.display = 'none';
+    if (readyEl) readyEl.style.display = 'block';
+    if (urlDisplay) urlDisplay.textContent = demoUrl;
+    if (waMsgText) waMsgText.textContent = waMsg;
+
+    // 2. Update Dedicated Tab-demo Elements
+    const tabUrlDisplay = document.getElementById('m7-tab-demo-url-display');
+    const tabOpenBtn = document.getElementById('btn-tab-open-demo');
+    const tabCopyBtn = document.getElementById('btn-tab-copy-link');
+    const tabPrepBtn = document.getElementById('btn-tab-prepare-wa');
+    const tabWaMsgText = document.getElementById('m7-tab-wa-text');
+
+    if (tabUrlDisplay) tabUrlDisplay.textContent = demoUrl;
+    if (tabOpenBtn) tabOpenBtn.style.display = 'inline-block';
+    if (tabCopyBtn) tabCopyBtn.style.display = 'inline-block';
+    if (tabPrepBtn) tabPrepBtn.style.display = 'inline-block';
+    if (tabWaMsgText) tabWaMsgText.textContent = waMsg;
+
+    // 3. Setup Direct WhatsApp Links (Direct web.whatsapp.com to prevent api.whatsapp.com emoji corruption)
+    const phoneNum = lead.m6_recipient || lead.phone || '';
+    const cleanNum = phoneNum.replace(/[^0-9]/g, '');
+    const waDirectLink = document.getElementById('m7-wa-direct-link');
+    const tabWaDirectLink = document.getElementById('m7-tab-wa-link');
+    const waDraftHref = cleanNum 
+      ? `https://web.whatsapp.com/send?phone=${cleanNum}&text=${encodeURIComponent(waMsg)}`
+      : `https://web.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`;
+
+    const onLaunchDraft = () => {
+      copyPitchText(waMsg);
+      showToast('✓ WhatsApp opened & message copied! (Press Cmd+V / Ctrl+V in chat to paste with full emojis)', 'success');
+    };
+
+    if (waDirectLink) {
+      waDirectLink.href = waDraftHref;
+      waDirectLink.onclick = onLaunchDraft;
+    }
+    if (tabWaDirectLink) {
+      tabWaDirectLink.href = waDraftHref;
+      tabWaDirectLink.onclick = onLaunchDraft;
+    }
+
+    showToast('🚀 Personalized Boutique Demo Ready!', 'success');
+  } catch (err) {
+    console.error('M7 demo generation error:', err);
+    showToast(err.message || 'Failed to generate demo URL', 'error');
+  }
+}
+
+function handleOpenDemoClick() {
+  if (!State.currentDemoUrl) {
+    showToast('Please click "Generate Demo" first.', 'warning');
+    return;
+  }
+  window.open(State.currentDemoUrl, '_blank');
+}
+
+function handleCopyDemoLinkClick() {
+  if (!State.currentDemoUrl) {
+    showToast('Please click "Generate Demo" first.', 'warning');
+    return;
+  }
+  copyPitchText(State.currentDemoUrl);
+  showToast('✓ Boutique Demo link copied to clipboard!', 'success');
+}
+
+function handleToggleWhatsAppDemoClick() {
+  const waBox = document.getElementById('m7-wa-preview-box');
+  const tabWaBox = document.getElementById('m7-tab-wa-box');
+  if (waBox) {
+    waBox.style.display = waBox.style.display === 'none' ? 'block' : 'none';
+  }
+  if (tabWaBox) {
+    tabWaBox.style.display = tabWaBox.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+function handleCopyDemoWhatsAppClick() {
+  if (!State.currentDemoWhatsAppMsg) {
+    showToast('Please generate the demo message first.', 'warning');
+    return;
+  }
+  copyPitchText(State.currentDemoWhatsAppMsg);
+  showToast('✓ Prepared WhatsApp outreach text copied!', 'success');
 }
 
 /* --------------------------------------------------------------------------
@@ -1743,15 +2392,51 @@ function copyPitchText(text) {
 }
 
 function exportCurrentLeadsCSV() {
-  const url = `/api/leads?${buildQueryString({ limit: 1000, page: 1 })}`;
+  const extraParams = {
+    limit: 2000,
+    page: 1,
+    tab: State.leadsTab,
+    priority: State.leadsFilter.priority,
+    potential: State.leadsFilter.potential,
+    channel: State.leadsFilter.channel,
+    status: State.leadsFilter.status,
+    milestone: State.leadsFilter.milestone,
+    city: State.leadsFilter.city,
+    call_status: State.leadsFilter.call_status,
+    category: State.leadsFilter.category,
+    activity: State.leadsFilter.activity,
+    sort_by: State.leadsFilter.sort_by,
+  };
+
+  const url = `/api/leads?${buildQueryString(extraParams)}`;
   fetch(url).then(r => r.json()).then(data => {
     const leads = data.leads || [];
     if (leads.length === 0) {
-      showToast('No leads to export', 'warning');
+      showToast('No leads match the current filters to export', 'warning');
       return;
     }
 
-    const headers = ['lead_id', 'business_name', 'phone', 'email', 'city', 'sales_potential', 'outreach_priority', 'outreach_channel', 'm6_status', 'outreach_message'];
+    const headers = [
+      'lead_id',
+      'business_name',
+      'phone',
+      'whatsapp',
+      'email',
+      'city',
+      'discovered_at',
+      'last_called_at',
+      'call_status',
+      'category',
+      'sales_potential',
+      'outreach_priority',
+      'outreach_channel',
+      'm6_status',
+      'primary_service',
+      'opportunity',
+      'pitch_hook',
+      'outreach_message',
+    ];
+
     const csvRows = [headers.join(',')];
 
     leads.forEach(l => {
@@ -1766,9 +2451,13 @@ function exportCurrentLeadsCSV() {
     const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `malikaxiom_leads_export_${new Date().toISOString().slice(0,10)}.csv`;
+    const dateSuffix = State.customStart || State.dateFilter.toLowerCase();
+    link.download = `malikaxiom_leads_${dateSuffix}_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
-    showToast('Exported CSV successfully!', 'success');
+    showToast(`Exported ${leads.length} leads to CSV successfully! 📥`, 'success');
+  }).catch(err => {
+    console.error('Export error:', err);
+    showToast('Failed to export leads', 'error');
   });
 }
 
@@ -1808,6 +2497,7 @@ async function triggerManualRefresh() {
 
 function refreshAll() {
   fetchOverview();
+  fetchCrmMetrics();
   loadViewData(State.currentView);
 }
 
@@ -1831,7 +2521,7 @@ function showToast(message, type = 'info') {
     border: 1px solid var(--border-highlight);
     border-radius: 6px;
     padding: 10px 14px;
-    color: #fff;
+    color: var(--text-main);
     font-size: 12px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.5);
     display: flex;
@@ -1881,6 +2571,7 @@ function getStatusBadgeClass(s) {
   if (up === 'SENT') return 'badge-sent';
   if (up === 'FAILED') return 'badge-failed';
   if (up === 'PENDING') return 'badge-pending';
+  if (up === 'SKIPPED_LIMIT' || up.includes('LIMIT')) return 'badge-mod';
   if (up === 'NO_WHATSAPP_NUMBER') return 'badge-no-wa';
   if (up === 'AWAITING_MANUAL_SEND') return 'badge-mod';
   if (up === 'ARCHIVE' || up === 'ARCHIVED') return 'badge-archive';
@@ -1954,11 +2645,22 @@ function escapeAttr(str) {
   return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n').replace(/\r/g, '');
 }
 
+function escapeJsString(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '&quot;')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '');
+}
+
 function initModals() {
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeLeadModal();
       closePreviewModal();
+      closeQuickCallModal();
     }
   });
 
@@ -1966,7 +2668,621 @@ function initModals() {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) {
         modal.classList.remove('active');
+        if (modal.id === 'modal-quick-call') {
+          modal.style.display = 'none';
+        }
       }
     });
   });
+}
+
+/* --------------------------------------------------------------------------
+   Milestone 7 (M7) — Sales Activity & Call CRM Engine
+   -------------------------------------------------------------------------- */
+
+function getCrmCallBadgeClass(status) {
+  const s = (status || '').toUpperCase();
+  if (s === 'CONNECTED') return 'badge-connected';
+  if (s === 'NOT_CONNECTED') return 'badge-not-connected';
+  return 'badge-call-pending';
+}
+
+function getCrmCategoryBadgeClass(category) {
+  const c = (category || '').toUpperCase();
+  if (c === 'INTERESTED') return 'badge-interested';
+  if (c === 'SEND') return 'badge-send';
+  if (c === 'NO_ANSWER') return 'badge-no-answer';
+  return 'badge-low';
+}
+
+function getCategoryDisplay(category) {
+  const c = (category || '').toUpperCase();
+  if (c === 'INTERESTED') return 'A — INTERESTED';
+  if (c === 'SEND') return 'B — SEND';
+  if (c === 'NO_ANSWER') return 'C — NO ANSWER';
+  return category || '—';
+}
+
+function formatRelativeTime(isoStr) {
+  if (!isoStr) return '';
+  try {
+    const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
+    const now = new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const isYesterday = d.toDateString() === yesterday.toDateString();
+    const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (isToday) return `Today, ${timeStr}`;
+    if (isYesterday) return `Yesterday, ${timeStr}`;
+    return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + `, ${timeStr}`;
+  } catch (e) {
+    return isoStr;
+  }
+}
+
+async function fetchCrmMetrics() {
+  try {
+    const res = await fetch('/api/crm/metrics');
+    if (!res.ok) return;
+    const data = await res.json();
+    State.crmMetrics = data;
+    renderCrmMetrics(data);
+    fetchTodayCrmFeed();
+  } catch (err) {
+    console.error('CRM metrics error:', err);
+  }
+}
+
+function renderCrmMetrics(data) {
+  if (!data) return;
+  const today = data.today || {};
+  const total = data.total || {};
+
+  const setEl = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = (val || 0).toLocaleString();
+  };
+
+  // Today CRM Metrics
+  setEl('crm-today-calls', today.calls_made);
+  setEl('crm-today-connected', today.connected);
+  setEl('crm-today-not-connected', today.not_connected);
+  setEl('crm-today-interested', today.interested);
+  setEl('crm-today-send', today.send);
+  setEl('crm-today-no-answer', today.no_answer);
+
+  // Total CRM Metrics
+  setEl('crm-total-leads', total.total_leads);
+  setEl('crm-total-pending', total.pending_calls);
+  setEl('crm-total-calls', total.calls_made);
+  setEl('crm-total-connected', total.connected);
+  setEl('crm-total-not-connected', total.not_connected);
+  setEl('crm-total-interested', total.interested);
+  setEl('crm-total-send', total.send);
+  setEl('crm-total-no-answer', total.no_answer);
+
+  // Sidebar Pending Calls Badge
+  const pendingBadge = document.getElementById('badge-crm-pending');
+  if (pendingBadge) {
+    pendingBadge.textContent = `${total.pending_calls || 0} PENDING`;
+  }
+}
+
+async function fetchTodayCrmFeed() {
+  const feedContainer = document.getElementById('crm-today-activity-feed');
+  const feedCount = document.getElementById('crm-today-feed-count');
+  if (!feedContainer) return;
+
+  try {
+    const res = await fetch('/api/crm/activities?limit=15&today_only=true');
+    if (!res.ok) return;
+    const data = await res.json();
+    const activities = data.activities || [];
+
+    if (feedCount) {
+      feedCount.textContent = `${activities.length} recorded events today`;
+    }
+
+    if (activities.length === 0) {
+      feedContainer.innerHTML = `<div style="font-size:11.5px; color:var(--text-dim); padding:6px 0;">No call activities logged today yet. Click "Call Done" on any lead to record.</div>`;
+      return;
+    }
+
+    feedContainer.innerHTML = activities.map(item => {
+      const timeStr = formatRelativeTime(item.timestamp);
+      const callStatus = item.call_status || '';
+      const category = item.category || '';
+      return `
+        <div class="timeline-item" onclick="openLeadModal('${escapeJsString(item.lead_id)}', 'tab-activity')" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:5px 8px; background:var(--bg-input); border-radius:5px; border:1px solid var(--border-color); font-size:11.5px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:600; color:var(--text-main);">${escapeHtml(item.business_name || item.lead_id)}</span>
+            ${callStatus ? `<span class="badge ${getCrmCallBadgeClass(callStatus)}" style="font-size:10px;">${escapeHtml(callStatus)}</span>` : ''}
+            ${category ? `<span class="badge ${getCrmCategoryBadgeClass(category)}" style="font-size:10px;">${escapeHtml(getCategoryDisplay(category))}</span>` : ''}
+            ${item.note ? `<span style="color:var(--text-muted); font-style:italic; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">"${escapeHtml(item.note)}"</span>` : ''}
+          </div>
+          <div style="font-size:10.5px; color:var(--text-dim); font-family:var(--font-mono); white-space:nowrap;">${timeStr}</div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error('Error fetching today activity feed:', err);
+  }
+}
+
+function openQuickCallModal(leadId) {
+  let lead = State.leadsMap ? State.leadsMap.get(leadId) : null;
+  if (!lead && State.cachedLead && State.cachedLead.lead_id === leadId) {
+    lead = State.cachedLead;
+  }
+  if (!lead && State.currentLeads) {
+    lead = State.currentLeads.find(x => x.lead_id === leadId);
+  }
+  if (!lead) {
+    lead = { lead_id: leadId };
+  }
+  openQuickCallModalFromData(lead);
+}
+
+function openQuickCallModalFromData(leadData) {
+  let lead = leadData;
+  if (typeof leadData === 'string') {
+    try {
+      lead = JSON.parse(leadData);
+    } catch (e) {
+      console.error('Failed to parse lead data for quick call:', e);
+      return;
+    }
+  }
+  if (!lead) return;
+
+  const modal = document.getElementById('modal-quick-call');
+  if (!modal) return;
+
+  document.getElementById('qc-lead-id').value = lead.lead_id || '';
+  document.getElementById('qc-business-name').textContent = lead.business_name || lead.lead_id || 'Unknown Lead';
+  document.getElementById('qc-phone-number').textContent = lead.phone ? `📞 ${lead.phone}` : 'No Direct Phone';
+  document.getElementById('qc-note-input').value = lead.latest_note || '';
+
+  const qcM6 = document.getElementById('qc-m6-status');
+  if (qcM6) {
+    qcM6.value = lead.m6_status || '';
+  }
+
+  const currentStatus = lead.call_status === 'NOT_CONNECTED' ? 'NOT_CONNECTED' : 'CONNECTED';
+  selectQuickCallStatus(currentStatus);
+  selectQuickCategory(lead.category || '');
+
+  modal.style.display = 'flex';
+  modal.classList.add('active');
+}
+
+function openQuickCallFromModal() {
+  if (State.cachedLead && State.cachedLead.lead_id) {
+    openQuickCallModal(State.cachedLead.lead_id);
+  } else if (State.activeLeadId) {
+    openQuickCallModal(State.activeLeadId);
+  }
+}
+
+function closeQuickCallModal() {
+  const modal = document.getElementById('modal-quick-call');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+  }
+}
+
+function selectQuickCallStatus(status) {
+  document.getElementById('qc-selected-call-status').value = status;
+  const btnConn = document.getElementById('qc-btn-connected');
+  const btnNotConn = document.getElementById('qc-btn-not-connected');
+
+  if (btnConn) {
+    if (status === 'CONNECTED') {
+      btnConn.style.background = '#059669';
+      btnConn.style.borderColor = '#10b981';
+      btnConn.style.color = '#fff';
+      btnConn.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.4)';
+    } else {
+      btnConn.style.background = 'var(--bg-input)';
+      btnConn.style.borderColor = 'var(--border-color)';
+      btnConn.style.color = 'var(--text-muted)';
+      btnConn.style.boxShadow = 'none';
+    }
+  }
+
+  if (btnNotConn) {
+    if (status === 'NOT_CONNECTED') {
+      btnNotConn.style.background = '#dc2626';
+      btnNotConn.style.borderColor = '#ef4444';
+      btnNotConn.style.color = '#fff';
+      btnNotConn.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+    } else {
+      btnNotConn.style.background = 'var(--bg-input)';
+      btnNotConn.style.borderColor = 'var(--border-color)';
+      btnNotConn.style.color = 'var(--text-muted)';
+      btnNotConn.style.boxShadow = 'none';
+    }
+  }
+}
+
+function selectQuickCategory(cat) {
+  document.getElementById('qc-selected-category').value = cat;
+  const btnInt = document.getElementById('qc-btn-cat-interested');
+  const btnSend = document.getElementById('qc-btn-cat-send');
+  const btnNoAns = document.getElementById('qc-btn-cat-no-answer');
+
+  const setBtnStyle = (btn, isActive, activeBg, activeBorder, activeColor, activeShadow) => {
+    if (!btn) return;
+    if (isActive) {
+      btn.style.background = activeBg;
+      btn.style.borderColor = activeBorder;
+      btn.style.color = activeColor;
+      btn.style.boxShadow = activeShadow;
+    } else {
+      btn.style.background = 'var(--bg-input)';
+      btn.style.borderColor = 'var(--border-color)';
+      btn.style.color = 'var(--text-muted)';
+      btn.style.boxShadow = 'none';
+    }
+  };
+
+  setBtnStyle(btnInt, cat === 'INTERESTED', '#0284c7', '#38bdf8', '#fff', '0 0 8px rgba(56, 189, 248, 0.4)');
+  setBtnStyle(btnSend, cat === 'SEND', '#9333ea', '#c084fc', '#fff', '0 0 8px rgba(192, 132, 252, 0.4)');
+  setBtnStyle(btnNoAns, cat === 'NO_ANSWER', '#ea580c', '#fb923c', '#fff', '0 0 8px rgba(251, 146, 60, 0.4)');
+}
+
+function setQuickNote(text) {
+  const input = document.getElementById('qc-note-input');
+  if (input) {
+    if (input.value && !input.value.endsWith(' ') && !input.value.endsWith('.')) {
+      input.value += '; ' + text;
+    } else if (input.value && input.value.endsWith('.')) {
+      input.value += ' ' + text;
+    } else {
+      input.value = text;
+    }
+    input.focus();
+  }
+}
+
+async function saveQuickCall() {
+  const leadId = document.getElementById('qc-lead-id').value;
+  const callStatus = document.getElementById('qc-selected-call-status').value || 'CONNECTED';
+  const category = document.getElementById('qc-selected-category').value || '';
+  const note = document.getElementById('qc-note-input').value.trim();
+  const m6Select = document.getElementById('qc-m6-status');
+  const m6Status = m6Select ? m6Select.value : '';
+
+  if (!leadId) {
+    showToast('No lead selected', 'error');
+    return;
+  }
+
+  const saveBtn = document.getElementById('qc-btn-save');
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+  }
+
+  try {
+    const payload = {
+      lead_id: leadId,
+      call_status: callStatus,
+      category: category,
+      note: note
+    };
+    if (m6Status) {
+      payload.m6_status = m6Status;
+    }
+
+    const res = await fetch('/api/crm/quick-call', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to save call outcome');
+
+    closeQuickCallModal();
+    showToast(`✓ Call outcome saved: ${callStatus}${category ? ' • ' + getCategoryDisplay(category) : ''}`, 'success');
+
+    // If modal is currently open for this lead, refresh its details
+    if (State.activeLeadId === leadId) {
+      const detailRes = await fetch(`/api/leads/${encodeURIComponent(leadId)}`);
+      if (detailRes.ok) {
+        const detailData = await detailRes.json();
+        State.cachedLead = detailData.lead;
+        populateModalCRM(detailData.lead);
+      }
+    }
+
+    refreshAll();
+  } catch (err) {
+    console.error('Save quick call error:', err);
+    showToast(err.message || 'Failed to save call outcome', 'error');
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = '💾 Save Call Activity';
+    }
+  }
+}
+
+async function quickRowCallStatus(leadId, callStatus) {
+  try {
+    const res = await fetch('/api/crm/quick-call', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lead_id: leadId, call_status: callStatus })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to update call status');
+    showToast(`✓ Call status updated: ${callStatus}`, 'success');
+    refreshAll();
+  } catch (err) {
+    console.error('Quick row call status error:', err);
+    showToast('Failed to update call status', 'error');
+  }
+}
+
+async function quickRowCategory(leadId, category) {
+  try {
+    const res = await fetch('/api/crm/activity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lead_id: leadId, category: category, action: 'CATEGORY_SELECT' })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to update category');
+    showToast(`✓ Category updated: ${getCategoryDisplay(category)}`, 'success');
+    refreshAll();
+  } catch (err) {
+    console.error('Quick row category error:', err);
+    showToast('Failed to update category', 'error');
+  }
+}
+
+async function quickChangeM6Status(leadId, newStatus) {
+  if (!leadId) return;
+  try {
+    const res = await fetch('/api/crm/m6-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lead_id: leadId, m6_status: newStatus })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to update M6 status');
+    showToast(`✓ M6 status updated: ${newStatus}`, 'success');
+    refreshAll();
+  } catch (err) {
+    console.error('Quick change M6 status error:', err);
+    showToast('Failed to update M6 status', 'error');
+  }
+}
+
+async function saveModalM6Status() {
+  const leadId = State.activeLeadId || (State.cachedLead ? State.cachedLead.lead_id : null);
+  if (!leadId) {
+    showToast('No lead currently open', 'warning');
+    return;
+  }
+  const selectEl = document.getElementById('modal-edit-m6-status');
+  if (!selectEl) return;
+  const newStatus = selectEl.value;
+
+  try {
+    const res = await fetch('/api/crm/m6-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lead_id: leadId, m6_status: newStatus })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to update M6 status');
+    showToast(`✓ M6 status updated: ${newStatus}`, 'success');
+
+    const displayBadge = document.getElementById('md-m6-status');
+    if (displayBadge) {
+      displayBadge.innerHTML = `<span class="badge ${getStatusBadgeClass(newStatus)}">${escapeHtml(newStatus)}</span>`;
+    }
+    const ovBadge = document.getElementById('md-wa-status');
+    if (ovBadge) {
+      ovBadge.innerHTML = `<span class="badge ${getStatusBadgeClass(newStatus)}">${escapeHtml(newStatus)}</span>`;
+    }
+
+    const detailRes = await fetch(`/api/leads/${encodeURIComponent(leadId)}`);
+    if (detailRes.ok) {
+      const detailData = await detailRes.json();
+      State.cachedLead = detailData.lead;
+    }
+    refreshAll();
+  } catch (err) {
+    console.error('Save modal M6 status error:', err);
+    showToast('Failed to save M6 status', 'error');
+  }
+}
+
+async function quickLogLeadActivity(callStatus, category) {
+  if (!State.activeLeadId) return;
+  try {
+    const payload = { lead_id: State.activeLeadId };
+    if (callStatus) payload.call_status = callStatus;
+    if (category) payload.category = category;
+
+    const res = await fetch('/api/crm/quick-call', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to log activity');
+    showToast('✓ Activity logged successfully', 'success');
+
+    // Reload lead in modal
+    const detailRes = await fetch(`/api/leads/${encodeURIComponent(State.activeLeadId)}`);
+    if (detailRes.ok) {
+      const detailData = await detailRes.json();
+      State.cachedLead = detailData.lead;
+      populateModalCRM(detailData.lead);
+    }
+    refreshAll();
+  } catch (err) {
+    console.error('Quick log activity error:', err);
+    showToast('Failed to log activity', 'error');
+  }
+}
+
+async function submitModalActivityNote() {
+  if (!State.activeLeadId) return;
+  const statusEl = document.getElementById('modal-add-call-status');
+  const catEl = document.getElementById('modal-add-category');
+  const noteEl = document.getElementById('modal-new-note-text');
+
+  const callStatus = statusEl ? statusEl.value : '';
+  const category = catEl ? catEl.value : '';
+  const note = noteEl ? noteEl.value.trim() : '';
+
+  if (!note && !callStatus && !category) {
+    showToast('Please enter a note or select an outcome', 'warning');
+    return;
+  }
+
+  try {
+    const payload = {
+      lead_id: State.activeLeadId,
+      action: 'NOTE_ADDED'
+    };
+    if (callStatus) payload.call_status = callStatus;
+    if (category) payload.category = category;
+    if (note) payload.note = note;
+
+    const res = await fetch('/api/crm/activity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to save note');
+
+    if (noteEl) noteEl.value = '';
+    showToast('✓ Activity note saved (history preserved)!', 'success');
+
+    // Reload lead in modal
+    const detailRes = await fetch(`/api/leads/${encodeURIComponent(State.activeLeadId)}`);
+    if (detailRes.ok) {
+      const detailData = await detailRes.json();
+      State.cachedLead = detailData.lead;
+      populateModalCRM(detailData.lead);
+    }
+    refreshAll();
+  } catch (err) {
+    console.error('Submit activity note error:', err);
+    showToast('Failed to save activity note', 'error');
+  }
+}
+
+function populateModalCRM(lead) {
+  if (!lead) return;
+  const callStatus = lead.call_status || 'PENDING';
+  const crmCategory = lead.category || '';
+  const lastCalledStr = lead.last_called_at ? formatRelativeTime(lead.last_called_at) : 'Never Called';
+  const history = lead.activity_history || [];
+  const noteText = lead.latest_note || 'No notes recorded yet.';
+
+  const setBadge = (id, html) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  };
+
+  const setText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  // Overview Tab CRM fields
+  setBadge('md-crm-call-status', `<span class="badge ${getCrmCallBadgeClass(callStatus)}">${escapeHtml(callStatus)}</span>`);
+  setBadge('md-crm-category', `<span class="badge ${getCrmCategoryBadgeClass(crmCategory)}">${escapeHtml(crmCategory ? getCategoryDisplay(crmCategory) : '—')}</span>`);
+  setText('md-crm-last-called', lastCalledStr);
+  setText('md-crm-count', `${history.length} recorded events`);
+  setText('md-crm-latest-note', noteText);
+
+  // Dedicated Tab 9 CRM fields
+  setBadge('md-tab-crm-call-status', `<span class="badge ${getCrmCallBadgeClass(callStatus)}">${escapeHtml(callStatus)}</span>`);
+  setBadge('md-tab-crm-category', `<span class="badge ${getCrmCategoryBadgeClass(crmCategory)}">${escapeHtml(crmCategory ? getCategoryDisplay(crmCategory) : '—')}</span>`);
+  setText('md-tab-crm-last-called', lastCalledStr);
+  setText('md-tab-crm-count', `${history.length}`);
+  setText('md-tab-crm-latest-note', noteText);
+
+  // Tab 9 Historical stream
+  const histList = document.getElementById('md-crm-history-list');
+  if (histList) {
+    if (history.length === 0) {
+      histList.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-dim); font-size:12px;">No activity logged yet for this lead. Use the form above to add notes or outcomes.</div>`;
+    } else {
+      const reversed = [...history].reverse();
+      histList.innerHTML = reversed.map(item => {
+        const timeStr = formatRelativeTime(item.timestamp);
+        const itemCallStatus = item.call_status || '';
+        const itemCat = item.category || '';
+        return `
+          <div class="timeline-item" style="padding:10px 12px; background:var(--bg-input); border-radius:6px; border:1px solid var(--border-color); display:flex; flex-direction:column; gap:4px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                ${itemCallStatus ? `<span class="badge ${getCrmCallBadgeClass(itemCallStatus)}" style="font-size:10px;">${escapeHtml(itemCallStatus)}</span>` : ''}
+                ${itemCat ? `<span class="badge ${getCrmCategoryBadgeClass(itemCat)}" style="font-size:10px;">${escapeHtml(getCategoryDisplay(itemCat))}</span>` : ''}
+                <span style="font-size:10px; color:var(--text-dim); text-transform:uppercase; font-weight:600;">${escapeHtml(item.action || 'ACTIVITY')}</span>
+              </div>
+              <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${timeStr}</span>
+            </div>
+            ${item.note ? `<div style="font-size:12px; color:var(--text-main); font-style:italic; margin-top:2px;">"${escapeHtml(item.note)}"</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+  }
+}
+
+function filterLeadsByCallStatus(callStatus) {
+  switchView('leads');
+  State.leadsFilter.call_status = callStatus;
+  const el = document.getElementById('filter-lead-call-status');
+  if (el) el.value = callStatus;
+  State.leadsPage = 1;
+  fetchMasterLeads();
+}
+
+function filterLeadsByCategory(category) {
+  switchView('leads');
+  State.leadsFilter.category = category;
+  const el = document.getElementById('filter-lead-category');
+  if (el) el.value = category;
+  State.leadsPage = 1;
+  fetchMasterLeads();
+}
+
+function filterLeadsByActivity(act) {
+  switchView('leads');
+  State.leadsFilter.activity = act;
+  const el = document.getElementById('filter-lead-activity');
+  if (el) el.value = act;
+  State.leadsPage = 1;
+  fetchMasterLeads();
+}
+
+function filterLeadsByCallAndCategory(callStatus, category) {
+  switchView('leads');
+  if (callStatus !== undefined) {
+    State.leadsFilter.call_status = callStatus;
+    const el = document.getElementById('filter-lead-call-status');
+    if (el) el.value = callStatus;
+  }
+  if (category !== undefined) {
+    State.leadsFilter.category = category;
+    const el = document.getElementById('filter-lead-category');
+    if (el) el.value = category;
+  }
+  State.leadsPage = 1;
+  fetchMasterLeads();
 }

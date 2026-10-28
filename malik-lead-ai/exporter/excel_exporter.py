@@ -407,7 +407,7 @@ def build_excel_workbook(
 
     start_row = 4
     for r_idx, row_data in enumerate(metrics_table, start=start_row):
-        ws_summary.row_dimensions[row_data_idx := r_idx].height = 20
+        ws_summary.row_dimensions[r_idx].height = 20
         for c_idx, val in enumerate(row_data, start=1):
             cell = ws_summary.cell(row=r_idx, column=c_idx, value=val)
             if r_idx == start_row:

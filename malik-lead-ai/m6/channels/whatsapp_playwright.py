@@ -57,7 +57,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_PROFILE_DIR = Path.home() / ".malikaxiom" / "whatsapp-profile"
 
 #: Chrome profile directories, in preference order (source AND destination name).
-PROFILE_NAMES: tuple[str, ...] = ("Profile 1", "Default")
+PROFILE_NAMES: tuple[str, ...] = ("Profile 5", "Profile 6", "Default", "Profile 1")
 
 _COMPOSE_BOX = (
     'footer div[contenteditable="true"], '
@@ -196,7 +196,7 @@ class WhatsAppPlaywrightChannel(OutreachChannel):
     def ensure_ready(self) -> None:
         vendor_dir = Path(__file__).resolve().parent.parent.parent / "vendor"
         if vendor_dir.exists() and str(vendor_dir) not in sys.path:
-            sys.path.insert(0, str(vendor_dir))
+            sys.path.append(str(vendor_dir))
         try:
             import playwright.sync_api  # noqa: F401
         except Exception as exc:  # noqa: BLE001
@@ -449,7 +449,22 @@ class WhatsAppPlaywrightChannel(OutreachChannel):
 
         # Fast path: URL prefill (WhatsApp's own mechanism, exact bytes).
         if self._await_text(box, message, self.prefill_timeout_s):
-            return True, ""
+            if "\ufffd" not in (box.inner_text() or ""):
+                return True, ""
+            logger.warning("URL prefill contained replacement character; re-inserting clean text.")
+
+        # Clear any corrupted or stale draft and insert text directly if replacement characters appear
+        if "\ufffd" in (box.inner_text() or ""):
+            try:
+                box.click(timeout=5_000)
+                page.keyboard.press("Meta+a")
+                page.keyboard.press("Control+a")
+                page.keyboard.press("Backspace")
+                page.evaluate(_INSERT_TEXT_JS, [_COMPOSE_BOX, message])
+                if "\ufffd" not in (box.inner_text() or ""):
+                    return True, ""
+            except Exception:  # noqa: BLE001
+                logger.debug("Clean text re-insertion failed", exc_info=True)
 
         # Clear any stale draft and reload so the URL prefill re-applies.
         try:

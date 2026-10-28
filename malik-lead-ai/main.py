@@ -32,7 +32,7 @@ VENDOR_DIR = PROJECT_ROOT / "vendor"
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 if VENDOR_DIR.exists() and str(VENDOR_DIR) not in sys.path:
-    sys.path.insert(0, str(VENDOR_DIR))
+    sys.path.append(str(VENDOR_DIR))
 
 from research.researcher import run_research
 from qualification.qualifier import run_qualification
@@ -352,6 +352,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Disable the pricing mention in outreach messages.",
     )
     execute_parser.add_argument(
+        "--template",
+        choices=("demo", "standard"),
+        default="demo",
+        help="Message template: 'demo' (Personalized Boutique Storefront Demo in Roman Urdu, default) or 'standard' (M6 text template).",
+    )
+    execute_parser.add_argument(
         "--retry-failed",
         action="store_true",
         help="Allow one retry for leads whose previous attempt FAILED (never retried automatically).",
@@ -499,6 +505,43 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to output standardized CSV (overwrites input if omitted).",
     )
 
+    # ── HARVEST ─────────────────────────────────────────────────────────────
+    harvest_parser = subparsers.add_parser(
+        "harvest",
+        help="Harvest Instagram startup leads by city & category (no login needed).",
+    )
+    harvest_parser.add_argument(
+        "--city",
+        default="Lahore",
+        help="Target city (e.g. Lahore, Karachi, London, Dubai, New York).",
+    )
+    harvest_parser.add_argument(
+        "--country",
+        default="PK",
+        help="ISO country code (PK, UK, AE, US, …). Affects phone extraction & address.",
+    )
+    harvest_parser.add_argument(
+        "--category",
+        default="pret clothing",
+        help="Business niche (e.g. 'pret wear', 'jewelry', 'bakery', 'branding studio').",
+    )
+    harvest_parser.add_argument(
+        "--limit",
+        type=int,
+        default=20,
+        help="Maximum number of leads to collect (default: 20).",
+    )
+    harvest_parser.add_argument(
+        "-o", "--output",
+        default=None,
+        help="Output CSV path (default: input/harvested_leads.csv).",
+    )
+    harvest_parser.add_argument(
+        "--auto-pipeline",
+        action="store_true",
+        help="Automatically chain into 'pipeline' after harvesting.",
+    )
+
     return parser
 
 
@@ -584,6 +627,7 @@ def _run_outreach_execute(args: argparse.Namespace) -> int:
             args.jitter if args.jitter is not None else SEND_INTERVAL_JITTER_SECONDS
         ),
         quiet=args.quiet,
+        template=getattr(args, "template", "demo"),
     )
 
     print("=" * 60)
@@ -911,6 +955,71 @@ def main(argv: list[str] | None = None) -> int:
 
         res_path = normalize_csv(in_path, out_path)
         print(f"Standardized CSV written to: {res_path}")
+        return 0
+
+    if args.command == "harvest":
+        # ── Instagram Startup Harvester ───────────────────────────────────
+        import sys as _sys
+        _tools_dir = PROJECT_ROOT / "tools"
+        if str(_tools_dir) not in _sys.path:
+            _sys.path.insert(0, str(_tools_dir))
+
+        try:
+            from instagram_harvester import harvest_instagram_leads
+        except ImportError as _e:
+            print(f"❌ Could not import tools/instagram_harvester.py: {_e}", file=sys.stderr)
+            return 1
+
+        # Resolve output path
+        out_csv = args.output
+        if not out_csv:
+            out_csv = str(PROJECT_ROOT / "input" / "harvested_leads.csv")
+        else:
+            p = Path(out_csv)
+            if not p.is_absolute():
+                out_csv = str(PROJECT_ROOT / p)
+
+        # Determine country label for address column
+        _country_map = {
+            "PK": "Pakistan", "UK": "United Kingdom", "US": "United States",
+            "AE": "UAE", "CA": "Canada", "AU": "Australia", "IN": "India",
+            "SA": "Saudi Arabia", "DE": "Germany", "FR": "France",
+        }
+        country_label = _country_map.get(args.country.upper(), args.country.upper())
+
+        print(f"\n🌍 Harvest Config → City: {args.city} | Country: {country_label} | Category: {args.category} | Limit: {args.limit}")
+
+        count, saved_path = harvest_instagram_leads(
+            city=args.city,
+            category=args.category,
+            limit=args.limit,
+            output_file=out_csv,
+            country_label=country_label,
+            country_code=args.country.upper(),
+        )
+
+        if count == 0:
+            print("⚠️  No leads harvested. Try a different city or category.")
+            return 1
+
+        rel_path = Path(saved_path).relative_to(PROJECT_ROOT) if Path(saved_path).is_relative_to(PROJECT_ROOT) else Path(saved_path)
+
+        print(f"\n{'='*50}")
+        print(f"✅  Harvested {count} Instagram leads  →  {rel_path}")
+        print(f"{'='*50}")
+        print(f"\n💡 Next steps:")
+        print(f"   Run full pipeline  : python3 main.py pipeline {rel_path}")
+        print(f"   Or harvest more    : python3 main.py harvest --city {args.city} --category \"{args.category}\" --limit 50")
+
+        if args.auto_pipeline:
+            print(f"\n🚀 --auto-pipeline flag detected → launching pipeline automatically...\n")
+            import subprocess
+            result = subprocess.run(
+                [_sys.executable, str(PROJECT_ROOT / "main.py"), "pipeline", saved_path],
+                cwd=str(PROJECT_ROOT),
+            )
+            return result.returncode
+
         return 0
 
     print_status()

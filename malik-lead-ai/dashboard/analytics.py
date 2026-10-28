@@ -22,40 +22,78 @@ def _get_utc_yesterday_str() -> str:
     return (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
 
 
+def _get_utc_parso_str() -> str:
+    return (datetime.now(timezone.utc) - timedelta(days=2)).strftime("%Y-%m-%d")
+
+
 def _lead_matches_date_range(lead: LeadRecord, filter_type: str, custom_start: str = "", custom_end: str = "") -> bool:
-    """Filter lead based on timestamp or discovery date."""
-    if filter_type == "ALL_TIME" or not filter_type:
+    """Filter lead based on timestamp, discovery date, or activity history."""
+    if filter_type in ("ALL_TIME", "ALL", "") or not filter_type:
         return True
 
     today_str = _get_utc_today_str()
     yesterday_str = _get_utc_yesterday_str()
+    parso_str = _get_utc_parso_str()
 
-    # Determine best date for this lead
+    # Collect all associated dates for the lead:
+    lead_dates: set[str] = set()
+    for ts in (lead.last_called_at, lead.m6_sent_at, lead.last_contacted_at, lead.discovered_at, lead.qualified_at, lead.researched_at, lead.last_updated_at):
+        if ts and len(ts) >= 10:
+            lead_dates.add(ts[:10])
+    for act in (lead.activity_history or []):
+        ts = act.get("timestamp") or act.get("created_at") or ""
+        if ts and len(ts) >= 10:
+            lead_dates.add(ts[:10])
+
+    # Determine primary date for this lead
     lead_date = ""
-    for ts in (lead.m6_sent_at, lead.last_contacted_at, lead.discovered_at, lead.qualified_at, lead.researched_at, lead.last_updated_at):
+    for ts in (lead.last_called_at, lead.m6_sent_at, lead.last_contacted_at, lead.discovered_at, lead.qualified_at, lead.researched_at, lead.last_updated_at):
         if ts and len(ts) >= 10:
             lead_date = ts[:10]
             break
 
-    if not lead_date:
+    if not lead_date and not lead_dates:
         return filter_type in ("ALL_TIME", "UNKNOWN")
 
+    def has_date(target: str) -> bool:
+        return target in lead_dates or lead_date == target
+
+    # Handle quick presets
     if filter_type == "TODAY":
-        return lead_date == today_str
-    elif filter_type == "YESTERDAY":
-        return lead_date == yesterday_str
-    elif filter_type == "LAST_7_DAYS":
+        return has_date(today_str)
+    elif filter_type in ("YESTERDAY", "KAL"):
+        return has_date(yesterday_str)
+    elif filter_type in ("PARSO", "DAY_BEFORE_YESTERDAY", "2_DAYS_AGO"):
+        return has_date(parso_str)
+    elif filter_type in ("SPECIFIC_DATE", "EXACT_DATE", "SINGLE_DATE"):
+        target = (custom_start or "").strip()
+        if not target:
+            return True
+        # If user passed only day (e.g., '10')
+        if len(target) <= 2:
+            day_str = target.zfill(2)
+            return any(d.endswith(f"-{day_str}") for d in (lead_dates or [lead_date]))
+        return has_date(target)
+    elif filter_type in ("PAST_7_DAYS", "LAST_7_DAYS"):
         seven_days_ago = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%d")
-        return lead_date >= seven_days_ago
-    elif filter_type == "LAST_30_DAYS":
+        return any(d >= seven_days_ago for d in (lead_dates or [lead_date]))
+    elif filter_type in ("PAST_30_DAYS", "LAST_30_DAYS"):
         thirty_days_ago = (datetime.now(timezone.utc) - timedelta(days=30)).strftime("%Y-%m-%d")
-        return lead_date >= thirty_days_ago
+        return any(d >= thirty_days_ago for d in (lead_dates or [lead_date]))
+    elif filter_type in ("THIS_MONTH", "CURRENT_MONTH"):
+        month_prefix = datetime.now(timezone.utc).strftime("%Y-%m")
+        return any(d.startswith(month_prefix) for d in (lead_dates or [lead_date]))
     elif filter_type == "CUSTOM":
-        if custom_start and lead_date < custom_start:
+        if custom_start and not custom_end:
+            return has_date(custom_start)
+        if custom_start and custom_end and custom_start == custom_end:
+            return has_date(custom_start)
+        if custom_start and lead_date < custom_start and not any(d >= custom_start for d in lead_dates):
             return False
-        if custom_end and lead_date > custom_end:
+        if custom_end and lead_date > custom_end and not any(d <= custom_end for d in lead_dates):
             return False
         return True
+
     return True
 
 
@@ -133,11 +171,14 @@ class DashboardAnalytics:
             and bool(l.phone)
             and not l.is_archived
             and not l.is_skipped
-            and l.m6_status not in ("SENT", "FAILED", "NOT_READY", "NO_WHATSAPP_NUMBER", "SKIPPED_LIMIT", "SKIPPED_ALREADY_SENT", "SKIPPED_NO_WHATSAPP")
-            and (l.outreach_priority in ("CONTACT FIRST", "CONTACT LATER") or l.in_contact_first or l.in_contact_later)
+            and not getattr(l, "possible_duplicate", False)
+            and (l.outreach_priority == "CONTACT FIRST" or (l.in_contact_first and l.outreach_priority != "CONTACT LATER"))
             and l.outreach_priority not in ("ARCHIVE", "SKIP")
             and l.final_action not in ("ARCHIVE", "SKIP")
             and l.sales_potential != "SKIP"
+            and l.call_status == "PENDING"
+            and not l.last_called_at
+            and not any(h.get("action_type") == "CALL" or h.get("call_status") in ("CONNECTED", "NOT_CONNECTED") for h in getattr(l, "activity_history", []))
         )
 
         # Sales Outcomes (Real data)
@@ -274,6 +315,7 @@ class DashboardAnalytics:
                 "selected": date_filter,
                 "today": today_str,
                 "yesterday": yesterday_str,
+                "parso": _get_utc_parso_str(),
                 "custom_start": custom_start,
                 "custom_end": custom_end,
             },

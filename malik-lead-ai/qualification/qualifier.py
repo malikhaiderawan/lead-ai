@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -169,13 +170,21 @@ _GENERIC_SOCIAL_SUBSTRINGS: tuple[str, ...] = (
 _SOCIAL_PLATFORM_WEBSITE_DOMAINS: tuple[str, ...] = (
     "facebook.com/",
     "www.facebook.com/",
+    "web.facebook.com/",
     "m.facebook.com/",
+    "touch.facebook.com/",
+    "fb.com/",
+    "fb.me/",
+    "fb.watch/",
     "instagram.com/",
     "www.instagram.com/",
+    "instagr.am/",
     "tiktok.com/",
     "www.tiktok.com/",
+    "vm.tiktok.com/",
     "youtube.com/",
     "www.youtube.com/",
+    "youtu.be/",
     "linkedin.com/",
     "www.linkedin.com/",
 )
@@ -213,6 +222,31 @@ def _is_generic_social_url(url: str | None) -> bool:
         return True
     for fragment in _GENERIC_SOCIAL_SUBSTRINGS:
         if fragment in url:
+            return True
+    return False
+
+
+
+_KNOWN_ENTERPRISE_BRANDS: tuple[str, ...] = (
+    "bareeze", "khaadi", "generation", "sapphire", "nishat", "junaid jamshed",
+    "alkaram", "gul ahmed", "gulahmed", "sana safinaz", "limelight", "lime light", "bonanza",
+    "maria b", "maria.b", "outfitters", "edenrobe", "zellbury", "cambridge", "diners",
+    "chenone", "cross stitch", "beechtree", "stylo", "borjan", "mcdonald",
+    "kfc", "subway", "domino", "hardee", "tehzeeb", "chashni", "gourmet",
+    "optp", "servis", "bata", "ndure", "miniso", "cougar", "breakout", "chinyere",
+    "pasha fabrics", "pfdc", "zainab chottani", "dhanak", "agha noor", "imrozia",
+    "threads & motifs", "threads and motifs", "saya"
+)
+
+
+def _is_known_enterprise_brand(name: str | None) -> bool:
+    """Return True if the business name matches a known nationwide/enterprise chain."""
+    if not name:
+        return False
+    clean = re.sub(r'[^a-z0-9\s]', ' ', name.lower())
+    padded = f" {clean} "
+    for brand in _KNOWN_ENTERPRISE_BRANDS:
+        if f" {brand} " in padded:
             return True
     return False
 
@@ -340,7 +374,7 @@ def _review_count(lead: dict[str, Any]) -> int:
 
 
 def _has_phone(lead: dict[str, Any]) -> bool:
-    return _is_truthy(lead.get("phone"))
+    return _is_truthy(lead.get("phone")) or _is_truthy(lead.get("whatsapp")) or _is_truthy(lead.get("mobile_phone"))
 
 
 def _ecommerce_present(lead: dict[str, Any]) -> bool:
@@ -472,6 +506,7 @@ def _detect_opportunity(lead: dict[str, Any]) -> tuple[str, str, list[str]]:
         (opportunity_label, opportunity_description, evidence_list)
     """
     evidence: list[str] = []
+    name = _safe_str(lead.get("business_name"), "This business")
     maturity = _safe_str(lead.get("digital_maturity"), "unknown")
     ml = _maturity_level(maturity)
 
@@ -497,8 +532,37 @@ def _detect_opportunity(lead: dict[str, Any]) -> tuple[str, str, list[str]]:
             evidence,
         )
 
+    # ── ESTABLISHED BRAND GATE ──────────────────────────────────────
+    # Major national enterprise brands (Bareeze, Generation, Khaadi, Sapphire, Sana Safinaz, etc.)
+    # have their own corporate IT teams and websites. They should not be pitched
+    # small business website development packages.
+    if _is_known_enterprise_brand(name):
+        evidence.append("Recognized national enterprise brand/chain")
+        evidence.append("Enterprise brands have existing corporate IT operations and are not SME website development targets")
+        return (
+            "well_established",
+            f"Recognized national/enterprise brand ({name}) — corporate operations already present",
+            evidence,
+        )
+    # ── END ESTABLISHED BRAND GATE ──────────────────────────────────
+
+    # Check if business uses a social media profile as their website on Google Business Profile
+    if _website_url_is_social_platform(lead) or lead.get("social_as_website"):
+        social_url = lead.get("social_as_website_url") or lead.get("website") or ""
+        platform_hint = lead.get("social_as_website") or "social media"
+        evidence.append(f"Business lists {platform_hint.capitalize()} URL ({social_url}) as website on Google Business Profile")
+        evidence.append("No independent, dedicated e-commerce storefront is owned by the business")
+        socials = social_platforms or [platform_hint.capitalize()]
+        return (
+            "no_website_has_social",
+            f"Active on {', '.join(socials)} but uses {platform_hint.capitalize()} page as website on Google Maps instead of a dedicated e-commerce storefront",
+            evidence,
+        )
+
     # --- No website URL in input data (status truly unknown) ---
     if not website_status_known and not has_website:
+        reviews = _review_count(lead)
+
         evidence.append("No website URL was found in the research input data")
         if not has_social:
             evidence.append("No verified social media presence identified either")
@@ -536,7 +600,15 @@ def _detect_opportunity(lead: dict[str, Any]) -> tuple[str, str, list[str]]:
 
     # --- Website exists and reachable — check for e-commerce gap ---
     if has_website and web_reachable:
+        reviews = _review_count(lead)
         if is_retail and not ecom_present:
+            if reviews >= 100:
+                evidence.append("Website is reachable and business has high review volume (100+ reviews)")
+                return (
+                    "well_established",
+                    "Well-established retail brand with active website and significant Google review volume",
+                    evidence,
+                )
             # Confirm: only flag e-commerce gap when M2 explicitly found NO e-commerce signals.
             # ecom_present=True means M2 detected checkout/cart/order signals on the site.
             # In that case, the business already has e-commerce — no gap to sell into.
@@ -551,8 +623,21 @@ def _detect_opportunity(lead: dict[str, Any]) -> tuple[str, str, list[str]]:
         if is_retail and ecom_present:
             ecom_details = lead.get("ecommerce_details") or {}
             flow_type = _safe_str(ecom_details.get("order_flow_type"))
+            detected_platform = _safe_str(ecom_details.get("detected_platform"))
+
+            # Enterprise / Major Established Brands (Khaadi, Sapphire, etc.)
+            # These are NOT small businesses doing manual WhatsApp orders.
+            if reviews >= 100 or detected_platform in ("Magento", "Salesforce", "Demandware", "SAP"):
+                evidence.append("Website is reachable with established e-commerce platform and high review volume")
+                return (
+                    "well_established",
+                    "Well-established retail brand with mature e-commerce operations",
+                    evidence,
+                )
+
             has_manual_flow = (
-                flow_type in ("WHATSAPP_ORDERING", "CATALOG_WITH_CART_ONLY", "CATALOG_INQUIRY_ONLY")
+                flow_type in ("WHATSAPP_ORDERING", "CATALOG_INQUIRY_ONLY")
+                or (flow_type == "CATALOG_WITH_CART_ONLY" and reviews < 50)
                 or any("manual" in str(g).lower() and "whatsapp" in str(g).lower() for g in gaps)
             )
             if has_manual_flow:
@@ -631,6 +716,7 @@ def _match_primary_service(
     ecom_present = _ecommerce_present(lead)
     maturity = _safe_str(lead.get("digital_maturity"), "unknown")
     ml = _maturity_level(maturity)
+    social_platforms = _social_platforms_present(lead)
 
     name = _safe_str(lead.get("business_name"), "This business")
     category = _clean_category(lead.get("category"))
@@ -664,8 +750,8 @@ def _match_primary_service(
         return (
             "business_digitalization",
             (
-                f"{name} ({category}{loc_str}) has a social presence but no dedicated website. "
-                "MalikAxiom's Business Digitalization package directly addresses this gap."
+                f"{name} ({category}{loc_str}) has an active social presence ({', '.join(social_platforms) if social_platforms else 'Facebook/Instagram'}) "
+                "but has no confirmed dedicated website. MalikAxiom's Business Digitalization package directly addresses this gap."
             ),
         )
 
@@ -874,6 +960,8 @@ def _score_sales_potential(
     # WEAK signal but valid identity (Maps + phone + category) → HIGH (CONTACT FIRST)
     # WEAK signal with no usable identity → LOW (genuinely thin lead)
     if opportunity_label == "no_website_url_found":
+        if reviews >= 50:
+            return "MODERATE"
         if active_signal in ("STRONG", "MODERATE"):
             return "HIGH"
         # WEAK: check whether we have a usable business identity before archiving
@@ -1299,7 +1387,10 @@ def _business_summary(lead: dict[str, Any]) -> str:
     elif rating:
         parts.append(f"Google rating: {rating}.")
 
-    if has_website:
+    if lead.get("social_as_website") or _website_url_is_social_platform(lead):
+        soc_hint = lead.get("social_as_website") or "social media"
+        parts.append(f"Uses {soc_hint.capitalize()} profile as website on Google Maps; no dedicated website domain.")
+    elif has_website:
         if web_reachable:
             parts.append("Has a website (reachable).")
         else:
@@ -1367,7 +1458,7 @@ def qualify_lead(lead: dict[str, Any]) -> QualificationRecord:
     business_name = lead.get("business_name")
     category = lead.get("category")
     location = lead.get("location")
-    phone = lead.get("phone")
+    phone = lead.get("phone") or lead.get("whatsapp") or lead.get("mobile_phone")
     maturity = _safe_str(lead.get("digital_maturity"), "unknown")
 
     logger.debug("Qualifying lead: %s", lead_id)

@@ -31,6 +31,7 @@ from .config import (
     BANNED_CLAIM_PHRASES,
     CHANNEL_WHATSAPP,
     CHANNEL_WHATSAPP_PLAYWRIGHT,
+    DEMO_REQUIRED_CONTACT_TOKENS,
     FIRST_TOUCH_ALLOWS_LINKS,
     GREETING,
     MAX_MESSAGE_CHARS,
@@ -80,11 +81,17 @@ def validate_message(
     recipient: str,
     channel: str,
     already_sent: bool = False,
+    template: str | None = None,
 ) -> ValidationResult:
     """Run every M6 pre-send check and return the aggregated result."""
     result = ValidationResult(status="PASS")
     message = built.text or ""
     lowered = message.lower()
+    is_demo = (
+        template == "demo"
+        or (built and built.note == "m7_storefront_demo_template")
+        or "website-demo-five-navy.vercel.app" in lowered
+    )
 
     # 1. business name -----------------------------------------------------
     from .message_builder import clean_business_name
@@ -108,54 +115,64 @@ def validate_message(
 
     # 4. service must come from M5 ----------------------------------------
     m5_service = (lead.primary_service or "").strip()
-    if not m5_service:
-        result.add("missing_m5_service")
-    elif built.service.strip().lower() != m5_service.lower():
-        result.add(f"service_mismatch_with_m5:{built.service}!={m5_service}")
-    else:
-        svc_lowered = m5_service.lower()
-        has_match = (
-            svc_lowered in lowered
-            or ("digital" in svc_lowered and ("digital" in lowered or "website" in lowered))
-            or ("web" in svc_lowered and ("website" in lowered or "web" in lowered))
-            or ("e-commerce" in svc_lowered and ("e-commerce" in lowered or "online store" in lowered or "ecommerce" in lowered))
-            or ("automation" in svc_lowered and "automation" in lowered)
-            or ("ai" in svc_lowered and "ai" in lowered)
-        )
-        if not has_match:
-            result.add("message_does_not_mention_m5_service")
+    if not is_demo:
+        if not m5_service:
+            result.add("missing_m5_service")
+        elif built.service.strip().lower() != m5_service.lower():
+            result.add(f"service_mismatch_with_m5:{built.service}!={m5_service}")
         else:
-            opportunity = (built.opportunity_line or "").lower()
-            for phrase in KNOWN_SERVICE_PHRASES:
-                if phrase in opportunity and phrase not in m5_service.lower() and m5_service.lower() not in phrase:
-                    is_allowed_combo = (
-                        ("web" in phrase and ("digital" in m5_service.lower() or "web" in m5_service.lower()))
-                        or (phrase in ("e-commerce", "ecommerce", "shopify") and ("digital" in m5_service.lower() or "web" in m5_service.lower() or "e-commerce" in m5_service.lower() or "ecommerce" in m5_service.lower()))
-                        or (phrase in ("business digitalization", "business digitalisation") and ("web" in m5_service.lower() or "e-commerce" in m5_service.lower() or "digital" in m5_service.lower()))
-                        or (phrase in ("business automation", "automation") and ("digital" in m5_service.lower() or "automation" in m5_service.lower() or "e-commerce" in m5_service.lower()))
-                        or (phrase in ("social media content", "social content") and ("digital" in m5_service.lower() or "content" in m5_service.lower() or "social" in m5_service.lower()))
-                    )
-                    if not is_allowed_combo:
-                        result.add(f"unapproved_service_in_opportunity:{phrase}")
-                        break
+            svc_lowered = m5_service.lower()
+            has_match = (
+                svc_lowered in lowered
+                or ("digital" in svc_lowered and ("digital" in lowered or "website" in lowered))
+                or ("web" in svc_lowered and ("website" in lowered or "web" in lowered))
+                or ("e-commerce" in svc_lowered and ("e-commerce" in lowered or "online store" in lowered or "ecommerce" in lowered))
+                or ("automation" in svc_lowered and "automation" in lowered)
+                or ("ai" in svc_lowered and "ai" in lowered)
+            )
+            if not has_match:
+                result.add("message_does_not_mention_m5_service")
+            else:
+                opportunity = (built.opportunity_line or "").lower()
+                for phrase in KNOWN_SERVICE_PHRASES:
+                    if phrase in opportunity and phrase not in m5_service.lower() and m5_service.lower() not in phrase:
+                        is_allowed_combo = (
+                            ("web" in phrase and ("digital" in m5_service.lower() or "web" in m5_service.lower()))
+                            or (phrase in ("e-commerce", "ecommerce", "shopify") and ("digital" in m5_service.lower() or "web" in m5_service.lower() or "e-commerce" in m5_service.lower() or "ecommerce" in m5_service.lower()))
+                            or (phrase in ("business digitalization", "business digitalisation") and ("web" in m5_service.lower() or "e-commerce" in m5_service.lower() or "digital" in m5_service.lower()))
+                            or (phrase in ("business automation", "automation") and ("digital" in m5_service.lower() or "automation" in m5_service.lower() or "e-commerce" in m5_service.lower()))
+                            or (phrase in ("social media content", "social content") and ("digital" in m5_service.lower() or "content" in m5_service.lower() or "social" in m5_service.lower()))
+                        )
+                        if not is_allowed_combo:
+                            result.add(f"unapproved_service_in_opportunity:{phrase}")
+                            break
 
     # 5. message structure -------------------------------------------------
     if not message.strip():
         result.add("empty_message")
     else:
-        if not message.startswith(GREETING):
-            result.add("missing_greeting")
-        for token in REQUIRED_CONTACT_TOKENS:
-            if token.lower() not in lowered:
-                result.add(f"missing_contact_token:{token}")
+        if is_demo:
+            if not message.startswith("Assalam o Alaikum"):
+                result.add("missing_greeting")
+            for token in DEMO_REQUIRED_CONTACT_TOKENS:
+                if token.lower() not in lowered:
+                    result.add(f"missing_contact_token:{token}")
+        else:
+            if not message.startswith(GREETING):
+                result.add("missing_greeting")
+            for token in REQUIRED_CONTACT_TOKENS:
+                if token.lower() not in lowered:
+                    result.add(f"missing_contact_token:{token}")
 
     # 6. length ------------------------------------------------------------
-    body = message.split(_SIGNATURE_MARKER, 1)[0]
+    body = message.rsplit("MalikAxiom Technology", 1)[0] if is_demo else message.split(_SIGNATURE_MARKER, 1)[0]
     body_words = word_count(body)
-    if body_words < MIN_BODY_WORDS:
-        result.add(f"message_too_short:{body_words}w<{MIN_BODY_WORDS}w")
-    if body_words > built.max_body_words:
-        result.add(f"message_too_long:{body_words}w>{built.max_body_words}w")
+    min_words = 35 if is_demo else MIN_BODY_WORDS
+    max_words = built.max_body_words if (built and built.max_body_words) else (200 if is_demo else 90)
+    if body_words < min_words:
+        result.add(f"message_too_short:{body_words}w<{min_words}w")
+    if body_words > max_words:
+        result.add(f"message_too_long:{body_words}w>{max_words}w")
     if len(message) > MAX_MESSAGE_CHARS:
         result.add(f"message_too_long_chars:{len(message)}>{MAX_MESSAGE_CHARS}")
 

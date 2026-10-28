@@ -1,6 +1,6 @@
 """Milestone 2 — Public search engine researcher for brand and profile discovery.
 
-Performs intelligent public search queries (using DuckDuckGo / public web search)
+Performs intelligent public search queries (using Serper Google Search API / Brave API)
 to discover official websites, social profiles, business positioning, and contact signals
 when they are missing or need cross-verification.
 
@@ -10,7 +10,9 @@ Standard library only.
 from __future__ import annotations
 
 import html
+import json
 import logging
+import os
 import re
 import urllib.error
 import urllib.parse
@@ -28,13 +30,15 @@ DEFAULT_USER_AGENT = (
     "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 )
 
-# Common directory / aggregator domains to filter out when searching for an official site
+# Common directory / aggregator / social domains to filter out when searching for an official site
 _DIRECTORY_DOMAINS = frozenset({
     "facebook.com", "instagram.com", "twitter.com", "x.com", "linkedin.com",
-    "tiktok.com", "youtube.com", "pinterest.com", "yelp.com", "yellowpages.com",
-    "tripadvisor.com", "wikipedia.org", "marham.pk", "oladoc.com", "instacare.pk",
+    "tiktok.com", "youtube.com", "pinterest.com", "threads.net", "threads.com",
+    "yelp.com", "yellowpages.com", "tripadvisor.com", "wikipedia.org", "trustpilot.com",
+    "reddit.com", "quora.com", "medium.com", "marham.pk", "oladoc.com", "instacare.pk",
     "shafa.pk", "daraz.pk", "pakwheels.com", "zameen.com", "olx.com.pk",
     "foodpanda.pk", "dunya.tv", "geo.tv", "tribune.com.pk", "dawn.com",
+    "linktr.ee", "linktree.com", "bio.link", "lnk.bio", "beacons.ai", "taplink.cc",
 })
 
 
@@ -74,66 +78,6 @@ class SearchResearch:
         }
 
 
-def _extract_duckduckgo_results(html_text: str) -> list[SearchResultItem]:
-    """Parse DuckDuckGo HTML results into structured items."""
-    items: list[SearchResultItem] = []
-
-    # Pattern for results in html.duckduckgo.com/html/
-    blocks = re.findall(
-        r'<div[^>]*class="[^"]*result__body[^"]*"[^>]*>(.*?)</div>',
-        html_text,
-        re.DOTALL | re.IGNORECASE,
-    )
-
-    if not blocks:
-        # Fallback pattern for lite.duckduckgo.com or table layouts
-        table_blocks = re.findall(
-            r'<tr[^>]*>.*?<a[^>]*class="result-link"[^>]*href="([^"]+)"[^>]*>(.*?)</a>.*?<td[^>]*class="result-snippet"[^>]*>(.*?)</td>.*?</tr>',
-            html_text,
-            re.DOTALL | re.IGNORECASE,
-        )
-        for href, title_html, snip_html in table_blocks:
-            clean_url = _clean_ddg_url(href)
-            clean_title = _strip_html(title_html)
-            clean_snip = _strip_html(snip_html)
-            if clean_url:
-                items.append(SearchResultItem(title=clean_title, url=clean_url, snippet=clean_snip))
-        if items:
-            return items
-
-    for block in blocks:
-        url_match = re.search(r'<a[^>]*class="[^"]*(?:result__a|result__url|result__snippet)[^"]*"[^>]*href="([^"]+)"', block, re.IGNORECASE)
-        if not url_match:
-            url_match = re.search(r'href="([^"]+)"', block, re.IGNORECASE)
-
-        title_match = re.search(r'<a[^>]*class="[^"]*result__a[^"]*"[^>]*>(.*?)</a>', block, re.IGNORECASE | re.DOTALL)
-        snippet_match = re.search(r'<a[^>]*class="[^"]*result__snippet[^"]*"[^>]*>(.*?)</a>', block, re.IGNORECASE | re.DOTALL)
-        if not snippet_match:
-            snippet_match = re.search(r'<div[^>]*class="[^"]*result__snippet[^"]*"[^>]*>(.*?)</div>', block, re.IGNORECASE | re.DOTALL)
-
-        if url_match:
-            raw_url = url_match.group(1)
-            clean_url = _clean_ddg_url(raw_url)
-            clean_title = _strip_html(title_match.group(1)) if title_match else ""
-            clean_snip = _strip_html(snippet_match.group(1)) if snippet_match else ""
-            if clean_url:
-                items.append(SearchResultItem(title=clean_title, url=clean_url, snippet=clean_snip))
-    return items
-
-
-def _clean_ddg_url(raw_url: str) -> str:
-    """Extract destination URL from DuckDuckGo redirect link."""
-    if "uddg=" in raw_url:
-        m = re.search(r'uddg=([^&]+)', raw_url)
-        if m:
-            return urllib.parse.unquote(m.group(1))
-    if raw_url.startswith("//"):
-        return "https:" + raw_url
-    if raw_url.startswith("/"):
-        return "https://duckduckgo.com" + raw_url
-    return raw_url
-
-
 def _strip_html(text: str) -> str:
     clean = re.sub(r'<[^>]+>', '', text)
     clean = html.unescape(clean)
@@ -151,41 +95,80 @@ def _extract_domain(url: str) -> str:
         return ""
 
 
-def execute_search_query(query: str, timeout: float = SEARCH_TIMEOUT) -> tuple[str, list[SearchResultItem], str]:
-    """Execute a single search query.
-
-    Returns:
-        (status, list_of_items, error_detail)
-    """
-    search_url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}"
+def _search_serper(query: str, api_key: str, timeout: float = SEARCH_TIMEOUT) -> tuple[str, list[SearchResultItem], str]:
+    """Execute search query using Serper.dev Google Search API."""
+    payload = json.dumps({"q": query, "num": 10}).encode("utf-8")
     req = urllib.request.Request(
-        search_url,
-        headers={
-            "User-Agent": DEFAULT_USER_AGENT,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-        },
+        "https://google.serper.dev/search",
+        data=payload,
+        headers={"X-API-KEY": api_key, "Content-Type": "application/json"},
     )
-
     try:
         with urllib.request.urlopen(req, timeout=timeout) as response:
-            status_code = response.status
-            if status_code == 200:
+            if response.status == 200:
                 body = response.read(150_000)
-                raw_html = body.decode("utf-8", errors="replace")
-                items = _extract_duckduckgo_results(raw_html)
+                data = json.loads(body.decode("utf-8", errors="replace"))
+                items: list[SearchResultItem] = []
+                for org in data.get("organic", []):
+                    title = _strip_html(org.get("title", ""))
+                    link = org.get("link", "").strip()
+                    snippet = _strip_html(org.get("snippet", ""))
+                    if link:
+                        items.append(SearchResultItem(title=title, url=link, snippet=snippet))
                 if items:
                     return ResourceStatus.FOUND, items, ""
-                return ResourceStatus.NOT_FOUND, [], "Zero search results parsed"
-            if status_code in (403, 429):
-                return ResourceStatus.BLOCKED, [], f"Search blocked HTTP {status_code}"
-            return ResourceStatus.CHECK_FAILED, [], f"Search HTTP {status_code}"
+                return ResourceStatus.NOT_FOUND, [], "Zero organic search results"
+            return ResourceStatus.CHECK_FAILED, [], f"Serper HTTP {response.status}"
     except urllib.error.HTTPError as exc:
-        if exc.code in (403, 429):
-            return ResourceStatus.BLOCKED, [], f"Search blocked HTTP {exc.code}: {exc.reason}"
-        return ResourceStatus.CHECK_FAILED, [], f"HTTP error {exc.code}: {exc.reason}"
-    except Exception as exc:  # noqa: BLE001
-        return ResourceStatus.CHECK_FAILED, [], f"{type(exc).__name__}: {str(exc)[:150]}"
+        if exc.code in (401, 403):
+            return ResourceStatus.BLOCKED, [], f"Serper auth error HTTP {exc.code}"
+        return ResourceStatus.CHECK_FAILED, [], f"Serper HTTP error {exc.code}: {exc.reason}"
+    except Exception as exc:
+        return ResourceStatus.CHECK_FAILED, [], f"Serper {type(exc).__name__}: {str(exc)[:150]}"
+
+
+def _search_brave(query: str, api_key: str, timeout: float = SEARCH_TIMEOUT) -> tuple[str, list[SearchResultItem], str]:
+    """Fallback search query using Brave Search API."""
+    url = "https://api.search.brave.com/res/v1/web/search"
+    params = urllib.parse.urlencode({"q": query, "count": 10})
+    req = urllib.request.Request(
+        f"{url}?{params}",
+        headers={"Accept": "application/json", "X-Subscription-Token": api_key},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as response:
+            if response.status == 200:
+                body = response.read(150_000)
+                data = json.loads(body.decode("utf-8", errors="replace"))
+                items: list[SearchResultItem] = []
+                for res in data.get("web", {}).get("results", []):
+                    title = _strip_html(res.get("title", ""))
+                    link = res.get("url", "").strip()
+                    snippet = _strip_html(res.get("description", ""))
+                    if link:
+                        items.append(SearchResultItem(title=title, url=link, snippet=snippet))
+                if items:
+                    return ResourceStatus.FOUND, items, ""
+                return ResourceStatus.NOT_FOUND, [], "Zero Brave search results"
+            return ResourceStatus.CHECK_FAILED, [], f"Brave HTTP {response.status}"
+    except Exception as exc:
+        return ResourceStatus.CHECK_FAILED, [], f"Brave {type(exc).__name__}: {str(exc)[:150]}"
+
+
+def execute_search_query(query: str, timeout: float = SEARCH_TIMEOUT) -> tuple[str, list[SearchResultItem], str]:
+    """Execute a single search query via Serper Google Search (or Brave fallback).
+
+    DuckDuckGo scraper has been removed to avoid bot-blocking.
+    """
+    serper_key = os.environ.get("SERPER_API_KEY", "").strip()
+    if serper_key:
+        return _search_serper(query, serper_key, timeout=timeout)
+
+    brave_key = os.environ.get("BRAVE_API_KEY", "").strip() or os.environ.get("BRAVE_SEARCH_API_KEY", "").strip()
+    if brave_key:
+        return _search_brave(query, brave_key, timeout=timeout)
+
+    return ResourceStatus.CHECK_FAILED, [], "No search API key found (SERPER_API_KEY required)"
 
 
 def research_search(

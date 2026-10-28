@@ -114,7 +114,7 @@ python3 main.py status
 
 # Saare 116 Automated Unit Tests run karne ke liye:
 python3 -m unittest discover -s tests
-```
+
 
 ---
 
@@ -152,3 +152,71 @@ MalikAxiom Technology
 🌐 malikaxiomtech.com
 ✉️ hello@malikaxiomtech.com
 ```
+
+---
+
+## ⚡ 9. Complete Daily Quick Reference Cheat Sheet
+
+Ye daily use ke liye summary sheet hai:
+
+### 📁 Step 0: Terminal Navigation
+```bash
+cd "malik-lead-ai"
+```
+
+### 🚀 Step 1: Run Full Pipeline (End-to-End)
+```bash
+# Nayi CSV leads file ko process karein (e.g. batch_08.csv):
+python3 main.py pipeline input/batch_08.csv --timeout 8
+```
+
+### 🖥️ Step 2: Sales Command Center Dashboard Launch
+```bash
+# Dashboard chala kar browser me dekhein (Default: http://127.0.0.1:8080):
+python3 main.py dashboard
+```
+
+### 📲 Step 3: WhatsApp Outreach Send Karna (M6)
+```bash
+# Test/Preview (Dry Run - messages aur links check karein):
+python3 main.py outreach-execute --dry-run
+
+# Actual Send (WhatsApp Web ke zariye send karein):
+python3 main.py outreach-execute
+
+# Specific Lead ID ko send karein:
+python3 main.py outreach-execute --lead-id lead_002_ramsha_boutique___garments
+
+# Failed leads ko dobara retry karein:
+python3 main.py outreach-execute --retry-failed
+```
+
+### 📊 Step 4: Master Excel Workbook Refresh Karna
+```bash
+python3 main.py export-excel
+```
+
+### 🛠️ Step 5: Manual Step-by-Step Execution
+```bash
+# 1. Research (M2):
+python3 main.py research input/batch_08.csv --timeout 8
+
+# 2. Qualify & Score Leads (M3):
+python3 main.py qualify
+
+# 3. Outreach Messages Generate Karna (M4):
+python3 main.py outreach
+
+# 4. Sales Report, Contact First / Later CSVs (M5):
+python3 main.py sales-report
+```
+
+### 🧪 Step 6: System & Unit Testing
+```bash
+# Core M2 & M3 tests verify karne ke liye:
+python3 -m unittest tests.test_m2_deep_research tests.test_m3_qualification
+
+# Saare automated unit tests run karne ke liye:
+python3 -m unittest discover -s tests
+```
+

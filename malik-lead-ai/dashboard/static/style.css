@@ -68,8 +68,151 @@ body.dark-theme .pitch-box {
 }
 
 body.dark-theme .custom-table th {
-  background-color: rgba(14, 20, 32, 0.7) !important;
-  color: var(--text-muted) !important;
+  background-color: rgba(14, 20, 32, 0.85) !important;
+  color: #cbd5e1 !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid #1e283a !important;
+}
+
+/* Dynamic Light Mode Theme Overrides — High-Contrast & Razor Sharp */
+body.light-theme {
+  --bg-app: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-input: #ffffff;
+  --border-color: #cbd5e1;
+  --border-highlight: #94a3b8;
+
+  --text-main: #0f172a;
+  --text-muted: #334155;
+  --text-dim: #64748b;
+}
+
+body.light-theme .brand-title,
+body.light-theme .kpi-value,
+body.light-theme .panel-title,
+body.light-theme .timeline-title,
+body.light-theme .kanban-card-title,
+body.light-theme .modal-title,
+body.light-theme .detail-section-title,
+body.light-theme .detail-value,
+body.light-theme .detail-label,
+body.light-theme .pitch-box,
+body.light-theme .section-title,
+body.light-theme h1,
+body.light-theme h2,
+body.light-theme h3,
+body.light-theme h4 {
+  color: #0f172a !important;
+}
+
+body.light-theme .custom-table th {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+  letter-spacing: 0.5px;
+}
+
+body.light-theme .custom-table td {
+  color: #0f172a !important;
+}
+
+body.light-theme .custom-table tr:hover td {
+  background-color: #f8fafc !important;
+}
+
+body.light-theme .table-toolbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+body.light-theme .filter-group select,
+body.light-theme .filter-group input {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+body.light-theme .crm-stat-box {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .crm-stat-num {
+  color: #0f172a !important;
+}
+
+body.light-theme textarea,
+body.light-theme input[type="text"],
+body.light-theme input[type="search"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Light Theme Badges Contrast Enhancements */
+body.light-theme .badge-connected {
+  background-color: rgba(16, 185, 129, 0.16);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+body.light-theme .badge-not-connected {
+  background-color: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+body.light-theme .badge-call-pending {
+  background-color: rgba(245, 158, 11, 0.16);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+body.light-theme .badge-interested {
+  background-color: rgba(2, 132, 199, 0.16);
+  color: #0369a1;
+  border: 1px solid rgba(2, 132, 199, 0.4);
+}
+body.light-theme .badge-send {
+  background-color: rgba(168, 85, 247, 0.16);
+  color: #7e22ce;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+body.light-theme .badge-no-answer {
+  background-color: rgba(249, 115, 22, 0.16);
+  color: #c2410c;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+}
+body.light-theme .badge-sent {
+  background-color: rgba(37, 211, 102, 0.18);
+  color: #15803d;
+  border: 1px solid rgba(37, 211, 102, 0.4);
+}
+body.light-theme .badge-pending {
+  background-color: rgba(245, 158, 11, 0.18);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+body.light-theme .badge-failed {
+  background-color: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+body.light-theme .badge-not-ready {
+  background-color: rgba(245, 158, 11, 0.16);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+body.light-theme .badge-no-wa,
+body.light-theme .badge-archive {
+  background-color: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+body.light-theme .badge-skip {
+  background-color: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
 * {
@@ -280,6 +423,23 @@ body {
   cursor: pointer;
 }
 
+#specific-date-container,
+#custom-date-container {
+  background: var(--bg-card);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  animation: fadeIn 0.2s ease;
+}
+
+input[type="date"] {
+  color-scheme: dark;
+}
+
+body.light-theme input[type="date"] {
+  color-scheme: light;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -469,12 +629,12 @@ body {
 .custom-table th {
   background-color: #f1f5f9;
   padding: 10px 14px;
-  font-weight: 600;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-color);
+  font-weight: 700;
+  color: var(--text-main);
+  border-bottom: 2px solid var(--border-color);
   font-size: 11.5px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   white-space: nowrap;
 }
 
@@ -510,6 +670,42 @@ body {
   white-space: nowrap;
 }
 
+/* Editable M6 & CRM Badge Select Dropdown */
+.badge-select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 20px 3px 8px;
+  cursor: pointer;
+  outline: none;
+  background-repeat: no-repeat;
+  background-position: right 5px center;
+  background-size: 9px;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%20fill%3D%27%2394a3b8%27%3E%3Cpath%20d%3D%27M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%27%2F%3E%3C%2Fsvg%3E");
+  transition: all 0.15s ease;
+  display: inline-block;
+  line-height: 1.3;
+}
+
+.badge-select:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 0 1px currentColor;
+}
+
+.badge-select:focus {
+  box-shadow: 0 0 0 2px var(--primary-blue);
+}
+
+.badge-select option {
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-weight: 600;
+  padding: 6px 10px;
+}
+
 .badge-high { background-color: var(--accent-green-dim); color: var(--accent-green); }
 .badge-mod { background-color: var(--accent-amber-dim); color: var(--accent-amber); }
 .badge-low { background-color: var(--bg-input); color: var(--text-muted); }
@@ -524,6 +720,93 @@ body {
 
 .badge-insta { background-color: var(--accent-insta-dim); color: var(--accent-insta); }
 .badge-wa { background-color: var(--accent-wa-dim); color: var(--accent-wa); }
+
+/* M7 Sales CRM Badges */
+.badge-connected {
+  background-color: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+.badge-not-connected {
+  background-color: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+.badge-call-pending {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+.badge-interested {
+  background-color: rgba(56, 189, 248, 0.18);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+.badge-send {
+  background-color: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+.badge-no-answer {
+  background-color: rgba(249, 115, 22, 0.18);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+}
+
+/* CRM Stat Boxes */
+.crm-stat-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: all 0.15s ease;
+}
+.crm-stat-box:hover {
+  border-color: var(--border-highlight);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+.crm-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  letter-spacing: 0.3px;
+}
+.crm-stat-num {
+  font-size: 16px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+/* Action Chips */
+.action-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.action-chip:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-highlight);
+}
+.action-chip.active {
+  border-color: var(--primary-blue);
+  background: rgba(37, 99, 235, 0.15);
+  color: #60a5fa;
+}
 
 /* --------------------------------------------------------------------------
    Filter Tabs / Preset Bar
@@ -578,6 +861,24 @@ body {
   background-color: var(--accent-red-dim);
   color: var(--accent-red);
   border-color: var(--accent-red);
+}
+
+.tab-btn[data-call-status="PENDING"].active {
+  background-color: rgba(245, 158, 11, 0.22);
+  color: #fbbf24;
+  border-color: #f59e0b;
+}
+
+.tab-btn[data-call-status="CONNECTED"].active {
+  background-color: rgba(16, 185, 129, 0.22);
+  color: #34d399;
+  border-color: #10b981;
+}
+
+.tab-btn[data-call-status="NOT_CONNECTED"].active {
+  background-color: rgba(239, 68, 68, 0.22);
+  color: #f87171;
+  border-color: #ef4444;
 }
 
 .alert-banner-archive {
@@ -881,3 +1182,129 @@ body {
   font-size: 12px;
   color: var(--text-muted);
 }
+
+/* --------------------------------------------------------------------------
+   M1 to M5 Pipeline Lifecycle Stepper
+   -------------------------------------------------------------------------- */
+.m1-m5-stepper-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.m1-m5-stepper-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.m1-m5-stepper-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepper-steps-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 4px 0;
+}
+
+.stepper-step-item {
+  flex: 1;
+  min-width: 110px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stepper-step-item:hover {
+  border-color: var(--primary-blue);
+  background: rgba(56, 189, 248, 0.06);
+  transform: translateY(-1px);
+}
+
+.stepper-step-tag {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stepper-milestone-id {
+  font-size: 10px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.stepper-step-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stepper-step-status {
+  font-size: 10.5px;
+  margin-top: 2px;
+}
+
+.stepper-arrow {
+  color: var(--text-dim);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.journey-decision-box {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.journey-box-archive {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: var(--text-main);
+}
+
+.journey-box-skip {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: var(--text-main);
+}
+
+.journey-box-contact-first {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: var(--text-main);
+}
+
+.journey-box-contact-later {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--text-main);
+}
+

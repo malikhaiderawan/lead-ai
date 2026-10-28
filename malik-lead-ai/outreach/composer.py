@@ -346,29 +346,27 @@ def _compose_whatsapp(rec: dict[str, Any], is_moderate: bool) -> tuple[str, str,
         kw in category_raw or kw in btype or kw in name.lower() or kw in primary_srv
         for kw in (
             "clothing", "boutique", "apparel", "fashion", "brand", "retail",
-            "store", "shop", "garments", "wear", "outfit", "dress", "e-commerce", "ecommerce"
+            "store", "shop", "garments", "wear", "outfit", "dress", "e-commerce", "ecommerce",
+            "tailor", "pret", "bridal", "designer"
         )
     )
 
     if is_ecommerce_clothing:
-        opening = "Assalam o Alaikum 👋"
-        body = (
-            f"I came across {name}{loc_display} — loved your collection!\n\n"
-            f"I'm Haider from MalikAxiom Technology. We help businesses strengthen their digital presence through websites, e-commerce, automation and AI solutions.\n\n"
-            f"Hum aap ke poore business ko digitalize karke zyada leads ke liye complete setup dete hain:\n"
-            f"🛍️ Mobile Online Store & COD Integration\n"
-            f"🎬 Reels & Video Content Creation (To Drive Traffic)\n"
-            f"🤖 1-Click WhatsApp Order Automation\n\n"
-            f"Complete setup starts from PKR 10,000.\n\n"
-            f"Open to a quick 15-second demo link to see how it works?"
+        from .templates import render_boutique_whatsapp_message
+        ig = _safe(rec.get("instagram"))
+        has_instagram = bool(ig and ig.lower() not in ("none", "null", "n/a", "unknown"))
+        web = _safe(rec.get("website"))
+        fb = _safe(rec.get("facebook"))
+        has_site_or_social = bool(
+            (web and web.lower() not in ("none", "null", "n/a", "unknown", "no website", "no_website"))
+            or (fb and fb.lower() not in ("none", "null", "n/a", "unknown"))
         )
-        cta = (
-            f"— Haider Nawaz\n"
-            f"MalikAxiom Technology\n"
-            f"🌐 malikaxiomtech.com\n"
-            f"📱 WhatsApp: 0313 0466400"
+        full_msg = render_boutique_whatsapp_message(
+            name,
+            has_instagram=has_instagram,
+            has_website_or_social=has_site_or_social,
         )
-        return opening, body, cta
+        return "", full_msg, ""
 
     opening = f"Hi {name},"
 
@@ -715,7 +713,7 @@ def compose_outreach(rec: dict[str, Any], mock: bool = False) -> OutreachRecord:
     lead_id = _safe(rec.get("lead_id"), "unknown")
     final_action = _safe(rec.get("final_action"), "SKIP")
     outreach_priority = _normalize_priority(final_action)
-    channel = _safe(rec.get("outreach_channel"), "unknown")
+    channel = _safe(rec.get("outreach_channel") or rec.get("recommended_channel"), "unknown")
     sales_potential = _safe(rec.get("sales_potential"), "SKIP")
     is_moderate = sales_potential == "MODERATE"
 
@@ -725,9 +723,9 @@ def compose_outreach(rec: dict[str, Any], mock: bool = False) -> OutreachRecord:
         business_name=rec.get("business_name"),
         category=rec.get("category"),
         location=rec.get("location"),
-        phone=rec.get("phone"),
+        phone=rec.get("phone") or rec.get("whatsapp"),
         mobile_phone=rec.get("mobile_phone"),
-        whatsapp=rec.get("whatsapp"),
+        whatsapp=rec.get("whatsapp") or rec.get("phone"),
         landline=rec.get("landline"),
         email=rec.get("email"),
         website=rec.get("website"),

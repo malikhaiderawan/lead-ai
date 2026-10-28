@@ -102,7 +102,12 @@ def _clean_url(value: str) -> str | None:
         parsed = urllib.parse.urlparse(val)
         if not parsed.netloc:
             return None
-        return f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+        host = parsed.netloc.lower()
+        if host in ("web.facebook.com", "touch.facebook.com", "fb.com", "fb.me"):
+            host = "www.facebook.com"
+        elif host == "instagr.am":
+            host = "www.instagram.com"
+        return f"{parsed.scheme}://{host}{parsed.path}"
     except Exception:
         return None
 
@@ -117,6 +122,18 @@ def _extract_meta_content(html_str: str, property_name: str) -> str:
         text = html.unescape(m.group(1).strip())
         return re.sub(r'\s+', ' ', text)
     return ""
+
+
+BROWSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Upgrade-Insecure-Requests": "1",
+}
 
 
 def research_social(
@@ -153,161 +170,174 @@ def research_social(
     result.url = clean
     result.status = "present"
 
-    req = urllib.request.Request(
-        clean,
-        headers={
-            "User-Agent": DEFAULT_USER_AGENT,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-        },
-    )
+    urls_to_try = [clean]
+    if platform == "facebook" and "www.facebook.com" in clean:
+        # Fallback to mobile facebook if desktop is challenge-gated
+        urls_to_try.append(clean.replace("www.facebook.com", "m.facebook.com"))
 
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as response:
-            status_code = response.status
-            result.http_status = str(status_code)
-            result.reachable = "reachable" if status_code < 500 else "unreachable"
+    last_error: Exception | None = None
+    fetched = False
 
-            if status_code == 200:
-                result.resource_status = ResourceStatus.FOUND
-                result.activity_signal = "accessible"
-                body = response.read(120_000)
-                raw_html = body.decode("utf-8", errors="replace")
+    for target_url in urls_to_try:
+        req = urllib.request.Request(target_url, headers=BROWSER_HEADERS)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                status_code = response.status
+                result.http_status = str(status_code)
+                result.reachable = "reachable" if status_code < 500 else "unreachable"
 
-                # Extract OpenGraph / Meta Data
-                og_title = _extract_meta_content(raw_html, "og:title")
-                og_desc = _extract_meta_content(raw_html, "og:description")
-                meta_desc = _extract_meta_content(raw_html, "description")
+                if status_code == 200:
+                    result.resource_status = ResourceStatus.FOUND
+                    result.activity_signal = "accessible"
+                    body = response.read(150_000)
+                    raw_html = body.decode("utf-8", errors="replace")
 
-                desc = og_desc or meta_desc
-                result.bio_text = desc
+                    # Extract OpenGraph / Meta Data
+                    og_title = _extract_meta_content(raw_html, "og:title")
+                    og_desc = _extract_meta_content(raw_html, "og:description")
+                    meta_desc = _extract_meta_content(raw_html, "description")
 
-                # Look for follower metrics in description (e.g. "1,200 Followers, 50 Posts...")
-                metrics_match = re.search(r'([\d.,KMkm+]+\s*(?:Followers|likes|subscribers|followers|posts))', desc, re.IGNORECASE)
-                if metrics_match:
-                    result.public_metrics_snippet = metrics_match.group(1).strip()
+                    desc = og_desc or meta_desc
+                    result.bio_text = desc
 
-                # Commercial intent signals
-                desc_lower = desc.lower()
-                for signal in (
-                    "dm for orders", "dm for details", "dm for prices", "worldwide shipping",
-                    "nationwide delivery", "cash on delivery", "cod available", "whatsapp orders",
-                    "custom orders", "bridal couture", "bespoke", "book appointment",
-                ):
-                    if signal in desc_lower:
-                        result.commercial_signals.append(signal)
-
-                if result.commercial_signals:
-                    result.obvious_business_activity = "active_commercial_presence"
-
-                # Extract Phone / WhatsApp numbers in bio
-                phones = re.findall(r'(?:\+92|03\d{2})[\s\-]?\d{7}', desc)
-                for p in phones:
-                    p_clean = re.sub(r'[\s\-]', '', p)
-                    if p_clean not in result.extracted_phones:
-                        result.extracted_phones.append(p_clean)
-
-                # Extract link-in-bio
-                link_match = re.search(r'(https?://[^\s)]+)', desc)
-                if link_match:
-                    link_val = link_match.group(1).rstrip(".,)")
-                    if not any(soc in link_val.lower() for soc in ("instagram.com", "facebook.com")):
-                        result.link_in_bio = link_val
-                        if "wa.me" in link_val or "api.whatsapp.com" in link_val:
-                            result.whatsapp_cta = link_val
-                        else:
-                            result.extracted_website = link_val
-
-                # Evidence creation
-                evidence_stmt = f"{platform.capitalize()} profile confirmed accessible ({clean})."
-                if result.public_metrics_snippet:
-                    evidence_stmt += f" Observed metrics: {result.public_metrics_snippet}."
-                if result.commercial_signals:
-                    evidence_stmt += f" Commercial CTAs detected: {', '.join(result.commercial_signals)}."
-
-                result.evidence.append(
-                    Evidence(
-                        class_=EvidenceClass.VERIFIED_FACT,
-                        statement=evidence_stmt,
-                        source_url=clean,
+                    # Look for follower metrics in description
+                    metrics_match = re.search(
+                        r'([\d.,KMkm+]+\s*(?:Followers|followers)[^—\-\n\r]*?(?:Posts|posts|were here))',
+                        desc,
+                        re.IGNORECASE,
                     )
-                )
+                    if not metrics_match:
+                        metrics_match = re.search(
+                            r'([\d.,KMkm+]+\s*(?:Followers|followers|likes|Likes)[^—\-\n\r✨👌]*?(?:followers|Followers|likes|Likes|posts|Posts|were here|following))',
+                            desc,
+                            re.IGNORECASE,
+                        )
+                    if not metrics_match:
+                        metrics_match = re.search(
+                            r'([\d.,KMkm+]+\s*(?:Followers|likes|subscribers|followers|posts))',
+                            desc,
+                            re.IGNORECASE,
+                        )
+                    if metrics_match:
+                        result.public_metrics_snippet = metrics_match.group(1).strip()
+                        result.obvious_business_activity = "active_commercial_presence"
 
-            elif status_code in (403, 429):
+                    # Commercial intent signals
+                    desc_lower = desc.lower()
+                    for signal in (
+                        "dm for orders", "dm for details", "dm for prices", "worldwide shipping",
+                        "nationwide delivery", "cash on delivery", "cod available", "whatsapp orders",
+                        "custom orders", "bridal couture", "bespoke", "book appointment", "pret",
+                        "unstitched", "semi-formals", "formals", "luxury pret",
+                    ):
+                        if signal in desc_lower:
+                            result.commercial_signals.append(signal)
+
+                    if result.commercial_signals:
+                        result.obvious_business_activity = "active_commercial_presence"
+
+                    # Extract Phone / WhatsApp numbers in bio
+                    phones = re.findall(r'(?:\+92|03\d{2})[\s\-]?\d{7}', desc)
+                    for p in phones:
+                        p_clean = re.sub(r'[\s\-]', '', p)
+                        if p_clean not in result.extracted_phones:
+                            result.extracted_phones.append(p_clean)
+
+                    # Extract link-in-bio
+                    link_match = re.search(r'(https?://[^\s)]+)', desc)
+                    if link_match:
+                        link_val = link_match.group(1).rstrip(".,)")
+                        if not any(soc in link_val.lower() for soc in ("instagram.com", "facebook.com")):
+                            result.link_in_bio = link_val
+                            if "wa.me" in link_val or "api.whatsapp.com" in link_val:
+                                result.whatsapp_cta = link_val
+                            else:
+                                result.extracted_website = link_val
+
+                    # Evidence creation
+                    evidence_stmt = f"{platform.capitalize()} profile confirmed accessible ({clean})."
+                    if result.public_metrics_snippet:
+                        evidence_stmt += f" Observed metrics: {result.public_metrics_snippet}."
+                    if result.commercial_signals:
+                        evidence_stmt += f" Commercial signals detected: {', '.join(result.commercial_signals)}."
+
+                    result.evidence.append(
+                        Evidence(
+                            class_=EvidenceClass.VERIFIED_FACT,
+                            statement=evidence_stmt,
+                            source_url=clean,
+                        )
+                    )
+                    fetched = True
+                    break
+
+                elif status_code in (403, 429):
+                    result.resource_status = ResourceStatus.BLOCKED
+                    result.activity_signal = "blocked_or_login_required"
+                elif status_code == 404:
+                    result.resource_status = ResourceStatus.NOT_FOUND
+                    result.activity_signal = "not_found"
+                    break
+        except urllib.error.HTTPError as exc:
+            last_error = exc
+            if exc.code == 404:
+                result.resource_status = ResourceStatus.NOT_FOUND
+                result.activity_signal = "not_found"
+                result.reachable = "unreachable"
+                result.http_status = "404"
+                break
+            continue
+        except Exception as exc:
+            last_error = exc
+            continue
+
+    if not fetched:
+        if last_error and isinstance(last_error, urllib.error.HTTPError):
+            result.http_status = str(last_error.code)
+            if last_error.code in (403, 429):
                 result.resource_status = ResourceStatus.BLOCKED
                 result.activity_signal = "blocked_or_login_required"
+                result.reachable = "reachable"
                 result.evidence.append(
                     Evidence(
                         class_=EvidenceClass.UNKNOWN,
-                        statement=f"{platform.capitalize()} profile access blocked (HTTP {status_code}). Profile exists but requires authentication or is rate-limited.",
+                        statement=f"{platform.capitalize()} profile exists but access was blocked (HTTP {last_error.code}: {last_error.reason}).",
                         source_url=clean,
                     )
                 )
-            elif status_code == 404:
+            elif last_error.code == 404:
                 result.resource_status = ResourceStatus.NOT_FOUND
                 result.activity_signal = "not_found"
+                result.reachable = "unreachable"
                 result.evidence.append(
                     Evidence(
                         class_=EvidenceClass.VERIFIED_FACT,
-                        statement=f"{platform.capitalize()} profile returned HTTP 404 (Page does not exist).",
+                        statement=f"{platform.capitalize()} profile returned HTTP 404 (Not Found).",
                         source_url=clean,
                     )
                 )
             else:
                 result.resource_status = ResourceStatus.CHECK_FAILED
+                result.reachable = "unreachable"
                 result.evidence.append(
                     Evidence(
                         class_=EvidenceClass.UNKNOWN,
-                        statement=f"{platform.capitalize()} check returned HTTP {status_code}.",
+                        statement=f"{platform.capitalize()} check encountered HTTP {last_error.code} ({last_error.reason}).",
                         source_url=clean,
                     )
                 )
-
-    except urllib.error.HTTPError as exc:
-        result.http_status = str(exc.code)
-        if exc.code in (403, 429):
-            result.resource_status = ResourceStatus.BLOCKED
-            result.activity_signal = "blocked_or_login_required"
-            result.reachable = "reachable"
-            result.evidence.append(
-                Evidence(
-                    class_=EvidenceClass.UNKNOWN,
-                    statement=f"{platform.capitalize()} profile exists but access was blocked (HTTP {exc.code}: {exc.reason}).",
-                    source_url=clean,
-                )
-            )
-        elif exc.code == 404:
-            result.resource_status = ResourceStatus.NOT_FOUND
-            result.activity_signal = "not_found"
-            result.reachable = "unreachable"
-            result.evidence.append(
-                Evidence(
-                    class_=EvidenceClass.VERIFIED_FACT,
-                    statement=f"{platform.capitalize()} profile returned HTTP 404 (Not Found).",
-                    source_url=clean,
-                )
-            )
         else:
+            err_msg = str(last_error)[:150] if last_error else "unknown error"
             result.resource_status = ResourceStatus.CHECK_FAILED
             result.reachable = "unreachable"
             result.evidence.append(
                 Evidence(
                     class_=EvidenceClass.UNKNOWN,
-                    statement=f"{platform.capitalize()} check encountered HTTP {exc.code} ({exc.reason}).",
+                    statement=f"The {platform} page could not be reached ({err_msg}).",
+                    detail=err_msg,
                     source_url=clean,
                 )
             )
-    except Exception as exc:  # noqa: BLE001
-        result.resource_status = ResourceStatus.CHECK_FAILED
-        result.reachable = "unreachable"
-        result.evidence.append(
-            Evidence(
-                class_=EvidenceClass.UNKNOWN,
-                statement=f"The {platform} page could not be reached ({type(exc).__name__}).",
-                detail=str(exc)[:150],
-                source_url=clean,
-            )
-        )
 
     return result
 
