@@ -120,27 +120,40 @@ def extract_handle_from_text(text):
     return ""
 
 
-# Patterns that indicate a website IS present in bio/snippet
+# Social and messaging platforms that DO NOT count as having a website
+# (Having a Facebook page, WhatsApp link, or Threads is NOT a website!)
+_SOCIAL_PATTERNS = [
+    r'(?:https?://)?(?:www\.)?instagram\.com[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?facebook\.com[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?fb\.com[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?fb\.me[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?wa\.me[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?api\.whatsapp\.com[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?whatsapp\.com[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?threads\.net[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?tiktok\.com[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?youtube\.com[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?youtu\.be[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?twitter\.com[/\w._-]*',
+    r'(?:https?://)?(?:www\.)?x\.com[/\w._-]*',
+]
+_SOCIAL_RE = re.compile('|'.join(_SOCIAL_PATTERNS), re.I)
+
+# Patterns that indicate a real independent website IS present in bio/snippet
 _WEBSITE_PATTERNS = [
-    r'https?://',                        # any http/https link
-    r'www\.',                            # www.something
-    r'\b\w+\.(com|net|org|io|co|shop|store|pk|uk|ae|us|ca|de|fr)\b',  # domain extensions
-    r'linktree\.com',
-    r'bio\.link',
-    r'linktr\.ee',
-    r'beacons\.ai',
-    r'taplink',
-    r'allmylinks',
-    r'campsite\.bio',
-    r'lnk\.bio',
+    r'https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',             # http/https with actual domain
+    r'www\.[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',                 # www.something.domain
+    r'\b[a-zA-Z0-9.-]+\.(com|net|org|io|co|shop|store|pk|uk|ae|us|ca|de|fr)\b',  # domain extensions
 ]
 _WEBSITE_RE = re.compile('|'.join(_WEBSITE_PATTERNS), re.I)
 
 
 def has_website_in_bio(text: str) -> bool:
-    """Return True if the text suggests the account already has a website link."""
-    # Exclude pure instagram.com mentions — that's the profile URL itself, not a separate site
-    cleaned = re.sub(r'instagram\.com/[\w./]+', '', text, flags=re.I)
+    """Return True if the text suggests the account already has an independent website.
+    Pure social media links (Facebook, WhatsApp wa.me, Threads, TikTok) do NOT count as a website.
+    """
+    # Strip all social media and messaging links first
+    cleaned = _SOCIAL_RE.sub('', text)
     return bool(_WEBSITE_RE.search(cleaned))
 
 
