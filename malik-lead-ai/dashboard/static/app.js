@@ -20,6 +20,7 @@ const State = {
   pollInterval: null,
   leadsFilter: {
     niche: 'WATCHES',
+    country: '',
     priority: '',
     potential: '',
     channel: '',
@@ -414,7 +415,7 @@ function initTableFilters() {
   });
 
   // Master leads filter listeners
-  ['niche', 'priority', 'potential', 'channel', 'status', 'milestone', 'city', 'call-status', 'category', 'activity', 'sort'].forEach(filterKey => {
+  ['niche', 'country', 'city', 'priority', 'potential', 'channel', 'status', 'milestone', 'call-status', 'category', 'activity', 'sort'].forEach(filterKey => {
     let id = `filter-lead-${filterKey}`;
     if (filterKey === 'status') id = 'filter-lead-m6-status';
     const stateKey = filterKey === 'sort' ? 'sort_by' : filterKey.replace('-', '_');
@@ -449,9 +450,9 @@ function initTableFilters() {
         if (b.getAttribute('data-tab') === 'ALL') b.classList.add('active');
         else b.classList.remove('active');
       });
-      ['priority', 'potential', 'channel', 'city', 'call-status', 'category', 'activity', 'sort'].forEach(k => {
+      ['niche', 'country', 'city', 'priority', 'potential', 'channel', 'call-status', 'category', 'activity', 'sort'].forEach(k => {
         const el = document.getElementById(`filter-lead-${k}`);
-        if (el) el.value = '';
+        if (el) el.value = (k === 'niche' ? 'WATCHES' : '');
       });
       const stEl = document.getElementById('filter-lead-m6-status');
       if (stEl) stEl.value = '';
@@ -1009,6 +1010,8 @@ async function fetchMasterLeads() {
       limit: State.leadsLimit,
       tab: State.leadsTab,
       niche: State.leadsFilter.niche,
+      country: State.leadsFilter.country,
+      city: State.leadsFilter.city,
       priority: State.leadsFilter.priority,
       potential: State.leadsFilter.potential,
       channel: State.leadsFilter.channel,

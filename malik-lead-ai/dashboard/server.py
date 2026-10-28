@@ -271,6 +271,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         status = query.get("status", [""])[0].strip()
         stage = query.get("stage", [""])[0].strip()
         city = query.get("city", [""])[0].strip()
+        country = query.get("country", [""])[0].strip().lower()
         milestone = query.get("milestone", [""])[0].strip()
         tab = query.get("tab", query.get("filter", [""]))[0].strip().upper()
         niche = query.get("niche", [""])[0].strip().upper()
@@ -372,8 +373,23 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 elif lead.sales_stage.upper() != stage.upper():
                     continue
 
-            if city and lead.city.lower() != city.lower():
+            lead_geo = f"{lead.city} {lead.location} {lead.address} {lead.source_file}".lower()
+            if city and city.lower() not in lead_geo:
                 continue
+
+            if country:
+                country_keywords = {
+                    "uk": ["london", "uk", "united kingdom", "manchester", "_gb"],
+                    "usa": ["new york", "ny", "usa", "united states", "_us"],
+                    "uae": ["dubai", "uae", "abu dhabi", "sharjah", "_ae"],
+                    "canada": ["toronto", "canada", "vancouver", "ontario", "_ca"],
+                    "saudi": ["riyadh", "saudi", "ksa", "jeddah", "_sa"],
+                    "australia": ["sydney", "australia", "melbourne", "_au"],
+                    "pakistan": ["lahore", "karachi", "islamabad", "rawalpindi", "pakistan", "_pk"],
+                }
+                kw_list = country_keywords.get(country, [country])
+                if not any(k in lead_geo for k in kw_list):
+                    continue
 
             if milestone:
                 if milestone == "M5_MASTER" and not lead.in_master:
